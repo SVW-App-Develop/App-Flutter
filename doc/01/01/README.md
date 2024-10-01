@@ -963,7 +963,53 @@
 
 <br>
 
+### 02. switch 문
+- 입력된 상수값에 따라 알맞은 case 블록 수행
 
+- break 키워드 사용시 switch 문 밖으로 나갈 수 있음
 
+  - case 끝에 break 키워드 사용 필수
+ 
+    - 없으면 컴파일 중 에러 발생
+   
+- enum과 함께 사용시 유용함
+
+> 형식
+```dart
+  enum Status {
+    approved,
+    pending,
+    rejected,
+  }
+  
+  void main() {
+    Status status = Status.approved;
+  
+    switch (status) {
+      case Status.approved:
+        // approved 값이기 때문에 다음 코드 실행
+        print('승인 상태입니다');
+        break;
+      case Status.pending:
+        print('대기 상태입니다');
+        break;
+      case Status.rejected:
+        print('거절 상태입니다');
+        break;
+      default:
+        print('알 수 없는 상태입니다');
+    }
+    // Enum 의 모든 수를 리스트로 반환
+    print(Status.values);
+  }
+```
+
+> 실행 결과
+```
+  승인 상태입니다
+  [Status.approved, Status.pending, Status.rejected]
+```
+
+<br>
 
 
