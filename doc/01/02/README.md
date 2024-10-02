@@ -23,6 +23,7 @@
 <br>
 
 2.2 객체지향 프로그래밍의 시작, 클래스
+---
 - 객체지향 프로그래밍의 기본은 클래스(class)로부터 시작됨
 
 > 형식
@@ -135,6 +136,8 @@
 
 - 일반적으로 클래스를 생성하는 여러 방법을 명시하고 싶을 때 사용
 
+  - 클래스를 여러 방식으로 인스턴스화할 때 유용하게 사용
+
 > 형식
 ```dart
   class Idol {
@@ -144,7 +147,7 @@
     // 생성자
     Idol(String name, membersCount)
     // 1개 이상의 변수를 저장하고 싶을 때는 , 기호로 연결해주면 됨
-      : this.name = name;
+      : this.name = name,
         this.membersCount = membersCount;
   
     // 네임드 생성자
@@ -155,30 +158,245 @@
         this.membersCount = map['membersCount'];
   
     void sayName() {
-      print('저는 ${this.name} 입니다.${this.name} 멤버는 ${this.membersCount}명입니다.');
+      print('그는 ${this.name} 입니다.${this.name} 멤버는 ${this.membersCount}명입니다.');
     }
   }
+  
+  void main() {
+    // 기본 생성자 사용
+    Idol strayKids = Idol('스트레이키즈', 8);
+    strayKids.sayName();
+  
+    // fromMap 이라는 네임드 생성자 사용
+    Idol seventeen = Idol.fromMap({
+      'name': 'SEVENTEEN',
+      'membersCount': 13
+    });
+    seventeen.sayName();
+  }
+```
+
+> 결과
+```
+  그는 스트레이키즈 입니다.스트레이키즈 멤버는 8명입니다.
+  그는 SEVENTEEN 입니다.SEVENTEEN 멤버는 13명입니다.
 ```
 
 <br>
 
+### 03. 프라이빗 변수(private variable)
+- 다른 언어와 정의가 약간 다름
 
+  - 일반적 : 클래스 내부에서만 사용하는 변수
+ 
+  - 다트 언어 : 같은 파일에서만 접근 가능한 변수
 
+> 형식
+```dart
+  class Idol {
+    // '_'로 변수명을 시작하면 프라이빗 변수 선언 가능
+    String _name;
+  
+    Idol(this._name);
+  }
+  
+  void main() {
+    Idol strayKids = Idol('스트레이키즈');
+  
+    // 같은 파일에서는 _name 변수에 접근 가능
+    // 다른 파일에서는 _name 변수에 접근 불가
+    print(strayKids._name);
+  }
+```
 
+> 실행 결과
+```
+  스트레이키즈
+```
 
+<br>
 
+### 04. 게터(getter) / 세터(setter)
+- 게터 : 값을 가져올 때 사용
 
+- 세터 : 값을 지정할 때 사용
 
+- 가변(mutalbe) 변수를 선언해도 직접 값을 가져오거나 지정할 수 있는데 게터/세터 사용 이유?
 
+  - 게터 / 세터 사용시 어떤 값이 노출되고 어떤 형태로 노출될지, 어떤 변수를 변경 가능하게 할지 유연하게 정할 수 있음
 
+- 최근 변수의 값에 불변성(Immutable : 인스턴스화 후 변경할 수 없는)을 특성으로 사용
 
+  - 세터는 거의 사용 X
+ 
+- 게터와 세터는 모두 변수처럼 사용하면 됨
 
+  - 사용할 때 메서드명 뒤에 () X
+ 
+> 형식
+```dart
+  class Idol {
+    String _name = '스트레이키즈';
+  
+    // get 키워드를 사용해서 게터임을 명시
+    // 게터는 메서드와 다르게 매개변수를 전혀 받지 않음
+    String get name {
+      return this._name;
+    }
+  
+    // 세터는 set 이라는 키워드를 사용해서 선언
+    // 세터는 매개변수로 딱 하나의 변수를 받을 수 있음
+    set name(String name) {
+      this._name = name;
+    }
+  }
+  
+  void main() {
+    Idol strayKids = Idol();
+    strayKids.name = '세븐틴';   // 세터
+    print(strayKids.name);      // 게터
+    // _name 초기값은 '스트레이키즈'
+    // 세터로 '세븐틴' 대입하고 게터로 확인해보니 '세븐틴'으로 저장되어 있음
+  }
+```
 
+> 실행 결과
+```
+  세븐틴
+```
 
+<br>
 
+---
 
+<br>
 
+2.3 상속(inheritance)
+---
+- extends 키워드를 사용해 상속 가능
 
+  - {class 자식 클래스 extends 부모 클래스}
+
+- 어떤 클래스의 기능을 다른 클래스가 사용할 수 있게 하는 기법
+
+  - 부모 클래스 : 기능을 물려주는 클래스
+ 
+  - 자식 클래스 : 물려받는 클래스
+ 
+    - 자식 클래스는 부모 클래스의 모든 기능을 상속받음
+   
+- super : 상속한 부모 클래스 지칭
+
+- 부모 클래스에 기본 생성자가 있으면 자식 클래스에서는 부모 클래스의 생성자르 실행해줘야 함
+
+  - 그렇지 않으면 부모 클래스의 모든 기능을 상속받아도 변수값들을 설정하지 않아 기능 사용 불가
+ 
+- 상속받지 않은 메서드나 변수 새로 추가 가능
+
+- 부모 클래스에 공통으로 사용하는 변수와 메서드를 정의해 상속받으면 자식 코드들은 해당 값을 사용 가능
+
+  - 중복 코딩 방지
+ 
+- 부모가 같더라도 다른 자식 클래스에서 새로 추가한 메서드는 호출 불가
+
+> 형식
+```dart
+  class Idol {
+    final String name;        // Idol 클래스의 멤버변수
+    final int membersCount;   // Idol 클래스의 멤버변수
+  
+    Idol(this.name, this.membersCount);
+  
+    void sayName() {          // Idol 클래스의 메서드
+      print('그는 ${this.name} 입니다');
+    }
+  
+    void sayMembersCount() {  // Idol 클래스의 메서드
+      print('${this.name} 멤버는 ${this.membersCount}명 입니다');
+    }
+  }
+  
+  // Idol 클래스를 상속하는 BoyGroup 클래스 생성
+  // extends 키워드르 사용해 상속받음
+  // 'class 자식 크래스 extends 부모 클래스' 형식
+  class BoyGroup extends Idol {
+    // 상속받은 생성자
+    BoyGroup(
+        String name,
+        int membersCount,
+        ) : super(      // super 는 부모 클래스를 지칭함
+      name,
+      membersCount
+    );
+  
+    // 상속받지 않은 기능
+    void sayMale() {
+      print('그는 남자 아이돌입니다');
+    }
+  }
+  
+  class GirlGroup extends Idol {
+    GirlGroup(
+        String name,
+        int membersCount
+        ) : super(
+      name,
+      membersCount
+    );
+  }
+  
+  void main() {
+    BoyGroup strayKids = BoyGroup('스트레이키즈', 8);   // 생성자로 객체 생성
+  
+    strayKids.sayName();          // 부모한테 물려받은 메서드
+    strayKids.sayMembersCount();  // 부모한테 물려받은 메서드
+    strayKids.sayMale();          // 자식이 새로 추가한 메서드
+  
+    print('---------------------------------------------');
+  
+    GirlGroup ive = GirlGroup('아이브', 6);
+  
+    ive.sayName();
+    ive.sayMembersCount();
+    // ive.sayMale();             // Error: The method 'sayMale' isn't defined for the class 'GirlGroup'
+  }
+```
+
+> 실행 결과
+```
+  그는 스트레이키즈 입니다
+  스트레이키즈 멤버는 8명 입니다
+  그는 남자 아이돌입니다
+  ---------------------------------------------
+  그는 아이브 입니다
+  아이브 멤버는 6명 입니다
+```
+
+<br>
+
+---
+
+<br>
+
+2.4 오버라이드(override)
+---
+- 부모 클래스 또는 인터페이스에 정의된 메서드를 재정의할 때 사용
+
+- 다트에서는 override 키워드 생략 가능
+
+  - 키워드 사용하지 않고도 메서드 재정의 가능
+
+> 형식
+```dart
+
+```
+
+> 실행 결과
+```
+
+```
+
+<br>
 
 
 
