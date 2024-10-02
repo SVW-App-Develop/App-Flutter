@@ -1278,7 +1278,7 @@
    
   - 콜백 함수나 리스트의 map(), reduce(), fold() 함수 등에서 일회성이 높은 로직 작성할 때 주로 사용
 
-> 형식
+> 익명 함수
 ```dart
   void main() {
     List<int> numbers = [1, 2, 3, 4, 5];
@@ -1298,6 +1298,249 @@
 ```
 
 <br>
+
+> 람다 함수
+```dart
+  void main() {
+    List<int> numbers = [1, 2, 3, 4, 5];
+  
+    // 람다 함수로 모든 값 더하기
+    final allMembers = numbers.reduce((value, element) => value + element);
+  
+    print(allMembers);
+  }
+```
+
+> 실행 결과
+```
+  15
+```
+
+<br>
+
+### 03. typedef 와 함수
+
+> 형식
+```dart
+  typedef Operation = void Function(int x, int y);
+```
+
+- 함수의 시그니처를 정의하는 값
+
+  - 시그니처 ㅣ 반환값 타입, 매개변수 개수와 타입 등
+ 
+- 함수 선언부를 정의하는 키워드
+
+  - 함수가 무슨 동작을 하는지에 대한 정의는 없음
+
+- 시그니처에 맞춘 함수를 만들어 사용
+
+- 다트에서 함수는 일급 객체(first-class citizen)이므로 함수를 값처러 사용 가능
+
+  - 퍼스트 클래스 시티즌, 일급 시민이라고도 함
+ 
+  - 플러터에서는 typedef 로 선언한 함수를 매개변수로 넣어 사용
+
+> 형식
+```dart
+  typedef Operation = void Function(int x, int y);
+  
+  void add(int x, int y) {
+    print('결과값 : ${x + y}');
+  }
+  
+  void subtract(int x, int y) {
+    print('결과값 : ${x - y}');
+  }
+  
+  void main() {
+    // typedef 는 일반적인 변수의 type 처럼 사용 가능
+    Operation oper = add;
+    oper(1, 2);
+  
+    // subtract() 함수도 Operation 에 해당되는 시그니처
+    // oper 변수에 저장 가능
+    oper = subtract;
+    oper(1, 2);
+  }
+```
+
+> 실행 결과
+```
+  결과값 : 3
+  결과값 : -1
+```
+
+<br>
+
+> 형식
+```dart
+  typedef Operation = void Function(int x, int y);
+  
+  void add(int x, int y) {
+    print('결과값 : ${x + y}');
+  }
+  
+  void calculate(int x, int y, Operation oper) {
+    oper(x, y);
+  }
+  
+  void main() {
+    calculate(1, 2, add);
+  }
+```
+
+> 실행 결과
+```
+  결과값 : 3
+```
+
+<br>
+
+---
+
+<br>
+
+1.8 trr...catch
+---
+- 특정 코드의 실행을 시도(try)해보고 문제가 있다면 에러를 잡으라(catch)는 뜻
+
+- try 와 catch 사이의 괄호 : 에러가 없을 때 실행할 로직 작성
+
+  - try 로직에서 에러 발생시 이후 로직은 실행되지 않고 바로 catch 로직으로 넘어감
+
+- catch 가 감싸는 괄호 : 에러가 났을 때 실행할 로직 작성
+
+- throw 키워드를 사용해 에러 발생시킬 수 있음
+
+> 형식
+```dart
+  void main() {
+    try{
+      // 에러가 없을 때 실행할 로직
+      final String name = '이용복';
+      
+      print(name);  // 에러가 없으니 출력됨
+    } catch(e) {    // catch 는 첫 번째 매개변수에 에러 정보 전달해줌
+      // 에러가 있을 때 실행할 로직
+      print(e);
+    }
+  }
+```
+
+> 실행 결과
+```
+  이용복
+```
+
+<br>
+
+> 형식
+```dart
+  void main() {
+    try {
+      final name = '이용복';
+  
+      // throw 키워드로 고의적으로 에러 발생시킴
+      throw Exception('이름을 잘못됐습니다');
+      print(name);
+    } catch(e) {
+      // try 에서 에러가 발생했으니 catch 로직 실행
+      print(e);
+    }
+  }
+```
+
+> 실행 결과
+```
+  Exception: 이름을 잘못됐습니다
+```
+
+<br>
+
+---
+
+<br>
+
+## 🚨 핵심 요약
+- JIT vs AOT
+
+  - JIT(Just in Time) : 변경된 코드만 컴파일하는 방식
+  
+    - 핫 리로드 기능은 변경된 내용을 UI 에 뿌려줌
+   
+    - 컴파일 시간을 단축시켜주므로 개발시 적합한 방식
+   
+  - AOT(Ahead of Time) : 시스템에 최적화해 컴파일하는 방식
+ 
+    - 런타임 성능 개선, 저장 공간 절약, 설치와 업데이트 시간 단축
+   
+    - 배포시 적합한 방식
+
+- var 키워드 : 다트 언어가 자동으로 타입을 유추하는 변수를 선언할 때 사용
+
+- 다트의 기본 타입
+
+  - String(문자열)
+ 
+  - int(정수)
+ 
+  - double(실수)
+ 
+  - bool(불리언, true/false)
+ 
+- dynamic 키워드 : 어떤 타입이든 저장할 수 있는 변수 선언시 사용
+
+- 다트 언어의 대표적인 컬렉션 타입 : List, Map, Set
+
+  - List : 여러 값을 순서대로 저장하는 컬렉션
+ 
+  - Map : 키와 값을 짝 지어 저장하는 컬렉션
+ 
+  - Set : 중복되는 값이 존재하지 않는 컬렉션
+ 
+- 조건문 실행 : if 문, switch 문
+
+  - if 문 : 다양한 조건을 계산할 때 유용
+ 
+  - switch 문 : 한 조건의 다양한 결과값이 있을 때 유용
+ 
+- 반복문 실행 : for 문, while 문
+
+  - for 문 : 횟수 기반의 반복문 실행시 유용
+ 
+  - while 문, do...while 문 : 조건 기반의 반복문 실행시 유용
+ 
+    - while 문 : 조건문을 실행한 후 반복문 실행
+   
+    - do...while 문 : 반복문을 실행한 후 조건문 실행
+
+- 함수 : 반환값, 매개변수, 실행문으로 이루어짐
+
+- 익명 함수, 람다 함수 : 함수 이름이 없으며 일회성으로 쓸 때 사용
+
+|익명 함수|람다 함수|
+|-|-|
+|(매개변수) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;함수 본문 &nbsp;&nbsp;&nbsp; <br>}|(매개변수) => 단 하나의 문(statement)|
+
+- typedef : 함수의 시그니처인 함수의 선언부만 정의 가능
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
