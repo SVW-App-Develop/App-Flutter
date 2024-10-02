@@ -1119,18 +1119,185 @@
 
 1.7 함수와 람다
 ---
+### 01. 함수의 일반적인 특징
+- 함수를 사용하면 한 번만 작성하고 여러 곳에서 재활용 가능
 
+- 반환할 값이 없을 때는 void 키워드 사용
 
+- 다트 함수에서 매개변수를 지정하는 방법
 
+  - 순서가 고정된 매개변수(positional parameter, 포지셔널 파라미터, 위치 매개변수)
+ 
+    - 입력된 순서대로 매개변수에 값 지정됨
+   
+    - 기본값을 갖는 포지셔널 파라미터 : 대괄호[] 사용
+    
+  - 이름이 있는 매개변수(named parameter, 네임드 파라미터, 명명된 매개변수)
+ 
+    - 순서와 관계없이 지정하고 싶은 매개변수의 이름을 이용해 값 입력 가능
+   
+    - 키와 값 형태로 매개변수를 입력하면 되므로 입력 순서는 중요하지 않음
+   
+    - 중괄호{}, required 키워드 사용
+   
+      - required : 매개변수가 null 값이 불가능한 타입이면 기본값을 지정해주거나 필수로 입력해야 한다는 의미
+     
+    - 기본값을 갖는 네임드 파라미터 : required 키워드 생략 후 등호 다음에 원하는 기본값 입력
 
+- 포지셔널 파라미터와 네임드 파라미터를 섞어서 사용 가능
 
+  - 포지셔널 파라미터가 네임드 파라미터보다 반드시 먼저 위치해야 함
 
+> 형식
+```dart
+  int addTwoNumbers(int a, int b){  // int a 가 int b 보다 먼저 선언
+    return a + b;
+  }
+  
+  void main() {
+    print(addTwoNumbers(1, 2));  // 함수 실행시 1, 2 순서대로 a, b 에 입력됨
+  }
+```
 
+> 실행 결과
+```
+  3
+```
 
+<br>
 
+> 형식
+```dart
+  int addTwoNumbers({
+    required int a,
+    required int b,
+  }) {
+    return a + b;
+  }
+  
+  void main(){
+    print(addTwoNumbers(a: 1, b: 2));
+  }
+```
 
+> 실행 결과
+```
+  3
+```
 
+<br>
 
+> 형식
+```dart
+  int addTwoNumbers(int a, [int b = 2]){
+    return a + b;
+  }
+  
+  void main(){
+    print(addTwoNumbers(1));
+  }
+```
+
+> 실행 결과
+```
+  3
+```
+
+<br>
+
+> 형식
+```dart
+  int addTwoNumbers({
+    required int a,
+    int b = 2
+  }) {
+    return a + b;
+  }
+  
+  void main() {
+    print(addTwoNumbers(a: 1));
+  }
+```
+
+> 실행 결과
+```
+  3
+```
+
+<br>
+
+> 형식
+```dart
+  int addTwoNumbers(
+    int a, {
+    required int b,
+    int c = 4
+    }
+  ) {
+    return a + b + c;
+  }
+  
+  void main() {
+    print(addTwoNumbers(1, b: 3, c: 7));
+  }
+```
+
+> 실행 결과
+```
+  11
+```
+
+<br>
+
+### 02. 익명 함수와 람다 함수
+- 함수 이름이 없고 일회성으로 사용됨
+
+- 다트에서는 익명 함수와 람다 함수를 구분하지 않음
+
+  - 기본적인 익명 함수(anonymous function)
+ 
+  - 람다식(lambda expression)을 사용하는 익명 함수
+ 
+|익명 함수|람다 함수|
+|-|-|
+|(매개변수) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;함수 바디 &nbsp;&nbsp;&nbsp; <br>}|(매개변수) => 단 하나의 스테이트먼트|
+
+- 람다 함수 : 익명 함수에서 {}를 빼고 => 기호를 추가한 것
+
+  - 매개변수는 아예 없거나 하나 이상
+ 
+  - 코드 블록을 묶는 {}가 없는 람다는 함수 로직을 수행하는 스테이트먼트가 딱 하나여야 함
+ 
+    - 한 줄이 아니고 명령 단위가 하나여야 함
+   
+  - 이름을 정하고 미리 선언할 필요 X ⇒ 글로벌 스코프(global scope)로 다룰 필요 X
+ 
+  - 하나의 스테이트먼트만 다루기 때문에 적절히 사용하면 간결하게 코드 작성 가능 ⇒ 가독성 높음
+ 
+    - 실행하는 위치에 로직 코드가 있기 때문
+   
+  - 콜백 함수나 리스트의 map(), reduce(), fold() 함수 등에서 일회성이 높은 로직 작성할 때 주로 사용
+
+> 형식
+```dart
+  void main() {
+    List<int> numbers = [1, 2, 3, 4, 5];
+  
+    // 일반 함수로 모든 값 더하기
+    final allMembers = numbers.reduce((value, element){
+      return value + element;
+    });
+  
+    print(allMembers);
+  }
+```
+
+> 실행 결과
+```
+  15
+```
+
+<br>
 
 
 
