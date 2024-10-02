@@ -1012,4 +1012,125 @@
 
 <br>
 
+### 03. for 문
+- 작업을 여러 번 반복해서 실행할 때 사용
+
+- for...in 패턴의 for 문
+
+  - List 의 모든 값을 순회하고 싶을 때 사용
+
+> 형식
+```dart
+  void main() {
+    // 값 선언; 조건 설정; loop 마다 실행할 기능
+    for(int i = 0; i < 3; i++){
+      print(i);
+    }
+  }
+```
+
+> 실행 결과
+```
+  0
+  1
+  2
+```
+
+<br>
+
+> 형식
+```dart
+  void main() {
+    List<int> numberList = [3, 6, 9];
+  
+    for(int number in numberList){
+      print(number);
+    }
+  }
+```
+
+> 실행 결과
+```
+  3
+  6
+  9
+```
+
+<br>
+
+### 04. while 문과 do...while 문
+- 반복적인 작업을 실행할 때 사용
+
+  - for 문 : 횟수 기반으로 함수를 반복적으로 실행
+ 
+    - 특정 리스트 길이나 지정한 숫자 이하의 횟수만 반복하도록 코드 작성
+   
+  - while 문 : 조건을 기반으로 반복문 실행
+ 
+    - 조건을 먼저 확인한 후 조건이 true 이면 계속 실행, false 이면 종료
+   
+- do...while 문
+
+  - 반복문을 실행한 후 조건 확인
+
+> 형식
+```dart
+  void main() {
+    int total = 0;
+  
+    while(total < 10){  // total 값이 10보다 작으면 계속 실행
+      total += 1;
+    }
+  
+    print(total);
+  }
+```
+
+> 실행 결과
+```
+  10
+```
+
+<br>
+
+> 형식
+```dart
+  void main() {
+    int total = 0;
+  
+    do {
+      total += 1;
+    } while(total < 10);
+  
+    print(total);
+  }
+```
+
+> 실행 결과
+```
+  10
+```
+
+<br>
+
+---
+
+<br>
+
+1.7 함수와 람다
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
