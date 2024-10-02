@@ -1,6 +1,6 @@
 # 2단계 : 다트 객체지향 프로그래밍
 > 다트 언어는 높은 완성도로 객체지향 프로그래밍 지원<br>
-> 플러터는 객체지향 프로그래밍(object-oriented programming, OOP) 중심으로 설계된 프레임워
+> 플러터는 객체지향 프로그래밍(object-oriented programming, OOP) 중심으로 설계된 프레임워크
 
 <br>
 
