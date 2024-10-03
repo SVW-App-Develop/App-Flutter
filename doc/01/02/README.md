@@ -385,6 +385,222 @@
 - 다트에서는 override 키워드 생략 가능
 
   - 키워드 사용하지 않고도 메서드 재정의 가능
+ 
+- 한 클래스에 이름이 같은 메서드가 존재할 수 없음
+
+  - 부모 클래스나 인터페이스에 이미 존재하는 메서드명 입력시 ovwrride 키워드를 생략해도 메서드가 덮어써짐
+ 
+  - but, 직접 명시하는 게 협업 및 유지보수에 유리
+
+> 형식
+```dart
+  class Idol {
+    final String name;
+    final int membersCount;
+  
+    Idol(this.name, this.membersCount);
+  
+    void sayName() {
+      print('그는 ${this.name} 입니다');
+    }
+  
+    void sayMembersCount() {
+      print('${this.name} 멤버는 ${this.membersCount}명 입니다');
+    }
+  }
+  
+  class BoyGroup extends Idol {
+    // 상속에서처럼 super 키워드 사용해도 되고,
+    // 아래처럼 생성자의 매개변수로 직접 super 키워드 사용해도 OK
+    BoyGroup(
+        super.name,
+        super.membersCount,
+    );
+  
+    // override 키워드를 사용해 오버라이드 진행
+    @override
+    void sayName() {
+      print('그는 남자 아이돌 ${this.name} 입니다');
+    }
+  }
+  
+  void main() {
+    BoyGroup strayKids = BoyGroup('스트레이키즈', 8);
+  
+    strayKids.sayName();          // 자식 클래스의 오버라이드된 메서드 사용
+  
+    // sayMembersCount 는 오버라이드하지 않았기 때문에
+    // 그대로 Idol 클래스의 메서드가 실행됨
+    // 부모 클래스의 메서드 사용
+    strayKids.sayMembersCount();
+  }
+```
+
+> 실행 결과
+```
+  그는 남자 아이돌 스트레이키즈 입니다
+  스트레이키즈 멤버는 8명 입니다
+```
+
+<br>
+
+---
+
+<br>
+
+2.5 인터페이스(interface)
+---
+- 공통으로 필요한 기능을 정의만 해두는 역할
+
+  - 상속은 공유되는 기능을 이어받는 개념
+
+- 다트에는 인터페이스를 지정하는 키워드 따로 없음
+
+- 적용 개수 제한 없음
+
+  - 여러 인터페이스 적용하려면 , 기호 사용해 인터페이스 냐열하여 입력
+
+  - 상속은 단 하나의 클래스만 할 수 있음
+
+> 형식
+```dart
+  class Idol {
+    final String name;
+    final int membersCount;
+  
+    Idol(this.name, this.membersCount);
+  
+    void sayName() {
+      print('그는 ${this.name} 입니다');
+    }
+  
+    void sayMembersCount() {
+      print('${this.name} 멤버는 ${this.membersCount}명 입니다');
+    }
+  }
+  
+  // implements 키워드를 사용하면 원하는 클래스를 인터페이스로 사용 가능
+  class BoyGroup implements Idol {
+    // 상속받을 때는 부모 클래스의 모든 기능이 상속되므로 재정의 할 필요 X
+    // 인터페이스는 반드시 모든 기능을 다시 정의해줘야 함
+    // (반드시 재정의할 필요가 있는 기능을 정의하는 용도)
+    final String name;
+    final int membersCount;
+    // => BoyGroup 클래스는 Idol 클래스가 정의한 모든 기능을 다시 정의
+  
+    BoyGroup(
+        this.name,
+        this.membersCount,
+        );
+  
+    void sayName() {
+      print('그는 남자 아이돌 ${this.name} 입니다');
+    }
+  
+    void sayMembersCount() {
+      print('${this.name} 멤버는 ${this.membersCount} 명입니다');
+    }
+  }
+  
+  void main() {
+    BoyGroup strayKids = BoyGroup('스트레이키즈', 8);
+  
+    strayKids.sayName();
+    strayKids.sayMembersCount();
+  }
+```
+
+> 실행 결과
+```
+  그는 남자 아이돌 스트레이키즈 입니다
+  스트레이키즈 멤버는 8 명입니다
+```
+
+<br>
+
+---
+
+<br>
+
+2.6 믹스인(mixin)
+---
+- 특정 클래스에 원하는 기능들만 골라 넣을 수 있는 기능
+
+- 특정 클래스를 지정해서 속성들 정의 가능
+
+- 지정한 클래스를 상속하는 클래스에서도 사용 가능
+
+- 인터페이스처럼 한 개의 클래스에 여러 개의 믹스인 적용 가능
+
+  - 여러 믹스인을 적용하고 싶으면 , 기호로 열거
+ 
+> 형식
+```dart
+  class Idol {
+    final String name;
+    final int membersCount;
+  
+    Idol(this.name, this.membersCount);
+  
+    void sayName() {
+      print('그는 ${this.name} 입니다');
+    }
+  
+    void sayMembersCount() {
+      print('${this.name} 멤버는 ${this.membersCount}명 입니다');
+    }
+  }
+  
+  mixin IdolSingMixin on Idol {
+    void sing() {
+      print('${this.name} 이/가 노래를 부릅니다');
+    }
+  }
+  
+  // 믹스인을 적용할 때는 with 키워드 사용
+  class BoyGroup extends Idol with IdolSingMixin  {
+    BoyGroup(
+        super.name,
+        super.membersCount,
+        );
+  
+    void sayMale() {
+      print('그는 남자 아이돌입니다');
+    }
+  }
+  
+  void main() {
+    BoyGroup strayKids = BoyGroup('스트레이키즈', 8);
+  
+    // 믹스인에 정의된 sing() 함수 사용 가능
+    strayKids.sing();
+  }
+```
+
+> 실행 결과
+```
+  스트레이키즈 이/가 노래를 부릅니다
+```
+
+<br>
+
+---
+
+<br>
+
+2.7 추상(abstract)
+---
+- 상속이나 인터페이스로 사용하는 데 필요한 속성만 정의하고 인스턴스화할 수 없도록 하는 기능
+
+- 추상클래스는 추상메서드 선언 가능
+
+  - 함수의 반환 타입, 이름, 매개변수만 정의
+  
+  - 함수 바디의 선언을 자식클래스에서 필수로 정의하도록 강제함
+ 
+  - 부모 클래스를 인스턴스화할 일이 없고, 자식 클래스들에 필수적 또는 공통적으로 정의돼야 하는 메서드가 존재할 때 사용
+ 
+    - 인스턴스화가 필요 없는 공통 부모 클래스를 만들 때 사용
 
 > 형식
 ```dart
@@ -398,19 +614,135 @@
 
 <br>
 
+---
 
+<br>
 
+2.8 제네릭(generic)
+---
+- 클래스나 함수의 정의를 선언할 때가 아니라 인스턴화하거나 실행할 때로 미룸
 
+- 특정 변수의 타입을 하나의 타입으로 제한하고 싶지 않을 때 자주 사용
 
+  - 정수를 받는 함수, 문자열을 받는 함수를 각각 만들지 않아도 제네릭을 사용해 함수 하나로 여러 자료형을 입력받게 처리 가능
 
+- Map, List, Set 등에서 사용한 <> 사이에 입력되는 값이 제네릭 문자
 
+  - List<String> : String 값들로 구성된 리스트를 생성하겠다는 뜻
+ 
+    - List 클래스는 제네릭이므로 인스턴스화하기 전 어떤 타입으로 List 가 생성될지 알지 못함
 
+<br>
 
+> 흔히 사용되는 제네릭 문자들
 
+|문자|설명|ex|
+|-|-|-|
+| T | 변수 타입을 표현할 때 흔히 사용 | T value; |
+| E | 리스트 내부 요소들의 타입을 표현할 때 흔히 사용 | List\<E> |
+| K | 키를 표현할 때 흔히 사용 | Map<K, V> |
+| V | 값을 표현할 때 흔히 사용 | Map<K, V> |
 
+- 어떤 문자를 사용해서 어떤 값을 표현해도 프로그램적으로 상관은 없지만 통상적으로 자주 사용
 
+<br>
 
+> 형식
+```dart
+  // 인스턴스화할 때 입력받을 타입을 T 로 지정
+  class Cache<T> {
+    // data 의 타입을 추후 입력될 T 타입으로 지정
+    final T data;
+  
+    Cache({required this.data});
+  }
+  
+  void main() {
+    // T 의 타입을 List<int> 로 입력
+    final cache = Cache<List<int>>(
+      data : [1, 2, 3]
+    );
+  
+    // 제네릭에 입력된 값을 통해 data 변수의 타입 자동 유추
+    print(cache.data.reduce((value, element) => value + element));
+  }
+```
 
+> 실행 결과
+```
+  6
+```
 
+<br>
 
+---
 
+<br>
+
+2.9 스태틱
+---
+- static 키워드 사용시 변수와 메서듣 등 모든 속성이 클래스 자체에 귀속됨
+
+  - 키워드 사용 안하면 각 '클래스의 인스턴스'에 귀속됨
+
+- 인스턴스끼리 공유해야 하는 정보에 지정
+
+> 형식
+```dart
+  class Counter {
+    // static 키워드를 사용해서 static 변수 선언
+    static int i = 0;   // 변수 i 를 스태틱으로 지정(스태틱 변수 or 정적 변수)
+    // => Counter 클래스에 귀속되기 때문에 인스턴스를 호출할 때마다 1씩 증가
+  
+    // 생성자에 this.i 가 아니고 i 로 명시
+    // static 변수는 클래스에 직접 귀속되기 때문에 생성자에서 static 값을 지정하지 못함
+    //  => static 키워드는 인스턴스끼리 공유해야 하는 정보에 지정
+    Counter(){
+      i++;
+      print(i);
+    }
+  }
+  
+  void main() {
+    Counter count1 = Counter();
+    Counter count2 = Counter();
+    Counter count3 = Counter();
+  }
+```
+
+> 실행 결과
+```
+  1
+  2
+  3
+```
+
+<br>
+
+---
+
+<br>
+
+2.10 캐스케이드 연산자(cascade operator)
+---
+- 인스턴스에서 해당 인스턴스의 속성이나 멤버 함수를 연속해서 사용하는 기능
+
+  - ... 기호 사용
+ 
+- 더 간결한 코드 작성 가능
+
+> 형식
+```dart
+
+```
+
+> 실행 결과
+```
+
+```
+
+<br>
+
+---
+
+<br>
