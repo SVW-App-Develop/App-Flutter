@@ -1,0 +1,180 @@
+# 3단계 : 다트 비동기 프로그래밍
+> 다트 언어는 동기/비동기 프로그래밍 지원 <br>
+> 동기 : 요청하고 나서 응답이 올 때까지 더는 코드를 진행하지 못하고 기다렸다고 응답을 받으면 그제서야 다음 코드 진행 <br>
+> 비동기 : 요청하고 나서 응답을 받지 않았는데도 대기하지 않고 다음 코드 진행
+
+<br>
+
+3.1 동기 vs 비동기 프로그래밍
+---
+- 동기 방식 사용시
+
+  - 함수 실행하면 다음 코드가 실행되기 전에 해당 함수의 결과값이 먼저 반환
+ 
+- 비동기 방식 사용시
+
+  - 요청한 결과를 기다리지 않고 응답 순서 또한 요청한 순서와 다를 수 있음
+ 
+  - 컴퓨터 자원을 낭비하지 않고 더 효율적으로 코드 실행 가능
+
+<br>
+
+3.2 Future
+---
+- '미래'라는 단어의 의미대로 미래에 받아올 값을 뜻함
+
+- List 나 Set 처럼 제네릭으로 어떤 미래의 값을 받아올지 정할 수 있음
+
+- 비동기 프로그래밍은 서버 요청과 같이 오래 걸리는 작업을 기다린 후 값을 받아와야 하함
+
+  - 미래값을 표현하는 Future 클래스 필요
+
+- Future.delayed() : 특정 기간동안 아무것도 하지 않고 기다림
+
+> 형식
+```dart
+  Future<String> name;    // 미래에 받을 String 값
+  Future<int> number;     // 미래에 받을 int 값
+  Future<bool> isOpened;  // 미래에 받을 boolean 값
+```
+
+<br>
+
+> 형식
+```dart
+  void main() {
+    addNumbers(1, 1);
+  }
+  
+  void addNumbers(int number1, int number2) {
+    print('$number1 + $number2 계산 시작');           // (2)
+  
+    // Future.delayed() 사용시 일정 시간 후에 콜백 함수 실행 가능
+    Future.delayed(Duration(seconds: 3), () {       // 3초간 대기
+      print('$number1 + $number2 = ${number1 + number2}');    // (4)
+    });
+    // => Future.delated() 는 비동기 연산이기 때문에 CPU 가 3초간 대기해야 한다는 메시지를 받으면
+    //    리소스를 허비하지 않고고 다음 코드를 바로 실행
+  
+    print('$number1 + $number2 코드 실행 끝');         // (3)
+  }
+  
+  // => (2), (4), (3) 순서가 아닌 (2), (3), (4) 순서로 값 출력
+```
+
+> 실행 결과
+```
+  1 + 1 계산 시작
+  1 + 1 코드 실행 끝
+  1 + 1 = 2
+```
+
+<br>
+
+---
+
+<br>
+
+3.3 async 와 await
+---
+- 비동기 프로그래밍을 유지하면서 코드 가독성 유지
+
+- 함수롤 async 지정 후 대기하고 싶은 비동기 함수를 실행할 때 await 사용시 코드는 작성한 순서대로 실행
+
+> 형식
+```dart
+  void main() {
+    addNumbers(1, 1);
+    addNumbers(2, 2);
+    // => 비동기로 실행됨
+  }
+  
+  // async 키워드 : 함수 매개변수 정의와 바디 사이에 입력
+  Future<void> addNumbers(int number1, int number2) async {
+    print('$number1 + $number2 계산 시작');
+  
+    // await : 대기하고 싶은 비동기 함수 앞에 입력
+    await Future.delayed(Duration(seconds: 3), () {
+      print('$number1 + $number2 = ${number1 + number2}');
+    });
+  
+    print('$number1 + $number2 코드 실행 끝');
+  } 
+```
+
+> 실행 결과
+```
+  1 + 1 계산 시작
+  2 + 2 계산 시작
+  1 + 1 = 2
+  1 + 1 코드 실행 끝
+  2 + 2 = 4
+  2 + 2 코드 실행 끝
+```
+
+<br>
+
+> addNumbers(1,1), addNumbers(2,2) 가 순차적으로 실행되길 원한다면?
+```dart
+  // async 와 await 키워드 추가
+  void main() async {
+    await addNumbers(1, 1);
+    await addNumbers(2, 2);
+    // => 비동기로 실행됨
+  }
+  
+  // async 키워드 : 함수 매개변수 정의와 바디 사이에 입력
+  Future<void> addNumbers(int number1, int number2) async {
+    print('$number1 + $number2 계산 시작');
+  
+    // await : 대기하고 싶은 비동기 함수 앞에 입력
+    await Future.delayed(Duration(seconds: 3), () {
+      print('$number1 + $number2 = ${number1 + number2}');
+    });
+  
+    print('$number1 + $number2 코드 실행 끝');
+  }
+```
+
+> 실행 결과
+```
+  1 + 1 계산 시작
+  1 + 1 = 2
+  1 + 1 코드 실행 끝
+  2 + 2 계산 시작
+  2 + 2 = 4
+  2 + 2 코드 실행 끝
+```
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
