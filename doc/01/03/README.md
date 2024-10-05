@@ -148,7 +148,47 @@
 
 <br>
 
+### 01. 결과값 반환받기
+- async, await 키워드 사용한 함수에서도 결과값 받아낼 수 있음
 
+  - Future 클래스 사용
+
+> 형식
+```dart
+  void main() async {
+    final result = await addNumbers(1, 1);
+    print('결과값 : $result');   // 일반 함수와 동일하게 반환값 받을 수 있음
+  
+    final result2 = await addNumbers(2, 2);
+    print('결과값 : $result2');
+  }
+  
+  Future<int> addNumbers(int number1, int number2) async {
+    print('$number1 + $number2 계산 시작');
+  
+    await Future.delayed(Duration(seconds: 3), () {
+      print('$number1 + $number2 = ${number1 + number2}');
+    });
+  
+    print('$number1 + $number2 코드 실행 끝');
+  
+    return number1 + number2;
+  }
+```
+
+> 실행 결과
+```
+  1 + 1 계산 시작
+  1 + 1 = 2
+  1 + 1 코드 실행 끝
+  결과값 : 2
+  2 + 2 계산 시작
+  2 + 2 = 4
+  2 + 2 코드 실행 끝
+  결과값 : 4
+```
+
+<br>
 
 
 
