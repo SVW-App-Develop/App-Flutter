@@ -26,7 +26,7 @@
 ---
 - 객체지향 프로그래밍의 기본은 클래스(class)로부터 시작됨
 
-> 형식
+> lib/2/2.2/1.dart
 ```dart
   // class 키워드를 입력 후 클래스명을 지정해 클래스 선언
   class Idol {
@@ -74,7 +74,7 @@
 
 - 클래스 하나로 여러 인스턴스를 생성해 중복 코딩 없이 활용 가능
 
-> 형식
+> lib/2/2.2/2.dart
 ```dart
   class Idol {
     // 생성자에서 입력받는 변수들은 일반적으로 final 키워드 사용
@@ -114,7 +114,7 @@
 
 - 생성자의 매개변수를 변수에 저장하는 과정을 생략하는 방법
 
-> 형식
+> lib/2/2.2/3.dart
 ```dart
   class Idol {
     final String name;
@@ -138,7 +138,7 @@
 
   - 클래스를 여러 방식으로 인스턴스화할 때 유용하게 사용
 
-> 형식
+> lib/2/2.2/4.dart
 ```dart
   class Idol {
     final String name;
@@ -191,7 +191,7 @@
  
   - 다트 언어 : 같은 파일에서만 접근 가능한 변수
 
-> 형식
+> lib/2/2.2/5.dart
 ```dart
   class Idol {
     // '_'로 변수명을 시작하면 프라이빗 변수 선언 가능
@@ -233,7 +233,7 @@
 
   - 사용할 때 메서드명 뒤에 () X
  
-> 형식
+> lib/2/2.2/6.dart
 ```dart
   class Idol {
     String _name = '스트레이키즈';
@@ -299,7 +299,7 @@
  
 - 부모가 같더라도 다른 자식 클래스에서 새로 추가한 메서드는 호출 불가
 
-> 형식
+> lib/2/2.3/1.dart
 ```dart
   class Idol {
     final String name;        // Idol 클래스의 멤버변수
@@ -392,7 +392,7 @@
  
   - but, 직접 명시하는 게 협업 및 유지보수에 유리
 
-> 형식
+> lib/2/2.4/1.dart
 ```dart
   class Idol {
     final String name;
@@ -462,7 +462,7 @@
 
   - 상속은 단 하나의 클래스만 할 수 있음
 
-> 형식
+> lib/2/2.5/1.dart
 ```dart
   class Idol {
     final String name;
@@ -534,7 +534,7 @@
 
   - 여러 믹스인을 적용하고 싶으면 , 기호로 열거
  
-> 형식
+> lib/2/2.6/1.dart
 ```dart
   class Idol {
     final String name;
@@ -602,14 +602,47 @@
  
     - 인스턴스화가 필요 없는 공통 부모 클래스를 만들 때 사용
 
-> 형식
+> lib/2/2.7/1.dart
 ```dart
-
+  // abstract 키워드를 사용해 추상 클래스 지정
+  abstract class Idol {
+    final String name;
+    final int membersCount;
+  
+    Idol(this.name, this.membersCount);   // 생성자 선언
+  
+    void sayName();           // 추상 메서드 선언
+    void sayMembersCount();   // 추상 메서드 선언
+  }
+  
+  // implements 키워드를 사용해 추상 클래스를 구현하는 클래스
+  class BoyGroup implements Idol {
+    final String name;
+    final int membersCount;
+  
+    BoyGroup(this.name, this.membersCount);
+  
+    void sayName(){
+      print('그는 남자 아이돌 ${this.name} 입니다');
+    }
+  
+    void sayMembersCount(){
+      print('${this.name} 멤버는 ${this.membersCount}명입니다');
+    }
+  }
+  
+  void main(){
+    BoyGroup strayKids = BoyGroup('스트레이키즈', 8);
+  
+    strayKids.sayName();
+    strayKids.sayMembersCount();
+  }
 ```
 
 > 실행 결과
 ```
-
+  그는 남자 아이돌 스트레이키즈 입니다
+  스트레이키즈 멤버는 8명입니다
 ```
 
 <br>
@@ -647,7 +680,7 @@
 
 <br>
 
-> 형식
+> lib/2/2.8/1.dart
 ```dart
   // 인스턴스화할 때 입력받을 타입을 T 로 지정
   class Cache<T> {
@@ -687,7 +720,7 @@
 
 - 인스턴스끼리 공유해야 하는 정보에 지정
 
-> 형식
+> lib/2/2.9/1.dart
 ```dart
   class Counter {
     // static 키워드를 사용해서 static 변수 선언
@@ -731,7 +764,7 @@
  
 - 더 간결한 코드 작성 가능
 
-> 형식
+> lib/2/2.10/1.dart
 ```dart
   class Idol {
     final String name;
