@@ -262,20 +262,119 @@
 
 > lib/4/4.3/1.dart
 ```dart
-
+  void main(){
+    String dayKor = '월요일';
+  
+    // switch 문이 함수처럼 값을 반환
+    String dayEnglish = switch (dayKor) {
+      // '=>' 를 사용하면 switch 문 조건에 맞을 때 값 반환 가능
+      '월요일' => 'Monday',
+      '화요일' => 'Tuesday',
+      '수요일' => 'Wednesday',
+      '목요일' => 'Thursday',
+      '금요일' => 'Friday',
+      '토요일' => 'Saturday',
+      '일요일' => 'Sunday',
+      // _ 는 default 와 같은 의미로 사용됨
+      _ => 'Not Found',
+    };
+  
+    print(dayEnglish);
+  }
 ```
 
 > 실행 결과
 ```
-
+  Monday
 ```
 
 <br>
 
+### 02. 패턴 매칭(pattern matching)
+- 더욱 복잡한 조건을 형성할 수 있음
+> lib/4/4.3/2.dart
+```dart
+  void switcher(dynamic anything){
+    switch (anything) {
+      // 정확히 'aaa' 문자열만 매치
+      case 'aaa' :
+        print('match : aaa');
+        break;
+      // 정확히 [1, 2] 리스트만 매치
+      case [1, 2] :
+        print('match : [1, 2]');
+        break;
+      // 3개의 값이 들어 있는 리스트를 모두 매치
+      case [_, _, _] :
+        print('match : [_, _, _]');
+        break;
+      // 첫 번째와 두 번째 값에 int 가 입력된 리스트를 매치
+      case [int a, int b] :
+        print('match : [int $a, int $b]');
+        break;
+      // 첫 번째 값에 String, 두 번째 값에 int 가 입력된 Record 타입을 매치
+      case (String a, int b) :
+        print('match : (String : $a, int : $b)');
+        break;
+      // 아무것도 매치되지 않을 경우 실행
+      default :
+        print('no match');
+    }
+  }
+  
+  void main(){
+    switcher('aaa');
+    switcher([1, 2]);
+    switcher([3, 4, 5]);
+    switcher([6, 7]);
+    switcher(('정한', 30));
+    switcher(8);
+  }
+```
 
+> 실행 결과
+```
+  match : aaa
+  match : [1, 2]
+  match : [_, _, _]
+  match : [int 6, int 7]
+  match : (String : 정한, int : 30)
+  no match
+```
 
+<br>
 
+### 03. 엄격한 검사(exhausitiveness checking)
+- 코드가 입력받을 수 있는 모든 조건을 전부 확인하고 있는지 체크하는 기술
 
+> lib/4/4.3/3.dart
+```dart
+  void main(){
+    // val 에 입력될 수 있는 값은 true, false, null
+    bool? val;
+  
+    // null 조건을 입력하지 않아 non exhaustive switch statement 에러 발생
+    // null case 추가하거나 default case 추가시 에러 사라짐
+    switch(val){
+      case true:
+        print('true');
+      case false:
+        print('false');
+    };
+  }
+```
+
+> 실행 결과
+```
+  lib/4/4.3/3.dart:7:10: Error: The type 'bool?' is not exhaustively matched by the switch cases since it doesn't match 'null'.
+  Try adding a default case or cases that match 'null'.
+    switch(val){
+           ^
+```
+
+<br>
+
+### 04. 보호 구문
 
 
 
