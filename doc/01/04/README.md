@@ -15,7 +15,7 @@
 
 ### 01. 포지셔널 파라미터를 이용한 레코드
 - 포지셔널 파라미터로 표시한 타입 순서를 반드시 지켜야 함
-> lib/4.1/1.dart
+> lib/4/4.1/1.dart
 ```dart
   void main() {
     // 정확한 위치에 어떤 타입의 값이 입력될지 지정 가능
@@ -33,7 +33,7 @@
 
 <br>
 
-> lib/4.1/2.dart
+> lib/4/4.1/2.dart
 ```dart
   void main() {
     // Invalid Assignment 에러
@@ -52,7 +52,7 @@
 
 <br>
 
-> lib/4.1/3.dart
+> lib/4/4.1/3.dart
 ```dart
   void main() {
     // 두 개 이상 값 조합하여 레코드 생성 가능
@@ -69,7 +69,7 @@
 
 <br>
 
-> lib/4.1/4.dart
+> lib/4/4.1/4.dart
 ```dart
   void main() {
     // 레코드의 모든 값을 사용하지 않고 특정 순서의 레코드 값을 가져오고 싶다면 $ 사용
@@ -94,7 +94,7 @@
 
 - 소괄호에 중괄호를 중첩하여 타입과 변수 이름을 쉼표로 구분하고 명시해줘야 함
 
-> lib/4.1/5.dart
+> lib/4/4.1/5.dart
 ```dart
   void main() {
     // 네임드 파라미터 형태로 Record 선언하는 방법
@@ -111,18 +111,166 @@
 
 <br>
 
+---
 
+<br>
 
+4.2 구조 분해(destructuring)
+---
+- 값을 반환받을 때 단순히 하나의 변수로 받아오지 않음
 
+  - 반환된 타입을 그대로 복제해 타입 내부에 각각의 값을 직접 추출해오는 문법
 
+<br>
 
+### 01. 리스트에서의 구조 분해 사용 예제
+> lib/4/4.2/1.dart
+```dart
+  void main(){
+    // 아래 코드와 같지만 구조 분해를 사용하면 한 줄에 해결 가능
+    // final strayKids = ['한', '용복'];
+    // final han = strayKids[0];
+    // final yongbok = strayKids[1];
+    final [han, yongbok] = ['한', '용복'];
+  
+    // 한 출력
+    print(han);
+    // 용복 출력
+    print(yongbok);
+  }
+```
 
+> 실행 결과
+```
+  한
+  용복
+```
 
+<br>
 
+### 02. 리스트에서의 스프레드 연산자를 이용한 구조 분해 사용 예제
+> lib/4/4.2/2.dart
+```dart
+  void main(){
+    final numbers = [1, 2, 3, 4, 5, 6, 7, 8];
+  
+    // 스프레드 연산자를 사용하게 되면 종간의 값들을 버릴 수 있음
+    final [x, y, ..., z] = numbers;
+  
+    print(x);
+    print(y);
+    print(z);
+  }
+```
 
+> 실행 결과
+```
+  1
+  2
+  8
+```
 
+<br>
 
+### 03. 맵에서의 구조 분해 사용 예제
+> lib/4/4.2/3.dart
+```dart
+  void main(){
+    final jeonghanMap = {'name':'정한', 'age':30};
+    // 위의 맵 구조와 똑같은 구조로 구조 분해
+    final {'name':name, 'age':age} = jeonghanMap;
+  
+    print('name : $name');
+    print('age : $age');
+  }
+```
 
+> 실행 결과
+```
+  name : 정한
+  age : 30
+```
+
+<br>
+
+### 04. 클래스에서의 구조 분해 사용 예제
+> lib/4/4.2/4.dart
+```dart
+  void main(){
+    final jeonghan = Idol(name:'정한', age:30);
+  
+    // 클래스의 생성자 구조와 똑같이 구조 분해
+    final Idol(name: name, age: age) = jeonghan;
+  
+    print(name);
+    print(age);
+  }
+  
+  class Idol {
+    final String name;
+    final int age;
+  
+    Idol({
+      required this.name,
+      required this.age
+  });
+  }
+```
+
+> 실행 결과
+```
+  정한
+  30
+```
+
+<br>
+
+---
+
+<br>
+
+4.3 switch 문
+---
+- 다트 언어가 3.0 버전으로 업데이트되면서 네 가지 추가
+
+  - 스위치 표현식(switch expression)
+ 
+  - 패턴 매칭(pattern matching)
+ 
+  - 완전 확인(exhaustiveness checking)
+ 
+  - 가드 절(guard clause)
+
+<br>
+
+### 01. 표현식 기능
+- 코드 = 표현식(expression) + 문(statement)
+
+  - 표현식 : 어떠한 값을 만들어내는 코드
+ 
+    - ex) 1 + 1 은 값 2 를 만드는 표현식
+   
+    - 표현식이 평가되면 새로운 값을 생성하거나 기존 값 참조
+   
+  - 문 : 기본 단위이자 가장 작은 코드 실행 단위
+ 
+    - 컴퓨터에 내리는 명령
+   
+  - 표현식 여러 개가 모여 문이 되고, 문에는 선언문, 할당문, 반복문 등이 있음
+ 
+- 다트 3.0 부터 switch 문을 함수처럼 사용하여 직접 값을 반환받을 수 있는 절 기능 추가
+
+> lib/4/4.3/1.dart
+```dart
+
+```
+
+> 실행 결과
+```
+
+```
+
+<br>
 
 
 
