@@ -104,7 +104,7 @@
 
 ### 02. 안드로이드 스튜디오
 - main.dart 파일에 main() 함수 제외 기본 생성 코드 모두 삭제
-> lib/1.2/1.dart
+> lib/1/1.2/1.dart
 ```dart
   void main() {
     print('hello world');
@@ -241,7 +241,7 @@
   - 실제 코드가 컴파일될 때 추론된 타입으로 var이 치환됨
  
 
-> lib/1.3/1.dart
+> lib/1/1.3/1.dart
 ```dart
   void main() {
     var name = '윤정한';
@@ -291,7 +291,7 @@
    
     - 코드를 실행하지 않은 상태에서 값이 확정되면 사용
    
-> lib/1.3/2.dart
+> lib/1/1.3/2.dart
 ```dart
   void main() {
     final String name = '세븐틴';
@@ -304,7 +304,7 @@
 
 <br>
 
-> lib/1.3/3.dart
+> lib/1/1.3/3.dart
 ```dart
   void main() {
     final DateTime now = DateTime.now();
@@ -320,7 +320,7 @@
 
 <br>
 
-> lib/1.3/4.dart
+> lib/1/1.3/4.dart
 ```dart
   void main() {
     const DateTime now = DateTime.now();
@@ -339,7 +339,7 @@
  
   - 문자열, 정수, 실수, 불리언(true/false)
 
-> lib/1.3/5.dart
+> lib/1/1.3/5.dart
 ```dart
   void main() {
     // String - 문자열
@@ -404,7 +404,7 @@
    
 - 리스트의 길이는 length로 확인 가능
 
-> lib/1.3/1.dart
+> lib/1/1.3/1.dart
 ```dart
   void main() {
     // 리스트에 넣을 타입을 <> 사이에 명시 가능
@@ -437,7 +437,7 @@
 
   - 추가하고 싶은 값을 매개변수에 입력
 
-> lib/1.3/2.dart
+> lib/1/1.3/2.dart
 ```dart
   void main() {
     List<String> strayKidsList = ['방찬', '리노', '창빈', '현진', '한', '필릭스', '승민'];
@@ -474,7 +474,7 @@
    
     - where(), map() 등 순서가 있는 값을 반환할 때 사용
    
-> lib/1.3/3.dart
+> lib/1/1.3/3.dart
 ```dart
   void main() {
     List<String> strayKidsList = ['방찬', '리노', '창빈', '현진', '한', '필릭스', '승민', '아이엔'];
@@ -505,7 +505,7 @@
  
 - 반환하는 값이 현재값을 대체하며 순회가 끝나면 Iterable 반환
 
-> lib/1.3/4.dart
+> lib/1/1.3/4.dart
 ```dart
   void main() {
     List<String> strayKidsList = ['방찬', '리노', '창빈', '현진', '한', '필릭스', '승민', '아이엔'];
@@ -545,7 +545,7 @@
 
 - List 멤버의 타입과 같은 타입 반환
 
-> lib/1.3/5.dart
+> lib/1/1.3/5.dart
 ```dart
   void main() {
     List<String> strayKidsList = ['방찬', '리노', '창빈', '현진', '한', '필릭스', '승민', '아이엔'];
@@ -572,7 +572,7 @@
 
 - reduce() 와는 다르게 어떠한 타입이든 반환 가능
 
-> lib/1.3/6.dart
+> lib/1/1.3/6.dart
 ```dart
   void main() {
     List<String> strayKidsList = ['방찬', '리노', '창빈', '현진', '한', '필릭스', '승민', '아이엔'];
@@ -602,7 +602,7 @@
 
   - 리스트는 순서대로 값을 저장하는 데 중점을 둠
 
-> lib/1.3/7.dart
+> lib/1/1.3/7.dart
 ```dart
   void main() {
     Map<String, String> dictionary = {
@@ -629,7 +629,7 @@
 
   - 값을 반환받고 싶은 Map 타입의 변수에 key, value 게터 실행
  
-> lib/1.3/8.dart
+> lib/1/1.3/8.dart
 ```dart
   void main() {
     Map<String, String> dictionary = {
@@ -663,7 +663,7 @@
 
 - Set 타입을 List 타입으로 변환하거나, List 타입을 Set 타입으로 변환 가능
 
-> lib/1.4/9.dart
+> lib/1/1.4/9.dart
 ```dart
   void main() {
     Set<String> day6 = {'성진', '영케이', '원필', '도운', '도운'} ;  // 도운 중복
@@ -716,7 +716,7 @@
 - 정확히 어떤 선택지가 존재하는지 정의 가능해서 유용함
 
 > 형식
-```lib/1.3/10.dart
+```lib/1/1.3/10.dart
   enum Status{
     approved,
     pending,
@@ -749,7 +749,7 @@
 ### 01. 기본 수치 연산자
 - 다른 언어에서도 사용하는 기본 산수 기능 제공
 
-> lib/1.5/1.dart
+> lib/1/1.5/1.dart
 ```dart
   void main() {
     double number = 2;
@@ -803,7 +803,7 @@
  
   - null 가질 수 있는 변수에 새로운 값을 추가할 때 ?? 사용시 기존에 null 인 때만 값이 저장
  
->  lib/1.5/2.dart
+>  lib/1/1.5/2.dart
 ```dart
   void main() {
     // 타입 뒤에 ? 명시해서 null 값 가질 수 있음
@@ -816,7 +816,7 @@
 
 <br>
 
-> lib/1.5/3.dart
+> lib/1/1.5/3.dart
 ```dart
   void main() {
     double? number;   // 자동으로 null 값 지정
@@ -842,7 +842,7 @@
 ### 03. 값 비교 연산자
 - 정수 크기를 비교하는 연산자
 
-> lib/1.5/4.dart
+> lib/1/1.5/4.dart
 ```dart
   void main() {
     int number1 = 1;
@@ -872,7 +872,7 @@
 ### 04. 타입 비교 연산자
 - is 키워드를 사용하면 변수의 타입 비교 가능
 
-> lib/1.5/5.dart
+> lib/1/1.5/5.dart
 ```dart
   void main() {
     int number1 = 1;
@@ -897,7 +897,7 @@
 ### 05. 논리 연산자
 - and, or 연산자
 
-> lib/1.5/6.dart
+> lib/1/1.5/6.dart
 ```dart
   void main() {
     bool result = 12 > 10 && 1 > 0;   // 12가 10보다 크고 1이 0보다 클 때
@@ -943,7 +943,7 @@
 
 - if 문, else if 문, else 문의 순서대로 괄호 안에 작성한 조건이 true 이면 해당 조건의 코드 블록이 실행
 
-> lib/1.6/1.dart
+> lib/1/1.6/1.dart
 ```dart
   void main() {
     int number = 2;
@@ -977,7 +977,7 @@
    
 - enum과 함께 사용시 유용함
 
-> lib/1.6/2.dart
+> lib/1/1.6/2.dart
 ```dart
   enum Status {
     approved,
@@ -1022,7 +1022,7 @@
 
   - List 의 모든 값을 순회하고 싶을 때 사용
 
-> lib/1.6/3.dart
+> lib/1/1.6/3.dart
 ```dart
   void main() {
     // 값 선언; 조건 설정; loop 마다 실행할 기능
@@ -1041,7 +1041,7 @@
 
 <br>
 
-> lib/1.6/4.dart
+> lib/1/1.6/4.dart
 ```dart
   void main() {
     List<int> numberList = [3, 6, 9];
@@ -1076,7 +1076,7 @@
 
   - 반복문을 실행한 후 조건 확인
 
-> lib/1.6/5.dart
+> lib/1/1.6/5.dart
 ```dart
   void main() {
     int total = 0;
@@ -1096,7 +1096,7 @@
 
 <br>
 
-> lib/1.6/6.dart
+> lib/1/1.6/6.dart
 ```dart
   void main() {
     int total = 0;
@@ -1151,7 +1151,7 @@
 
   - 포지셔널 파라미터가 네임드 파라미터보다 반드시 먼저 위치해야 함
 
-> lib/1.7/1.dart
+> lib/1/1.7/1.dart
 ```dart
   int addTwoNumbers(int a, int b){  // int a 가 int b 보다 먼저 선언
     return a + b;
@@ -1169,7 +1169,7 @@
 
 <br>
 
-> lib/1.7/2.dart
+> lib/1/1.7/2.dart
 ```dart
   int addTwoNumbers({
     required int a,
@@ -1190,7 +1190,7 @@
 
 <br>
 
-> lib/1.7/3.dart
+> lib/1/1.7/3.dart
 ```dart
   int addTwoNumbers(int a, [int b = 2]){
     return a + b;
@@ -1208,7 +1208,7 @@
 
 <br>
 
-> lib/1.7/4.dart
+> lib/1/1.7/4.dart
 ```dart
   int addTwoNumbers({
     required int a,
@@ -1229,7 +1229,7 @@
 
 <br>
 
-> lib/1.7/5.dart
+> lib/1/1.7/5.dart
 ```dart
   int addTwoNumbers(
     int a, {
@@ -1281,7 +1281,7 @@
    
   - 콜백 함수나 리스트의 map(), reduce(), fold() 함수 등에서 일회성이 높은 로직 작성할 때 주로 사용
 
-> lib/1.7/6.dart : 익명 함수
+> lib/1/1.7/6.dart : 익명 함수
 ```dart
   void main() {
     List<int> numbers = [1, 2, 3, 4, 5];
@@ -1302,7 +1302,7 @@
 
 <br>
 
-> lib/1.7/7.dart : 람다 함수
+> lib/1/1.7/7.dart : 람다 함수
 ```dart
   void main() {
     List<int> numbers = [1, 2, 3, 4, 5];
@@ -1323,7 +1323,7 @@
 
 ### 03. typedef 와 함수
 
-> lib/1.7/8.dart
+> lib/1/1.7/8.dart
 ```dart
   typedef Operation = void Function(int x, int y);
 ```
@@ -1344,7 +1344,7 @@
  
   - 플러터에서는 typedef 로 선언한 함수를 매개변수로 넣어 사용
 
-> lib/1.7/8.dart
+> lib/1/1.7/8.dart
 ```dart
   typedef Operation = void Function(int x, int y);
   
@@ -1376,7 +1376,7 @@
 
 <br>
 
-> lib/1.7/9.dart
+> lib/1/1.7/9.dart
 ```dart
   typedef Operation = void Function(int x, int y);
   
@@ -1416,7 +1416,7 @@
 
 - throw 키워드를 사용해 에러 발생시킬 수 있음
 
-> lib/1.7/10.dart
+> lib/1/1.7/10.dart
 ```dart
   void main() {
     try{
@@ -1438,7 +1438,7 @@
 
 <br>
 
-> lib/1.7/11.dart
+> lib/1/1.7/11.dart
 ```dart
   void main() {
     try {
