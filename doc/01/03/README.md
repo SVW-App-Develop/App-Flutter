@@ -1,4 +1,4 @@
-# 3단계 : 다트 비동기 프로그래밍
+ # 3단계 : 다트 비동기 프로그래밍
 > 다트 언어는 동기/비동기 프로그래밍 지원 <br>
 > 동기 : 요청하고 나서 응답이 올 때까지 더는 코드를 진행하지 못하고 기다렸다고 응답을 받으면 그제서야 다음 코드 진행 <br>
 > 비동기 : 요청하고 나서 응답을 받지 않았는데도 대기하지 않고 다음 코드 진행
@@ -40,7 +40,7 @@
 
 <br>
 
-> 형식
+> lib/3/3.2/1.dart
 ```dart
   void main() {
     addNumbers(1, 1);
@@ -81,7 +81,7 @@
 
 - 함수롤 async 지정 후 대기하고 싶은 비동기 함수를 실행할 때 await 사용시 코드는 작성한 순서대로 실행
 
-> 형식
+> lib/3/3.3/1.dart
 ```dart
   void main() {
     addNumbers(1, 1);
@@ -114,7 +114,7 @@
 
 <br>
 
-> addNumbers(1,1), addNumbers(2,2) 가 순차적으로 실행되길 원한다면?
+> lib/3/3.3/2.dart : addNumbers(1,1), addNumbers(2,2) 가 순차적으로 실행되길 원한다면?
 ```dart
   // async 와 await 키워드 추가
   void main() async {
@@ -153,7 +153,7 @@
 
   - Future 클래스 사용
 
-> 형식
+> lib/3/3.3/3.dart
 ```dart
   void main() async {
     final result = await addNumbers(1, 1);
@@ -212,7 +212,7 @@
 
   - StreamController 를 listen() 해야 값을 지속적으로 받환받을 수 있음
 
-> 형식
+> lib/3/3.4/1.dart
 ```dart
   import 'dart:async';
   
@@ -250,7 +250,7 @@
 
   - 브로드캐스트 스트림 사용
 
-> 형식
+> lib/3/3.4/2.dart
 ```dart
   import 'dart:async';
   
@@ -304,7 +304,7 @@
 
 - 스트림 반환하는 함수는 async* 로 함수 선언 후 yield 키워드로 값 반환
 
-> 형식
+> lib/3/3.4/3.dart
 ```dart
   import 'dart:async';
   
