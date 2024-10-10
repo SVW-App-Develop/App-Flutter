@@ -1151,7 +1151,7 @@
 
   - 포지셔널 파라미터가 네임드 파라미터보다 반드시 먼저 위치해야 함
 
-> 형식
+> lib/1.7/1.dart
 ```dart
   int addTwoNumbers(int a, int b){  // int a 가 int b 보다 먼저 선언
     return a + b;
@@ -1169,7 +1169,7 @@
 
 <br>
 
-> 형식
+> lib/1.7/2.dart
 ```dart
   int addTwoNumbers({
     required int a,
@@ -1190,7 +1190,7 @@
 
 <br>
 
-> 형식
+> lib/1.7/3.dart
 ```dart
   int addTwoNumbers(int a, [int b = 2]){
     return a + b;
@@ -1208,7 +1208,7 @@
 
 <br>
 
-> 형식
+> lib/1.7/4.dart
 ```dart
   int addTwoNumbers({
     required int a,
@@ -1229,7 +1229,7 @@
 
 <br>
 
-> 형식
+> lib/1.7/5.dart
 ```dart
   int addTwoNumbers(
     int a, {
@@ -1281,7 +1281,7 @@
    
   - 콜백 함수나 리스트의 map(), reduce(), fold() 함수 등에서 일회성이 높은 로직 작성할 때 주로 사용
 
-> 익명 함수
+> lib/1.7/6.dart : 익명 함수
 ```dart
   void main() {
     List<int> numbers = [1, 2, 3, 4, 5];
@@ -1302,7 +1302,7 @@
 
 <br>
 
-> 람다 함수
+> lib/1.7/7.dart : 람다 함수
 ```dart
   void main() {
     List<int> numbers = [1, 2, 3, 4, 5];
@@ -1323,7 +1323,7 @@
 
 ### 03. typedef 와 함수
 
-> 형식
+> lib/1.7/8.dart
 ```dart
   typedef Operation = void Function(int x, int y);
 ```
@@ -1344,7 +1344,7 @@
  
   - 플러터에서는 typedef 로 선언한 함수를 매개변수로 넣어 사용
 
-> 형식
+> lib/1.7/8.dart
 ```dart
   typedef Operation = void Function(int x, int y);
   
@@ -1376,7 +1376,7 @@
 
 <br>
 
-> 형식
+> lib/1.7/9.dart
 ```dart
   typedef Operation = void Function(int x, int y);
   
@@ -1416,7 +1416,7 @@
 
 - throw 키워드를 사용해 에러 발생시킬 수 있음
 
-> 형식
+> lib/1.7/10.dart
 ```dart
   void main() {
     try{
@@ -1438,14 +1438,14 @@
 
 <br>
 
-> 형식
+> lib/1.7/11.dart
 ```dart
   void main() {
     try {
       final name = '이용복';
   
       // throw 키워드로 고의적으로 에러 발생시킴
-      throw Exception('이름을 잘못됐습니다');
+      throw Exception('이름이 잘못됐습니다');
       print(name);
     } catch(e) {
       // try 에서 에러가 발생했으니 catch 로직 실행
@@ -1456,7 +1456,7 @@
 
 > 실행 결과
 ```
-  Exception: 이름을 잘못됐습니다
+  Exception: 이름이 잘못됐습니다
 ```
 
 <br>
