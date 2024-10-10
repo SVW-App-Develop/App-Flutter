@@ -104,7 +104,7 @@
 
 ### 02. 안드로이드 스튜디오
 - main.dart 파일에 main() 함수 제외 기본 생성 코드 모두 삭제
-> lib/main.dart
+> lib/1.2/1.dart
 ```dart
   void main() {
     print('hello world');
@@ -114,6 +114,9 @@
 <br>
 
 - 안드로이드 스튜디오 아래 [Terminal] 에서 명령어 사용하여 코드 실행
+
+  - [Ctrl] + [Shift] + [F10]
+
 > Terminal
 ```dart
   dart lib/main.dart
@@ -238,7 +241,7 @@
   - 실제 코드가 컴파일될 때 추론된 타입으로 var이 치환됨
  
 
-> 형식
+> lib/1.3/1.dart
 ```dart
   void main() {
     var name = '윤정한';
@@ -288,7 +291,7 @@
    
     - 코드를 실행하지 않은 상태에서 값이 확정되면 사용
    
-> 형식1
+> lib/1.3/2.dart
 ```dart
   void main() {
     final String name = '세븐틴';
@@ -301,7 +304,7 @@
 
 <br>
 
-> 형식2
+> lib/1.3/3.dart
 ```dart
   void main() {
     final DateTime now = DateTime.now();
@@ -317,7 +320,7 @@
 
 <br>
 
-> 형식3
+> lib/1.3/4.dart
 ```dart
   void main() {
     const DateTime now = DateTime.now();
@@ -336,7 +339,7 @@
  
   - 문자열, 정수, 실수, 불리언(true/false)
 
-> 형식
+> lib/1.3/5.dart
 ```dart
   void main() {
     // String - 문자열
@@ -401,7 +404,7 @@
    
 - 리스트의 길이는 length로 확인 가능
 
-> 형식
+> lib/1.3/1.dart
 ```dart
   void main() {
     // 리스트에 넣을 타입을 <> 사이에 명시 가능
@@ -434,7 +437,7 @@
 
   - 추가하고 싶은 값을 매개변수에 입력
 
-> 형식
+> lib/1.3/2.dart
 ```dart
   void main() {
     List<String> strayKidsList = ['방찬', '리노', '창빈', '현진', '한', '필릭스', '승민'];
@@ -471,7 +474,7 @@
    
     - where(), map() 등 순서가 있는 값을 반환할 때 사용
    
-> 형태
+> lib/1.3/3.dart
 ```dart
   void main() {
     List<String> strayKidsList = ['방찬', '리노', '창빈', '현진', '한', '필릭스', '승민', '아이엔'];
@@ -502,7 +505,7 @@
  
 - 반환하는 값이 현재값을 대체하며 순회가 끝나면 Iterable 반환
 
-> 형식
+> lib/1.3/4.dart
 ```dart
   void main() {
     List<String> strayKidsList = ['방찬', '리노', '창빈', '현진', '한', '필릭스', '승민', '아이엔'];
@@ -542,7 +545,7 @@
 
 - List 멤버의 타입과 같은 타입 반환
 
-> 형식
+> lib/1.3/5.dart
 ```dart
   void main() {
     List<String> strayKidsList = ['방찬', '리노', '창빈', '현진', '한', '필릭스', '승민', '아이엔'];
@@ -569,7 +572,7 @@
 
 - reduce() 와는 다르게 어떠한 타입이든 반환 가능
 
-> 형식
+> lib/1.3/6.dart
 ```dart
   void main() {
     List<String> strayKidsList = ['방찬', '리노', '창빈', '현진', '한', '필릭스', '승민', '아이엔'];
@@ -599,7 +602,7 @@
 
   - 리스트는 순서대로 값을 저장하는 데 중점을 둠
 
-> 형식
+> lib/1.3/7.dart
 ```dart
   void main() {
     Map<String, String> dictionary = {
@@ -626,7 +629,7 @@
 
   - 값을 반환받고 싶은 Map 타입의 변수에 key, value 게터 실행
  
-> 형식
+> lib/1.3/8.dart
 ```dart
   void main() {
     Map<String, String> dictionary = {
@@ -660,7 +663,7 @@
 
 - Set 타입을 List 타입으로 변환하거나, List 타입을 Set 타입으로 변환 가능
 
-> 형식
+> lib/1.4/9.dart
 ```dart
   void main() {
     Set<String> day6 = {'성진', '영케이', '원필', '도운', '도운'} ;  // 도운 중복
@@ -713,7 +716,7 @@
 - 정확히 어떤 선택지가 존재하는지 정의 가능해서 유용함
 
 > 형식
-```dart
+```lib/1.3/10.dart
   enum Status{
     approved,
     pending,
@@ -746,7 +749,7 @@
 ### 01. 기본 수치 연산자
 - 다른 언어에서도 사용하는 기본 산수 기능 제공
 
-> 형식
+> lib/1.5/1.dart
 ```dart
   void main() {
     double number = 2;
@@ -800,7 +803,7 @@
  
   - null 가질 수 있는 변수에 새로운 값을 추가할 때 ?? 사용시 기존에 null 인 때만 값이 저장
  
-> 형식
+>  lib/1.5/2.dart
 ```dart
   void main() {
     // 타입 뒤에 ? 명시해서 null 값 가질 수 있음
@@ -813,7 +816,7 @@
 
 <br>
 
-> 형식
+> lib/1.5/3.dart
 ```dart
   void main() {
     double? number;   // 자동으로 null 값 지정
@@ -839,7 +842,7 @@
 ### 03. 값 비교 연산자
 - 정수 크기를 비교하는 연산자
 
-> 형식
+> lib/1.5/4.dart
 ```dart
   void main() {
     int number1 = 1;
@@ -869,7 +872,7 @@
 ### 04. 타입 비교 연산자
 - is 키워드를 사용하면 변수의 타입 비교 가능
 
-> 형식
+> lib/1.5/5.dart
 ```dart
   void main() {
     int number1 = 1;
@@ -894,7 +897,7 @@
 ### 05. 논리 연산자
 - and, or 연산자
 
-> 형식
+> lib/1.5/6.dart
 ```dart
   void main() {
     bool result = 12 > 10 && 1 > 0;   // 12가 10보다 크고 1이 0보다 클 때
@@ -940,7 +943,7 @@
 
 - if 문, else if 문, else 문의 순서대로 괄호 안에 작성한 조건이 true 이면 해당 조건의 코드 블록이 실행
 
-> 형식
+> lib/1.6/1.dart
 ```dart
   void main() {
     int number = 2;
@@ -974,7 +977,7 @@
    
 - enum과 함께 사용시 유용함
 
-> 형식
+> lib/1.6/2.dart
 ```dart
   enum Status {
     approved,
@@ -1019,7 +1022,7 @@
 
   - List 의 모든 값을 순회하고 싶을 때 사용
 
-> 형식
+> lib/1.6/3.dart
 ```dart
   void main() {
     // 값 선언; 조건 설정; loop 마다 실행할 기능
@@ -1038,7 +1041,7 @@
 
 <br>
 
-> 형식
+> lib/1.6/4.dart
 ```dart
   void main() {
     List<int> numberList = [3, 6, 9];
@@ -1073,7 +1076,7 @@
 
   - 반복문을 실행한 후 조건 확인
 
-> 형식
+> lib/1.6/5.dart
 ```dart
   void main() {
     int total = 0;
@@ -1093,7 +1096,7 @@
 
 <br>
 
-> 형식
+> lib/1.6/6.dart
 ```dart
   void main() {
     int total = 0;
