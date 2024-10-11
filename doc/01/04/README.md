@@ -554,6 +554,30 @@
  
 - 객체지향 프로그래밍 언어의 특징 중 하나인 클래스의 고유성을 위한 **클래스 제한자** 추가
 
+- 클래스 제한자는 여러 개를 조합해서 사용 가능
+
+<br>
+
+> 여러 클래스 제한자를 조합했을 때 허가되는 기능
+
+|선언<br>(Declaration)|인스턴스화<br>가능 여부<br>(Construct)|상속<br>가능 여부<br>(Extend)|인터페이스 구현<br>가능 여부<br>(Implement)|믹스인<br>가능 여부<br>(Mixin)|엄격한 검사<br>가능 여부<br>(Exhaustive)|
+|-|:-:|:-:|:-:|:-:|:-:|
+|class|가능|가능|가능|불가능|불가능|
+|base class|가능|가능|불가능|불가능|불가능|
+|interface class|가능|불가능|가능|불가능|불가능|
+|final class|가능|불가능|불가능|불가능|불가능|
+|sealed class|불가능|불가능|불가능|불가능|가능|
+|abstract class|불가능|가능|가능|불가능|불가능|
+|abstract base class|불가능|가능|불가능|불가능|불가능|
+|abstract interface class|불가능|불가능|가능|불가능|불가능|
+|abstract final class|불가능|불가능|불가능|불가능|불가능|
+|mixin class|가능|가능|가능|가능|불가능|
+|base mixin class|가능|가능|불가능|가능|불가능|
+|abstract mixin class|불가능|가능|가능|가능|불가능|
+|abstract base mixin class|불가능|가능|불가능|가능|불가능|
+|mixin|불가능|불가능|가능|가능|불가능|
+|base mixin|불가능|불가능|불가능|가능|불가능|
+
 <br>
 
 
