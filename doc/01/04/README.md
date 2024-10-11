@@ -374,22 +374,187 @@
 
 <br>
 
-### 04. 보호 구문
+### 04. 보호 구문(guard clause)
+- when 키워드
 
+  - boolean 으로 반환할 조건을 각 case 문에 추가 가능
+ 
+  - when 키워드 뒤에 오는 조건이 true 를 반환하지 않으면 case 매치 안됨
 
+> lib/4/4.3/4.dart
+```dart
+  void main(){
+    (int a, int b) val = (1, -1);   // (int, int) 타입의 val 선언하고 (1, -1)로 초기화
+  
+    switch(val){          // `val`을 평가하는 switch 문 시작
+      case (1, _) when val.$2 > 0 : // `val`의 첫 번째 요소가 1이고 두 번째 요소가 0보다 큰지 검사
+        print('1, _');    // 조건이 만족되면 '1, _' 출력
+        break;            // switch 문 종료
+      default :           // 어떤 경우도 일치하지 않을 때 실행되는 블록
+        print('default'); // 다른 케이스가 만족되지 않으면 'default' 출력
+    }
+  }
+```
 
+> 실행 결과
+```
+  default
+```
 
+<br>
 
+---
 
+<br>
 
+4.4 클래스 제한자(class modifiers)
+---
+- base, final, interface, sealed, mixin 등이 추가됨
 
+- 모든 클래스 제한자는 class 키워드 앞에 명시
 
+  - 클래스 제한자를 명시한 클래스는 해당 클래스를 사용하는 파일이 아닌 다른 파일에 선언해야 정상으로 기능 작동
 
+<br>
 
+### 01. base 제한자
+- base 클래스의 기능을 강제하는 제한자
 
+- 해당 클래스는 오직 상속만 할 수 있음
 
+- base 클래스가 아닌 자식 클래스는 꼭 base, final, sealed 제한자를 함께 사용해야 함
 
+> lib/4/4.4/1_a.dart
+```dart
+  base class Parent{}
+```
 
+> lib/4/4.4/1_b.dart
+```dart
+  import '1_a.dart';
+  
+  // 인스턴스화 가능
+  Parent parent = Parent();
+  
+  // 기능
+  base class Child extends Parent{}
+  
+  // subtype of base or final is not base final or sealed 에러 발생
+  // base / sealed / final 제한자 중 하나가 필요
+  class Child2 extends Parent{}
+  
+  // subtype of base or final is not base final or sealed 에러 발생
+  // base 클래스는 implement 불가능
+  class Child3 implements Parent{}
+```
+
+<br>
+
+### 02. final 제한지
+- 같은 파일에서 상속(extend)과 재정의(implement) 가능
+
+  - 외부 파일에서는 불가
+ 
+- final 제한자는 base 제한자의 기능을 모두 포함
+
+> lib/4/4.4/2_a.dart
+```dart
+  final class Parent{}
+```
+
+> lib/4/4.4/2_b.dart
+```dart
+  import '2_a.dart';
+  
+  // 인스턴스화 가능
+  Parent parent = Parent();
+  
+  // extend 불가능
+  class Child1 extends Parent{}
+  
+  // implement 불가능
+  class Child2 implements Parent{}
+```
+
+<br>
+
+### 03. interface 제한지
+- 클래스를 외부 파일에서 상속받지 못하고 재정의만 할 수 있도록 제한하는 역할
+
+> lib/4/4.4/3_a.dart
+```dart  
+  interface class Parent{}
+```
+
+> lib/4/4.4/3_b.dart
+```dart
+  import '3_a.dart';
+  
+  // 인스턴스화 가능
+  Parent parent = Parent();
+  
+  // extend 불가능
+  class Child1 extends Parent{}
+  
+  // implement 가능
+  class Child2 implements Parent{}
+```
+
+<br>
+
+### 04. sealed 제한자
+- sealed 클래스를 파일 외부에서 상속, 재정의, 인스턴스화할 수 없도록 제한
+
+> lib/4/4.4/4_a.dart
+```dart
+  sealed class Parent{}
+```
+
+> lib/4/4.4/4_b.dart
+```dart
+  import '4_a.dart';
+  
+  // 인스턴스화 불가능
+  Parent parent = Parent();
+  
+  // extend 불가능
+  class Child1 extends Parent{}
+  
+  // implement 가능
+  class Child2 implements Parent{}
+```
+
+<br>
+
+### 05. mixin 제한자
+- 일반 mixin 과 같은 역할을 하면서도 상속 가능
+
+> lib/4/4.4/5.dart
+```dart
+  mixin class MixinExample{}
+  
+  // extend 가능
+  class Child1 extends MixinExample{}
+  
+  // mixin 으로 사용 가능
+  class Child2 with MixinExample{}
+```
+
+<br>
+
+🚨 핵심 요약
+---
+- **레코드**는 새로운 타입으로 네임드 파라미터와 포지셔널 파라미터가 있음
+
+- **구조 분해**는 타입 내부의 각각의 값을 직접 추출해오는 문법
+
+- **switch 문**에 표현식, 패턴 매칭, 완전 확인, 가드 절 추가
+
+  - 다양한 방법으로 조건 확인 가능
+ 
+- 객체지향 프로그래밍 언어의 특징 중 하나인 클래스의 고유성을 위한 **클래스 제한자** 추가
+
+<br>
 
 
 
