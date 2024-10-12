@@ -594,9 +594,350 @@
 
 6.5 디자인 관련 위젯
 ---
+- 배경을 추가하거나 간격을 추가하거나 패딩을 추가하는 등 디자인적 요소를 적용할 때 사용
 
+<br>
 
+### 01. Container 위젯
+- 다른 위젯을 담는 데 사용
 
+- 위젯의 너비와 높이를 지정하거나, 배경이나 테두리를 추가할 때 많이 사용
+
+- Container 위젯은 다른 위젯처럼 child 매개변수 사용 가능
+
+> lib/06/11.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main(){
+    runApp(
+        MyApp()
+    );
+  }
+  
+  class MyApp extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Container(
+              // 스타일 적용
+              decoration: BoxDecoration(
+                // 배경색 적용
+                color: Colors.pinkAccent,
+                // 테두리 적용
+                border: Border.all(
+                  // 테두리 길이
+                  width: 16.0,
+                  // 테두리 색상
+                  color: Colors.lightBlueAccent,
+                ),
+                // 모서리 둥글게 만들기
+                borderRadius: BorderRadius.circular(
+                  16.0,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/12.png)|
+
+<br>
+
+### 02. SizedBox 위젯
+- 일반적으로 일정 크기의 공간을 공백으로 두고 싶을 때 사용
+
+- Container 위젯을 사용해도 만들 수 있지만 SizedBox 는 const 생성자 사용했을 때 퍼포먼스에서 이점
+
+> lib/06/12.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main(){
+    runApp(
+        MyApp()
+    );
+  }
+  
+  class MyApp extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              // 높이 지정
+              height: 200.0,
+  
+              // 너비 지정
+              width: 200.0,
+  
+              // SizedBox 는 색상이 없으므로 크기 확인 용도로 Container 추가
+              child: Container(
+                color: Colors.greenAccent,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/13.png)|
+
+<br>
+
+### 03. Padding 위젯
+- child 위젯에 여백을 제공할 때 사용
+
+- Padding 위젯의 상위 위젯과 하위 위젯 사이의 여백 둘 수 있음
+
+- Padding 위젯의 padding 매개변수는 EdgeInsets 라는 값을 입력해야 함
+
+  - EdgeInsets 클래스는 다양한 생성자 제공
+
+- child 매개변수에 Padding 을 적용하고 싶은 위젯 입력 가능
+
+- 패딩은 적용된 위젯이 차지하는 크기 내부에서 간격이 추가됨
+
+  - 위젯의 바깥에 간격을 추가해주는 마진(margin) 기능도 있으나, 플러터에서 자주 사용 X
+ 
+    - 마진은 따로 위젯 존재 X
+   
+    - Container 위젯에 추가 가능
+
+> lib/06/13.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main(){
+    runApp(
+        MyApp()
+    );
+  }
+  
+  class MyApp extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Container(
+                color: Colors.greenAccent,
+                child: Padding(
+                // 상하, 좌우로 모두 16픽셀만큼 패딩 적용
+                padding: EdgeInsets.all(
+                  16.0,
+                ),
+                child: Container(
+                  color: Colors.amberAccent,
+                  width: 50.0,
+                  height: 50.0,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/14.png)|
+
+<br>
+
+> lib/06/14.dart
+```dart
+
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/15.png)|
+
+<br>
+
+#### 💡 EdgeInsets 클래스 생성자 종류
+|생성자|설명|
+|-|-|
+|EdgeInsets.all(16.0)|상하좌우 매개변수에 입력된 패딩을 균등하게 적용|
+|EdgeInsets.symmetric(horizontlal: 16.0, verticla: 16.0)|가로와 세로 패딩을 따로 적용<br>Horizontal 매개변수에 가로로 적용할 패딩 입력, Vertical 매개변수에 세로로 적용할 패딩 입력|
+|EdgeInsets.only(top: 16.0, bottom: 16.0, left: 16.0, right: 16.0)|위아래, 좌우 패딩을 따로 적용<br>top, bottom, left, right 매개변수에 각각 위아래, 좌우 패딩 입력|
+|EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0)|위아래, 좌우 패딩을 따로 적용<br>포지셔널 파라미터를 좌, 위, 우, 아래 순서로 입력|
+
+<br>
+
+### 04. SafeArea
+- 플러터는 가용되는 화면을 모두 사용하기 때문에 노치가 있는 핸드폰에서 노치에 위젯들이 가릴 수 있음
+
+- SafeArea 위젯 사용시 기기별로 예외 처리 하지 않고도 안전한(Safe) 화면에서만 위젯 노출 가능
+
+> lib/06/15.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: SafeArea(
+            // 원하는 부위만 따로 적용 가능
+            // true : 적용 / false : 미적용
+            top: true,
+            bottom: true,
+            left: true,
+            right: true,
+            child: Container(
+              color: Colors.lightGreenAccent,
+              height: 300.0,
+              width: 300.0,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+```
+
+> 실행 결과
+
+|SafeArea 적용|SafeArea 미적용|
+|:-:|:-:|
+|![이미지](./img/16.png)|![이미지](./img/17.png)|
+
+<br>
+
+---
+
+<br>
+
+6.6 배치 관련 위젯
+---
+- 하위 위젯을 가로 또는 세로로 배치하거나 위젯 위에 위젯을 겹칠 때 사용
+
+<br>
+
+### 01. Row 위젯
+- Column 과 함께 위젯을 가로세로로 배치하는 데 사용
+
+  - Row 는 가로로 위젯을 배치하는 데 사용
+ 
+    - Row 위젯의 crossAxisAlignment 매개변수를 테스트하려면 위젯들을 배치할 수 있는 공간 확보 필요
+
+- 하나의 child 위젯을 입력받는 위젯들과 다르게 여러 개의 child 위젯 입력받을 수 있는 children 매개변수 노출
+
+- Row 는 가로가 주축, 세로가 반대축이 되고 Column 의 경우 반대
+
+  - Row 와 Column 에 존재하는 개념
+  
+    - 주축(main axis)
+   
+    - 반대축(cross aixs)
+   
+  - 주축과 반대축을 어떻게 조합하냐에 따라 Row 와 Column 위젯을 이용해 다양한 배치 가능
+
+<br>
+
+|Row 위젯의 주축과 반대축|Column 위젯의 주축과 반대축|
+|:-:|:-:|
+|![이미지](./img/18.png)|![이미지](./img/19.png)|
+ 
+<br>
+
+> lib/06/16.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(RowWidgetExample());
+  }
+  
+  class RowWidgetExample extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            // 반대축에서 이동할 공간을 제공하기 위해 높이를 최대한으로 설정
+            height: double.infinity,
+            child: Row(
+              // 주축 정렬 지정
+              mainAxisAlignment: MainAxisAlignment.start,
+  
+              // 반대축 정렬 지정
+              crossAxisAlignment: CrossAxisAlignment.center,
+  
+              // 넣고 싶은 위젯 입력
+              children: [
+                Container(
+                  height: 50.0,
+                  width: 50.0,
+                  color: Colors.cyanAccent,
+                ),
+  
+                // SizedBox 는 일반적으로 공백을 생성할 때 사용
+                const SizedBox(
+                  width: 12.0,
+                ),
+  
+                Container(
+                  height: 50.0,
+                  width: 50.0,
+                  color: Colors.deepOrangeAccent,
+                ),
+  
+                const SizedBox(
+                  width: 12.0,
+                ),
+  
+                Container(
+                  height: 50.0,
+                  width: 50.0,
+                  color: Colors.deepPurpleAccent,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/20.png)|
+
+<br>
+
+#### 💡 MainAxisAlignment 와 CrossAxisAlignmenet 변경시 구현되는 UI
+|옵션|설명|예제|
+|-|-|:-:|
+|-|-|-|
 
 
 
