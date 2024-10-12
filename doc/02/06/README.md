@@ -262,9 +262,250 @@
 
 6.4 제스처 관련 위젯
 ---
+- 제스처 : 사용자가 키보드로 글자를 입력하는 행위 외의 모든 입력
 
+  - ex) 화면을 한 번 탭, 두 번 탭, 길게 누르는 행동 등
+ 
+- GestureDetector 위젯은 모든 제스처를 매개변수로 제공
 
+- 제스처 관련 위젯은 하위 위젯에 탭이나 드래그처럼 특정 제스처가 입력됐을 때 인지하고 콜백 함수 실행
 
+- Button, IconButton, GestureDetector, FloatingActionButton 등
+
+<br>
+
+### 01. Button 위젯
+- 플러터 머티리얼 패키지에서 기본 제공하는 버튼
+
+- TextButton, OutlinedButton, ElevatedButton
+
+  - 버튼을 누르면 색이 변경되는 리플 효과 지원
+ 
+<br>
+
+|TextButton|OutlinedButton|ElevatedBotton|
+|-|-|-|
+|텍스트만 있는 버튼|테두리가 있는 버튼|입체적으로 튀어나온 배경이 들어간 버튼|
+|![이미지](./img/05.png)|![이미지](./img/06.png)|![이미지](./img/07.png)|
+
+<br>
+
+> lib/06/05.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main(){
+    runApp(
+        MyApp()
+    );
+  }
+  
+  class MyApp extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: TextButton(
+              // 클릭 시 실행
+              onPressed: () {},
+              // 스타일 지정
+              style: TextButton.styleFrom(
+                // 주색상 지정
+                foregroundColor: Colors.pink,
+              ),
+              // 버튼에 넣을 위젯
+              child: Text('텍스트 버튼'),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/05.png)|
+
+<br>
+
+> lib/06/06.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main(){
+    runApp(
+        MyApp()
+    );
+  }
+  
+  class MyApp extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: OutlinedButton(
+              // 클릭 시 실행할 함수
+              onPressed: () {},
+              // 버튼 스타일
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.pink,
+              ),
+              // 버튼에 들어갈 위젯
+              child: Text('아웃라인드 버튼'),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/06.png)|
+
+<br>
+
+> lib/06/07.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main(){
+    runApp(
+        MyApp()
+    );
+  }
+  
+  class MyApp extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: ElevatedButton(
+              // 클릭 시 실행할 함수
+              onPressed: () {},
+              // 버튼 스타일링
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.pink,
+              ),
+              // 버튼에 들어갈 위젯
+              child: Text('엘리베이티드 버튼'),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/07.png)|
+
+<br>
+
+### 02. IconButton 위젯
+- 아이콘을 버튼으로 생성하는 위젯
+
+- icon 매개변수에 보여주고 싶은 아이콘을 넣을 수 있음
+
+- onPressed 매개변수에 IconButton 을 누르면 실행할 콜백 함수 제공 가능
+
+- 아이콘은 글리프(glyph) 기반의 아이콘 사용 가능
+
+- Icons 클래스를 통해 플러터에서 제공하는 기본 아이콘들 사용 가능
+
+> lib/06/08.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main(){
+    runApp(
+        MyApp()
+    );
+  }
+  
+  class MyApp extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: IconButton(
+              onPressed: () {},
+              icon: Icon(
+                // 플러터에서 기본으로 제공하는 아이콘
+                Icons.home,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+- [제공되는 아이콘 목록](https://fonts.google.com/icons)
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/08.png)|
+
+<br>
+
+### 03. GestureDetector 위젯
+- 손가락으로 하는 여러 가지 입력을 인지하는 위젯
+
+  - 앱은 모든 입력은 손가락으로 함
+
+> lib/06/09.dart
+```dart
+
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/09.png)|
+|![이미지](./img/10.png)|
+
+<br>
+
+> GestureDetector 위젯에서 제공하는 중요한 제스처 매개변수
+
+|매개변수|설명|
+|-|-|
+|onTap|한 번 탭했을 때 실행되는 함수 입력|
+|onDoubleTap|두 번 연속으로 탭했을 때 실행되는 함수 입력|
+|onLongPress|길게 누르기가 인식됐을 때 실행되는 함수 입력|
+|onPanStart|수평 또는 수직으로 드래그가 시작됐을 때 실행되는 함수 입력|
+|onPanUpdate|수평 또는 수직으로 드래그 하는 동안 드래그 위치가 업데이트될 때마다 실행되는 함수 입력|
+|onPanEnd|수평 또는 수직으로 드래그가 끝났을 때 실행되는 함수 입력|
+|onHorizontalDragStart|수평으로 드래그를 시작했을 때 실행되는 함수 입력|
+|onHorizontalDragUpdate|수평으로 드래그 하는 동안 드래그 위치가 업데이트될 때마다 실행되는 함수 입력|
+|onHorizontalDragEnd|수평으로 드래그가 끝났을 때 실행되는 함수 입력|
+|onVerticalDragStart|수직으로 드래그를 시작했을 때 실행되는 함수 입력|
+|onVerticalDragUpdate|수직으로 드래그 하는 동안 드래그 위치가 업데이트될 때마다 실행되는 함수 입력|
+|onVerticalDragEnd|수직으로 드래그가 끝났을 때 실행되는 함수 입력|
+|onScaleUpdate|확대가 시작됐을 때 실행되는 함수 입력|
+|onScaleUpdate|확대가 진행되는 동안 확대가 업데이트될 때마다 실행되는 함수 입력|
+|onScaleEnd|확대가 끝났을 때 실행되는 함수 입력|
+
+<br>
+
+### 04. FloatingActionButton 위젯
 
 
 
