@@ -83,17 +83,185 @@
 
 > lib/06/01.dart
 ```dart
-
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            // 하나의 위젯만 가운데 정렬 가능
+            child: Text('우리의 새벽은 낮보다 뜨겁다'),
+          ),
+        ),
+      ),
+    );
+  }
 ```
 
 > 실행 결과
+
 |-|
 |-|
 |![이미지](./img/02.png)|
 
+<br>
+
+> lib/06/02.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: SizedBox(
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+  
+              // 여러 위젯을 Column 위젯에 입력 가능
+              children: [
+                Text('우리의'),
+                Text('새벽은'),
+                Text('낮보다'),
+                Text('뜨겁다'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+```
+- children 매개변수는 리스트를 입력받고 리스트 안에는 원하는 만큼 위젯 입력 가능
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/03.png)|
+
+<br>
+
+---
+
+<br>
+
+6.2 위젯 실습용 템플릿 작성
+---
+- 위젯들을 화면에 구현하기 위한 기본 코드 템플릿
+
+  - child 매개변수에 예제 작성
+
+> lib/06/03.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main(){
+    runApp(
+      MyApp()
+    );
+  }
+  
+  class MyApp extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text('토리'),  // 여기에 예제 코드 작성하기
+          ),
+        ),
+      );
+    }
+  }
+```
+
+<br>
+
+---
+
+<br>
+
+6.3 텍스트 관련 위젯
+---
+- 화면에 글자를 보여주려면 글자를 렌더링할 수 있는 위젯 사용
+
+  - Text 위젯
+ 
+    - 글자를 적고 스타일링하는 위젯
+   
+    - 첫 번째 포지셔널 파라미터에 원하는 문자열 작성
+   
+    - style 이라는 네임드 파라미터를 사용해 스타일 지정
+
+> lib/06/04.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main(){
+    runApp(
+        MyApp()
+    );
+  }
+  
+  class MyApp extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text(
+              // 작성하고 싶은 글
+              '우리의 새벽은 낮보다 뜨겁다',
+              // 글자에 스타일 적용
+              style: TextStyle(
+                // 글자 크기
+                fontSize: 16.0,
+                // 글자 굵기
+                fontWeight: FontWeight.w700,
+                // 글자 색상
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/04.png)|
+
+<br>
+
+#### 💡 플러터는 RichText 위젯과 Paragraph 같은 클래스도 제공
+- [참고](https://docs.flutter.dev/development/ui/widgets/text)
+
+<br>
+
+#### 💡 예제 실행시 발생하는 워닝
+- use key in widget constructors(위젯 생성자에 키 값을 포함하라)
+
+- prefer const with constant constructors(const 생성자를 사용할 수 있으면 const 생성자를 사용하라)
+
+- 워닝은 프로그램을 실행하는 데 문제는 없지만 변경해주면 성능 향상 or 코드 관리 유리
 
 
+<br>
 
+---
+
+<br>
+
+6.4 제스처 관련 위젯
+---
 
 
 
