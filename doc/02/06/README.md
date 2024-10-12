@@ -934,12 +934,28 @@
 
 <br>
 
-#### 💡 MainAxisAlignment 와 CrossAxisAlignmenet 변경시 구현되는 UI
+#### 💡 MainAxisAlignment 옵션 (CrossAxisAlignment.center 기준)
 |옵션|설명|예제|
 |-|-|:-:|
-|-|-|-|
+|MainAxisAlignment.start|시작에 정렬|![이미지](./img/21.png)|
+|MainAxisAlignment.center|중앙에 정렬|![이미지](./img/22.png)|
+|MainAxisAlignment.end|끝에 정렬|![이미지](./img/23.png)|
+|MainAxisAlignment.spaceBetween|자식 위젯의 간격을 균등하게 정렬|![이미지](./img/24.png)|
+|MainAxisAlignment.spaceAround|자식 위젯의 간격을 균등하게 배정하고<br>왼쪽 끝과 오른쪽 끝을 위젯 사이의 거리의 반만큼 배정해 정렬|![이미지](./img/25.png)|
+|MainAxisAlignment.spaceEvenly|자식 위젯의 간격을 균등하게 배치하고<br>왼쪽 끝과 오른쪽 끝도 균등하게 배치|![이미지](./img/26.png)|
 
+<br>
 
+#### 💡 CrossAxisAlignment 옵션 (MainAxisAlignment.center 기준)
+|옵션|설명|예제|
+|-|-|:-:|
+|CrossAxisAlignment.start|시작에 정렬|![이미지](./img/27.png)|
+|CrossAxisAlignment.center|중앙에 정렬|![이미지](./img/22.png)|
+|CrossAxisAlignment.end|끝에 정렬|![이미지](./img/28.png)|
+|CrossAxisAlignment.stretch|반대축 최대한으로 늘려서 정렬|![이미지](./img/29.png)|
 
+<br>
+
+### 02. Column 위젯
 
 
