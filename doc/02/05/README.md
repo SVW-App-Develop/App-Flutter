@@ -48,6 +48,10 @@
 
 <br>
 
+---
+
+<br>
+
 5.2 Hello Flutter 앱 만들기
 ---
 ### 01. 안드로이드 스튜디오에서 프로젝트 생성
@@ -111,10 +115,6 @@
 ```
   flutter create <DIRECTORY>    // <DIRECTORY>에 프로젝트 이름 입력
 ```
-
-<br>
-
----
 
 <br>
 
