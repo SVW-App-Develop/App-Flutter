@@ -284,7 +284,7 @@
 <br>
 
 |TextButton|OutlinedButton|ElevatedBotton|
-|-|-|-|
+|:-:|:-:|:-:|
 |텍스트만 있는 버튼|테두리가 있는 버튼|입체적으로 튀어나온 배경이 들어간 버튼|
 |![이미지](./img/05.png)|![이미지](./img/06.png)|![이미지](./img/07.png)|
 
@@ -518,7 +518,7 @@
 > 실행 결과
 
 |-|
-|-|
+|:-:|
 |![이미지](./img/09.png)|
 |![이미지](./img/10.png)|
 
@@ -547,7 +547,53 @@
 <br>
 
 ### 04. FloatingActionButton 위젯
+- Material Design 에서 추구하는 버튼 형태
 
+- 안드로이드 앱 화면의 오른쪽 아래 동그란 플로팅 작업 버튼 구현 가능
+
+  - FloatingActionButton, Scaffold 같이 사용
+
+> lib/06/10.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+      FloatingActionButtonExample()
+    );
+  }
+  
+  class FloatingActionButtonExample extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        home: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            // 클릭했을 때 실행할 함수
+            onPressed: () {},
+            child: Text('클릭'),
+          ),
+          body: Container(),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/11.png)|
+
+<br>
+
+---
+
+<br>
+
+6.5 디자인 관련 위젯
+---
 
 
 
