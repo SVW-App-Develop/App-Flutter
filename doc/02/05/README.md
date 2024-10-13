@@ -334,6 +334,7 @@
 <br>
 
 🚨 핵심 요약
+---
 - 플러터는 **Embedder, Engine, Framework** 세 개의 계층으로 이루어져 있음
 
   - **Embedder** 계층 : 네이티브 플랫폼과 통신하는 역할
