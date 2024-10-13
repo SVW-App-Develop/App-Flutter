@@ -167,7 +167,7 @@
 ### 02.배경색 바꾸기 : Container 와 BoxDecoration 위젯
 - 배경 관련 UI 변경할 때 Container 위젯 가장 많이 사용
 
-> lib/06/01.dart
+> main.dart
 ```dart
   import 'package:flutter/material.dart';
   
@@ -233,7 +233,7 @@
 
 <br>
 
-> Image.asset 생성자 사용
+#### 🟡 Image.asset 생성자 사용
 
 - 프로젝트 폴더 위에서 마우스 우클릭 후 [New] → [Directory]
 
@@ -263,22 +263,469 @@
  
     - 파일이 수정되었을 때 에디터 위에 자동으로 나타남
    
-- [pub get] 기능 실행 후 앱 재실행해야 새로 바뀐 설정 적용
+- [pub get] 기능 실행 후 앱 재실행해야 새로 바뀐 설정 적용됨
 
 |-|
 |-|
 |![이미지](./img/04.png)|
 |![이미지](./img/05.png)|
 
+<br>
 
+> main.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+        SplashScreen()
+    );
+  }
+  
+  class SplashScreen extends StatelessWidget {
+    @override
+    Widget build(BuildContext context){
+      return MaterialApp(
+        home: Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+              color: Colors.orangeAccent,
+            ),
+            child: Center(
+              // Text 위젯을 Image 위젯으로 변경
+              // child: Text('Splash Screen'),
+              child: Image.asset(
+                'assets/logo.png',
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+- Image.asset 은 매개변수 하나를 받음
 
+  - 파일 위치(경로) 기재
+ 
+- 배경색을 더 어울리는 색으로 변경하기 위해 헥스 코드 사용
 
+  - Colors 대신 Color 클래스 사용
+    - 프로젝트에서 사용할 폰트, 이미지, 외부 플러그인 등을 지정하는 데 사용
 
+- flutter.assets 키에 [assets] 폴더 지정
 
+  - [assets:] 주석 처리되어있는데 해제하고 그 아래에 원하는 폴더 지정
+ 
+  - YAML 에서 - 기호는 리스트값 의미 ⇒ 원하는 만큼 - 로 시작하는 값들 계속 추가 가능
+ 
+- 설정을 변경했으므로 asset 파일을 프로젝트에 추가 및 새 플러그인 내려받는 등 추가 작업 필요
 
+  - 플러터에서는 [pub get] 기능을 제공해 위 작업 자동 처리
+ 
+    - 파일이 수정되었을 때 에디터 위에 자동으로 나타남
+   
+- [pub get] 기능 실행 후 앱 재실행해야 새로 바뀐 설정 적용됨
 
+|-|
+|-|
+|![이미지](./img/04.png)|
+|![이미지](./img/05.png)|
 
+<br>
 
+> main.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+        SplashScreen()
+    );
+  }
+  
+  class SplashScreen extends StatelessWidget {
+    @override
+    Widget build(BuildContext context){
+      return MaterialApp(
+        home: Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+              color: Color(0xFFFFB8A2),
+            ),
+            child: Center(
+              // Text 위젯을 Image 위젯으로 변경
+              // child: Text('Splash Screen'),
+              child: Image.asset(
+                'assets/logo.png',
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+- Image.asset 은 매개변수 하나를 받음
+
+  - 파일 위치(경로) 기재
+ 
+- 배경색을 더 어울리는 색으로 변경하기 위해 헥스 코드 사용
+
+  - Colors 대신 Color 클래스 사용
+  
+    - 첫 번째 위치 매개변수에 헥스 코드를 제공해 색상 표현
+
+  - 6자리 헥스 코드의 앞에 16진수를 의미하는 0x, 불투명도 100%를 의미하는 'FF' 추가 후 헥스 코드를 '#' 없이 입력
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/06.png)|
+
+<br>
+
+#### 💡 yaml 파일
+- 현대 프로그래밍에서 설정값을 지정할 때 흔히 사용되는 구조
+
+- JSON 과 비슷하게 키/값이 쌍
+
+  - : 기호를 기준으로 왼쪽이 키, 오른쪽이 값
+ 
+- 탭 개수로 키/값의 깊이 정함
+
+<br>
+
+#### 💡 CLI 에서 pub get
+- 편집기 아래에 있는 [Terminal] 탭에서 아래 명령어 실행
+
+```
+  flutter pub get
+```
+
+<br>
+
+### 04. 위젯 정렬하기 : Row & Column 위젯
+- 플러터팀이 만들어 제공하는 애니메이션 위젯 사용
+
+  - LinearProgressIndicator
+ 
+    - 일자 형태로 로딩 애니메이션이 실행되는 위젯
+ 
+  - CircularProgressIndicator
+ 
+    - 동그라미 형태로 로딩 애니메이션이 실행되는 위젯
+   
+- 중앙 정렬 : Center 위젯은 child 에 하나의 위젯만 받을 수 있음
+
+  - Row 와 Column 위젯은 children 매개변수에 리스트로 원하는 만큼 위젯 추가 가능
+ 
+    - Row 와 Column 위젯을 이용해 로고와 로딩 애니메이션 중앙 정렬 가능 
+
+<br>
+
+#### 1. 로고와 로딩 애니메이션을 세로로 가운데 정렬
+
+> main.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+        SplashScreen()
+    );
+  }
+  
+  class SplashScreen extends StatelessWidget {
+    @override
+    Widget build(BuildContext context){
+      return MaterialApp(
+        home: Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+              color: Color(0xFFFFB8A2),
+            ),
+            child: Column(
+              children: [
+                // 여러 위젯을 입력할 수 있는 children 매개변수
+                Image.asset(
+                  'assets/logo.png',
+                ),
+                CircularProgressIndicator(),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+- Center 위젯을 Column 위젯으로 변경하고 children 매개변수에 Image 위젯과 CircularProgressIndicator 입력
+ 
+- Column 은 children 매개변수를 사용하니 리스트 안에 위젯들을 보여주고 싶은 순서대로 입력해야 함
+
+  - Center 위젯과 다르게 Column 위젯을 사용해서 화면 맨 위에 로고 위치
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/07.png)|
+
+<br>
+
+#### 2. children 에 포함된 위젯들 재배치 : mainAxisAlignment 매개변수
+> main.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+        SplashScreen()
+    );
+  }
+  
+  class SplashScreen extends StatelessWidget {
+    @override
+    Widget build(BuildContext context){
+      return MaterialApp(
+        home: Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+              color: Color(0xFFFFB8A2),
+            ),
+            child: Column(
+              // 가운데 정렬 추가
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/logo.png',
+                ),
+                CircularProgressIndicator(),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+- mainAxisAlignment 매개변수에는 MainAxisAlignment 라는 enum 값이 들어감
+
+  - 가운데를 의미하는 MainAxisAlignment.center 적용
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/08.png)|
+
+<br>
+
+#### 3. 로고 이미지 크기 조절
+- 이미지 크기 조절에는 Image 위젯의 width(너비), height(높이) 매개변수 사용
+
+> main.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+        SplashScreen()
+    );
+  }
+  
+  class SplashScreen extends StatelessWidget {
+    @override
+    Widget build(BuildContext context){
+      return MaterialApp(
+        home: Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+              color: Color(0xFFFFB8A2),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/logo.png',
+                  width: 200.0,   // 너비 추가
+                ),
+                CircularProgressIndicator(),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+- 배경도 함께 작아짐
+
+  - Column 은 세로로 최대한 크기를 차지하지만 가로로는 최소한 크기만 차지하는 특성 때문
+ 
+  - 현재 Column 위젯 안에 Image 위젯과 CircularProgressIndicator 위젯만 존재
+    
+    - 둘 중 더 큰 위젯인 Image 위젯이 가로 200 픽셀만큼 차지하고 있기 때문
+   
+    - Column 위젯도 가로 200 픽셀만 차지함
+
+- 해결 방법
+
+  - Row 위젯은 Column 위젯과 반대로 작동(가로로는 최대 크기 차지, 세로로는 최소 크기 차지)
+ 
+    - Row 위젯으로 Column 위젯 감싸면 왼쪽부터 위젯 정렬
+   
+    - 가운데 정렬을 위해 MainAxisAlignment.center 추가해줘야 함
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/09.png)|
+
+<br>
+
+> main.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+        SplashScreen()
+    );
+  }
+  
+  class SplashScreen extends StatelessWidget {
+    @override
+    Widget build(BuildContext context){
+      return MaterialApp(
+        home: Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+              color: Color(0xFFFFB8A2),
+            ),
+            child: Row(   // Row 위젯으로 Column 위젯 감싸기
+              mainAxisAlignment: MainAxisAlignment.center,  // 중앙 정렬
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/logo.png',
+                      width: 200.0,   // 너비 추가
+                    ),
+                    CircularProgressIndicator(),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/10.png)|
+
+<br>
+
+#### 4. 로딩 위젯(CircularProgressIndicator) 색상 변경
+- 로딩 위젯(CircularProgressIndicator, LinearProgressIndicator)의 색상 매개변수
+
+  - backgroundColor
+ 
+    - 위젯의 배경 색상
+ 
+  - valueColor
+ 
+    - 실제로 애니메이션으로 움직이는 부분의 색상
+   
+    - 색상이 애니메이션되어야 하기 때문에 Colors 클래스 직접 넣을 수 없음
+   
+      - AlwaysStoppedAnimation 클래스에 감싸서 색상 제공
+
+> main.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+        SplashScreen()
+    );
+  }
+  
+  class SplashScreen extends StatelessWidget {
+    @override
+    Widget build(BuildContext context){
+      return MaterialApp(
+        home: Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+              color: Color(0xFFFFB8A2),
+            ),
+            child: Row( 
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/logo.png',
+                      width: 200.0,  
+                    ),
+                    CircularProgressIndicator(
+                      // 애니메이션으로 움직이는 부분 색상 변경
+                      valueColor: AlwaysStoppedAnimation(
+                        Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/11.png)|
+
+<br>
+
+---
+
+<br>
+
+🚨 핵심 요약
+---
+- 플러터는 **머티리얼 디자인** 사용
+
+  - 프로젝트의 위젯 트리 가장 상단에 MaterialApp 위젯, Svaffold 위젯 사용
+
+- **Container** 위젯에는 배경색 적용 가능
+
+- **Image** 위젯은 화면에 이미지를 보여줄 수 있음
+
+- **flutter pub get** 실행시 **pubspec.yaml** 의 변경 사항을 프로젝트에 적용 가능
+
+- **Column** 위젯 이용시 다수의 위젯 세로 배치 가능
+
+- **Row** 위젯 이용시 다수의 위젯 가로 배치 가능
+
+<br>
 
 
 
