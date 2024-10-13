@@ -1,6 +1,8 @@
 # 6단계 : 기본 위젯
 - 플러터는 화면에 그려지는 모든 요소가 위젯으로 구성됨
 
+- [실습 프로젝트 바로가기]()
+
 <br>
 
 6.1 위젯
@@ -1250,7 +1252,7 @@ class RowWidgetExample extends StatelessWidget {  // StatelessWidget : 상태가
  
     - 흔히 위젯 사이의 간격을 구현할 때 많이 사용
    
-  - **Padding** 위젯 : 하위 위젯에 패딩을 ㅓㅈㄱ용할 때 사용
+  - **Padding** 위젯 : 하위 위젯에 패딩을 적용할 때 사용
  
   - **SafeArea** 위젯 : 시스템 UI 에 가려지지 않게 위젯을 화면에 그릴 때 사용
  
