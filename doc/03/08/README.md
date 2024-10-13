@@ -109,6 +109,231 @@
 
 8.2 사전 준비
 ---
+### 01. pubspec.yaml 설정
+- pubspec.yaml 파일 : 플러터 프로젝트와 관련된 설정을 하는 파일
+
+  - 프로젝트에서 사용할 이미지 및 폰트를 지정하거나 사용할 오픈 소스 프로젝트들을 명시할 때 사용
+ 
+- webview_flutter 플러그인을 pubspec.yaml 파일에 추가하고 [pub get] 실행
+
+```dart
+  webview_flutter: 4.4.1
+```
+
+|-|
+|-|
+|![이미지](./img/01.png)|
+
+<br>
+
+#### 💡 주요 pub 명령어
+|명령어|설명|
+|-|-|
+|flutter pub get|pubspec.yaml 파일에 등록한 플러그인들을 내려받음|
+|flutter pub add [플러그인 이름]|pubspec.yaml 에 플러그인 추가<br>명령어의 끝에 플러그인 이름 추가|
+|flutter pub upgrade|pubspec.yaml 에 등록된 플러그인들을 모두 최신 버전으로 업데이트|
+|flutter pub run|현재 프로젝트 실행<br>명령어를 실행하면 어떤 플랫폼에서 실행할지 선택 가능|
+
+<br>
+
+### 02. 권한 및 네이티브 설정
+- 웹뷰를 사용하기 위한 네이티브 설정
+
+  - 인터넷 사용 권한 추가 및 https 프로토콜 권한 설정
+
+  <br>
+
+<details>
+<summary>🟡 안드로이드 설정</summary>
+
+- android/app/src/main/AndroidManifest.xml : 안드로이드 설정 파일
+
+  - 안드로이드 앱에 필요한 각종 권한 설정
+ 
+- 웹뷰를 실행할 때 인터넷을 사용해야 하니 인터넷 권한 추가
+
+> android/app/src/main/AndroidManifest.xml
+```dart
+  <manifest xmlns: android="http://schemas.android.com/apk/res/android"
+    package="com.example.blog_web_app">
+    <uses-permission android: name = "android.permission.INTERNET" />
+  ...생략...
+  </manifest>
+```
+
+<br>
+
+- android/app/build.gradle 파일 : 안드로이드의 빌드 툴인 그레들(gradle) 설정 파일
+
+  - 모듈 파일, 의존성이나 버전 정보 관리
+
+  - android/build.gradle 은 다른 파일이니 주의
+ 
+    - 프로젝트 파일, 주로 클래스패스나 레포지토리 정보 입력
+
+> android/app/build.gradle
+```dart
+  android{
+    compileSdkVersion 33    // 버전 수정
+    ...생략...
+    defaultConfig {
+      applicationId "com.example.blog_web_app"
+      minSdkVersion 20      // 버전 수정
+      targetSdkVersion flutter.targetSdkVersion
+      versionCode flutterVersionCode.toInteger()
+      versionName flutterVersionName
+    }
+    ...생략...
+  }
+```
+- android.compileSdkVersion, android.defaultConfig.minSdkVersion 변경
+
+  - minSdkVersion : 안드로이드 운영체제의 최소 SDK 버전 설정할 수 있는 위치
+ 
+    - webbiew_flutter 플러그인을 사용하려면 안드로이드 최소 버전 20 이상으로 설정
+ 
+  - compileSdkVersion : 앱을 빌드할 때 사용할 SDK 버전
+ 
+    - 앱은 compileSdkVersion 이하 버전의 기능 모두 지원
+   
+- 네이티브 설정 관련 정보는 보통 각 플러그인의 pub.dev 페이지에서 확인 가능
+
+  - [webview_flutter 플러그인](https://pub.dev/packages/webview_flutter)
+
+- 현대 웹사이트는 대부분 https 프로토콜 사용
+
+  - 아직 http 프로트콜 사용하는 웹사이트 존재
+ 
+    - 안드로이드와 iOS 에서는 모두 기본적으로 http 웹사이트 사용 불가로 설정되어 있음
+   
+      - 이 설정 해제하려면 아래 코드 추가
+     
+      - http 프로토콜 허용할 필요 없으면 추가할 필요 X
+     
+> android/app/src/main/AndroidManifest.xml
+```dart
+  <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.bolg_web_app">
+    <uses-permission android:name="android.permission.INTERNET" .>
+    <application
+      android:label="blog_web_app"
+      android:name="${applicationName}"
+      android:icon="@mipmap/ic_launcher"
+      android:usesCleartextTraffic="true">
+      ...생략...
+    </application>
+  </manifest>
+```
+
+<br>
+
+#### 💡 자주 사용하는 안드로이드 권한 코드
+|코드|설명|
+|-|-|
+|INTERNET|인터넷 사용 권한|
+|CAMERA|카메라 사용 권한|
+|WRITE_EXTERNAL_STORAGE|앱 외부에 파일을 저장할 수 있는 권한|
+|READ_EXTERNAL_STORAGE|앱 외부의 파일을 읽을 수 있는 권한|
+|VIBRATE|진동을 일으킬 수 있는 권한|
+|ACCESS_FINE_LOCATION|GPS 와 네트워크를 모두 사용해서 정확한 현재 위치 정보를 가져올 수 있는 권한|
+|ACCESS_COARSE_LOCATION|네트워크만 사용해서 대략적인 위치 정보를 가져올 수 있는 권한|
+|ACCESSS_BACKGROUND_LOCATION|앱이 배경에 있을 때 위치 정보를 얻을 수 있는 권한|
+|BILLING|인앱 결제를 할 수 있는 권한|
+|CALL_PHONE|전화기 앱을 사용하지 않고 전화를 할 수 있는 권한|
+|NETWORK_STATE|네트워크 상태를 가져올 수 있는 권한|
+|RECORD_AUDIO|음성을 녹음할 수 있는 권한|
+
+<BR>
+
+#### 💡 compileSdkVersion, minSdkVersion 명시적 지정 시기
+```
+  플러터 프로젝트를 진행하다보면 안드로이드의 compileSdkVersion, minSdkVersion 변경 상황 흔하게 발생
+
+  프로젝트마다 설정 버전이 다른데 프로젝트별로 이런 차이가 나는 이유는 사용하는 플러그인 때문
+
+  의존하고 있는 플러그인의 compileSdkVersion, minSdkVersion 이 현재 프로젝트의 설정값보다 높으면
+
+    현재 프로젝트에도 그에 상응하는 compileSdkVersion, minSdkVersion 사용해줘야 함
+
+  어떤 버전을 사용해야 하는지는 보통 오픈 소스 프로젝트의 Readme 파일 or 설정 페이지에 설명되어 있음
+
+  앱을 컴파일할 때 나타나는 에러 메시지에서 버전 정보 확인 가능
+```
+
+</details>
+
+<br>
+
+<details>
+  <summary>🟡 iOS 설정</summary>
+
+<br>
+
+- ios/Runner/Info,plist 파일 열기
+
+  - iOS 앱의 런타임을 설정하는 파일
+ 
+  - 플러터 프로젝트 생성시 자동으로 필수 키 생성
+
+  - Info.plist 에서도 http 프로토콜 사용하는 설정 추가
+ 
+> Info.plist
+```dart
+  <?xml version="1.0" encoding="UFT-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0/EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  <plist version="1.0">
+    <dict>
+      ...생략...
+      <!-- 추가한 코드 -->
+      <key>NSAppTransportSecurity</key>
+      <dict>
+        <key>NSAllowsLocalNetworking</key>
+        <true />
+        <key>NSAllowsArbitraryLoadsInWebContent</key>
+        <true />
+      </dict>
+    </dict>
+  </plist>
+```
+- NSAppTransportSecurity : http 프로토콜을 허용하는 키값
+
+- Info.plist 에 개발자가 입력할 값들은 대부분 앱에서 이미지, 카메라 등 권한 요청 할 때 보여줄 메시지 정의
+
+> 권한 메시지 사용 예제
+```dart
+  <key>NSAppleMusicUsageDescription</key>
+  <string>음악을 재생하는 권한이 필요합니다.</string>
+```
+
+<br>
+
+#### 💡 Info.plist 에 자주 추가하게 되는 키값
+|키값|설명|
+|-|-|
+|NSCalendarsUsageDescription|달력 사용 권한 메시지|
+|NSCameraUsageDescription|카메라 사용 권한 메시지|
+|NSContactsUsageDescription|연락처 사용 권한 메시지|
+|NSLocationUsageDescription|위치 정보 사용 권한 메시지|
+|NSPhotoLibraryUsageDescription|사진 접근 권한 메시지|
+|NSFaceIDUsageDescription|FaceID 사용 권한 메시지|
+|NSMicrophoneUsageDescription|마이크 사용 권한 메시지|
+|NSMotionUsageDescription|Accelerometer 사용 권한 메시지|
+|NSSiriUsageDescription|Siri 사용 권한 메시지|
+
+- [나머지 키에 관련된 정보](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Introduction/Introduction.html)
+
+</details>
+
+<br>
+
+### 03. 프로젝트 초기화
+
+
+
+
+
+
+
 
 
 
