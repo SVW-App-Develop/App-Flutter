@@ -115,16 +115,160 @@
 <br>
 
 ### 01. 사용자 정의 위젯 만들기 : 스테이트리스 위젯
+- 위젯의 형태
 
+  - 스테이트풀(stateful)
+ 
+    - 위젯 내부에서 값이 변경되었을 때 위젯 자체에서 다시 렌더링 실행 가능
+ 
+  - 스테이트리스(stateless)
+ 
+    - 위젯 내부에서 값이 변경되어도 위젯 자체적으로는 다시 렌더링 불가
 
+> main.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  // MaterialApp 위젯과 Scaffold 위젯 기본 제공한 뒤 화면 중앙에 Splash Screen 글자 넣기
+  // => MaterialApp 이 항상 최상단에 입력되고 그 다음으로 Scaffold 앱이 입력됨
+  
+  void main() {
+    runApp(
+      // SplashScreen 위젯을 첫 화면으로 지정
+      SplashScreen()
+    );
+  } // runApp() 에 SplashScreen 위젯을 매개변수로 제공해주었더니, 앱 화면에서 SplashScreen 의 build() 함수의 코드 실행 결과가 보임
+  
+  // StatelessWidget 선언
+  class SplashScreen extends StatelessWidget {  // StatelessWidget 이라는 클래스를 사용자 정의 위젯(SplashScreen 클래스)이 상속받음
+    @override
+    Widget build(BuildContext context){   // build() 함수 필수적으로 오버라이드 => build() 함수가 위젯의 UI 결정
+      // 위젯의 UI 구현
+      return MaterialApp(     // 항상 최상단에 입력되는 위젯
+        home: Scaffold(       // 항상 두 번째로 입력되는 위젯
+          body: Center(       // 중앙 정렬 위젯
+            // 글자를 화면에 보여주는 위젯
+            child: Text('Splash Screen'),
+          ),
+        ),
+      );
+    }
+  }
+```
 
+> 실행 결과
 
+|-|
+|-|
+|![이미지](./img/02.png)|
 
+<br>
 
+### 02.배경색 바꾸기 : Container 와 BoxDecoration 위젯
+- 배경 관련 UI 변경할 때 Container 위젯 가장 많이 사용
 
+> lib/06/01.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+        SplashScreen()
+    );
+  }
+  
+  class SplashScreen extends StatelessWidget {
+    @override
+    Widget build(BuildContext context){
+      return MaterialApp(
+        home: Scaffold(
+          body: Container(    // 컨테이너 위젯
+            // 컨테이너를 디자인하는 클래스
+            decoration: BoxDecoration(
+              color: Colors.deepOrangeAccent,   // 색상
+            ),
+            child: Center(
+              child: Text('Splash Screen'),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+- Container 는 decoration 이라는 네임드 파라미터 제공
 
+  - decoration 매개변수에는 BoxDecoration 클래스 사용
+ 
+    - BoxDecoration 매개변수를 통해 배경색, 테두리 색, 테두리 두께 등 컨테이너의 여러 UI 요소 지정
+   
+- 일반적으로 프로그래밍시 색상은 헥스 코드(hex code, #FEFEFE 등) 사용
 
+  - Colors 클래스를 이용하면 헥스 코드 없이 쉽게 기본 색상 중에 원하는 색상 고를 수 있음
+ 
+- 핫 리로드(hot reload)
 
+  - 코드 작성 후 [메뉴] → [File] → [Save All] or [Ctrl]/[Cmd] + [S] 로 저장하면 실행 버튼 안눌러도 앱 화면 변경
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/03.png)|
+
+<br>
+
+### 03. 이미지 출력하기 : Image 위젯
+- 이미지를 보여줄 Image 위젯 사용
+
+  - **기본 Image 생성자**는 ImageProvider 라는 또 다른 위젯에서 이미지를 그림
+ 
+  - **Image.asset 생성자**는 앱에 저장된 asset 파일로 이미지를 그림
+ 
+  - **Image.network 생성자**는 URL 을 통해 이미지 그림
+ 
+  - **Image.file 생성자**는 파일을 통해서 이미지 그림
+ 
+  - **Image.memory 생성자**는 메모리에서 직접 이미지를 그림
+
+<br>
+
+> Image.asset 생성자 사용
+
+- 프로젝트 폴더 위에서 마우스 우클릭 후 [New] → [Directory]
+
+  - 팝업창에 assets 를 입력해 [assets] 폴더 생성
+ 
+    - [assets] 폴더에 이미지를 드래그 앤 드롭해서 저장
+   
+- [assets] 폴더에 이미지 파일을 추가했지만 화면에 불러오려면 추가 작업 필요
+
+  - 이미지를 담을 [assets] 폴더를 [pubspec.yaml] 파일에 지정
+ 
+  - [pubspec.yaml] : 플러터 프로젝트가 처음 생성되면서 자동으로 생성되는 파일
+ 
+    - 플러터 프로젝트의 모든 설정이 담긴 파일
+ 
+    - 프로젝트에서 사용할 폰트, 이미지, 외부 플러그인 등을 지정하는 데 사용
+
+- flutter.assets 키에 [assets] 폴더 지정
+
+  - [assets:] 주석 처리되어있는데 해제하고 그 아래에 원하는 폴더 지정
+ 
+  - YAML 에서 - 기호는 리스트값 의미 ⇒ 원하는 만큼 - 로 시작하는 값들 계속 추가 가능
+ 
+- 설정을 변경했으므로 asset 파일을 프로젝트에 추가 및 새 플러그인 내려받는 등 추가 작업 필요
+
+  - 플러터에서는 [pub get] 기능을 제공해 위 작업 자동 처리
+ 
+    - 파일이 수정되었을 때 에디터 위에 자동으로 나타남
+   
+- [pub get] 기능 실행 후 앱 재실행해야 새로 바뀐 설정 적용
+
+|-|
+|-|
+|![이미지](./img/04.png)|
+|![이미지](./img/05.png)|
 
 
 
