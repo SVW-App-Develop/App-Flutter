@@ -1,7 +1,7 @@
 # 6단계 : 기본 위젯
 - 플러터는 화면에 그려지는 모든 요소가 위젯으로 구성됨
 
-- [실습 프로젝트 바로가기]()
+- [실습 프로젝트 바로가기](https://github.com/SVW-App-Develop/Hello_World.git)
 
 <br>
 
