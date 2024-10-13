@@ -868,21 +868,121 @@
 
 > lib/06/16.dart
 ```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(
+      RowWidgetExample()    // RowWidgetExample 이라는 StatelessWidget 정의
+  );
+}
+
+class RowWidgetExample extends StatelessWidget {  // StatelessWidget : 상태가 변하지 않는 위젯
+  @override
+  Widget build(BuildContext context) {  // build 메서드 : 이 위젯의 레이아웃을 정의, Flutter의 기본 위젯 구조
+    return MaterialApp(   // MaterialApp 위젯을 반환 : Material Design 애플리케이션 정의, 앱의 전체적인 테마 및 네비게이션 처리
+      home: Scaffold(     // home 속성 : 앱의 기본 페이지 설정
+                          // Scaffold 위젯 : Material Design 의 시각적 구조를 위한 기본 틀 제공(앱 바, 본문(body), 플로팅 액션 버튼 등 추가 가능)
+        body: SizedBox(   // Scaffold 의 body 에 SizedBox 위젯을 사용하여 자식 위젯의 크기 지정(Row 위젯을 감싸서 높이 조정
+          // 반대축에서 이동할 공간을 제공하기 위해 높이를 최대한으로 설정
+          height: double.infinity,      // SizedBox가 가능한 한 최대 높이를 갖도록 설정(수직 축에서 화면의 전체 높이를 차지)
+          child: Row(     // Row 위젯을 사용하여 가로 방향으로 여러 자식 위젯을 배치
+            // 주축 정렬 지정
+            mainAxisAlignment: MainAxisAlignment.start,
+
+            // 반대축 정렬 지정
+            crossAxisAlignment: CrossAxisAlignment.center,
+
+            // 넣고 싶은 위젯 입력
+            children: [
+              Container(
+                height: 50.0,
+                width: 50.0,
+                color: Colors.cyanAccent,
+              ),
+
+              // SizedBox 는 일반적으로 공백을 생성할 때 사용
+              const SizedBox(
+                width: 12.0,
+              ),
+
+              Container(
+                height: 50.0,
+                width: 50.0,
+                color: Colors.deepOrangeAccent,
+              ),
+
+              const SizedBox(
+                width: 12.0,
+              ),
+
+              Container(
+                height: 50.0,
+                width: 50.0,
+                color: Colors.deepPurpleAccent,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/20.png)|
+
+<br>
+
+#### 💡 MainAxisAlignment 옵션 (CrossAxisAlignment.center 기준)
+|옵션|설명|예제|
+|-|-|:-:|
+|MainAxisAlignment.start|시작에 정렬|![이미지](./img/21.png)|
+|MainAxisAlignment.center|중앙에 정렬|![이미지](./img/22.png)|
+|MainAxisAlignment.end|끝에 정렬|![이미지](./img/23.png)|
+|MainAxisAlignment.spaceBetween|자식 위젯의 간격을 균등하게 정렬|![이미지](./img/24.png)|
+|MainAxisAlignment.spaceAround|자식 위젯의 간격을 균등하게 배정하고<br>왼쪽 끝과 오른쪽 끝을 위젯 사이의 거리의 반만큼 배정해 정렬|![이미지](./img/25.png)|
+|MainAxisAlignment.spaceEvenly|자식 위젯의 간격을 균등하게 배치하고<br>왼쪽 끝과 오른쪽 끝도 균등하게 배치|![이미지](./img/26.png)|
+
+<br>
+
+#### 💡 CrossAxisAlignment 옵션 (MainAxisAlignment.center 기준)
+|옵션|설명|예제|
+|-|-|:-:|
+|CrossAxisAlignment.start|시작에 정렬|![이미지](./img/27.png)|
+|CrossAxisAlignment.center|중앙에 정렬|![이미지](./img/22.png)|
+|CrossAxisAlignment.end|끝에 정렬|![이미지](./img/28.png)|
+|CrossAxisAlignment.stretch|반대축 최대한으로 늘려서 정렬|![이미지](./img/29.png)|
+
+<br>
+
+### 02. Column 위젯
+- Row 위젯과 완전히 같은 매개변수들을 노출
+
+- 주축과 반대축이 Row 와 반대
+
+> lib/06/17.dart
+```dart
   import 'package:flutter/material.dart';
   
-  void main() {
-    runApp(RowWidgetExample());
+  void main(){
+    runApp(
+      ColumnWidgetExample()
+    );
   }
   
-  class RowWidgetExample extends StatelessWidget {
+  class ColumnWidgetExample extends StatelessWidget{
     @override
-    Widget build(BuildContext context) {
+    Widget build(BuildContext context){
       return MaterialApp(
         home: Scaffold(
           body: SizedBox(
-            // 반대축에서 이동할 공간을 제공하기 위해 높이를 최대한으로 설정
-            height: double.infinity,
-            child: Row(
+            // 반대축에서 이동할 공간을 제공해주기 위해 너비를 최대한으로 설정
+            width: double.infinity,
+            child: Column(
               // 주축 정렬 지정
               mainAxisAlignment: MainAxisAlignment.start,
   
@@ -930,32 +1030,240 @@
 
 |-|
 |-|
-|![이미지](./img/20.png)|
+|![이미지](./img/30.png)|
 
 <br>
 
 #### 💡 MainAxisAlignment 옵션 (CrossAxisAlignment.center 기준)
 |옵션|설명|예제|
 |-|-|:-:|
-|MainAxisAlignment.start|시작에 정렬|![이미지](./img/21.png)|
-|MainAxisAlignment.center|중앙에 정렬|![이미지](./img/22.png)|
-|MainAxisAlignment.end|끝에 정렬|![이미지](./img/23.png)|
-|MainAxisAlignment.spaceBetween|자식 위젯의 간격을 균등하게 정렬|![이미지](./img/24.png)|
-|MainAxisAlignment.spaceAround|자식 위젯의 간격을 균등하게 배정하고<br>왼쪽 끝과 오른쪽 끝을 위젯 사이의 거리의 반만큼 배정해 정렬|![이미지](./img/25.png)|
-|MainAxisAlignment.spaceEvenly|자식 위젯의 간격을 균등하게 배치하고<br>왼쪽 끝과 오른쪽 끝도 균등하게 배치|![이미지](./img/26.png)|
+|MainAxisAlignment.start|시작에 정렬|![이미지](./img/31.png)|
+|MainAxisAlignment.center|중앙에 정렬|![이미지](./img/32.png)|
+|MainAxisAlignment.end|끝에 정렬|![이미지](./img/33.png)|
+|MainAxisAlignment.spaceBetween|자식 위젯의 간격을 균등하게 정렬|![이미지](./img/34.png)|
+|MainAxisAlignment.spaceAround|자식 위젯의 간격을 균등하게 배정하고<br>왼쪽 끝과 오른쪽 끝을 위젯 사이의 거리의 반만큼 배정해 정렬|![이미지](./img/35.png)|
+|MainAxisAlignment.spaceEvenly|자식 위젯의 간격을 균등하게 배치하고<br>왼쪽 끝과 오른쪽 끝도 균등하게 배치|![이미지](./img/36.png)|
 
 <br>
 
 #### 💡 CrossAxisAlignment 옵션 (MainAxisAlignment.center 기준)
 |옵션|설명|예제|
 |-|-|:-:|
-|CrossAxisAlignment.start|시작에 정렬|![이미지](./img/27.png)|
-|CrossAxisAlignment.center|중앙에 정렬|![이미지](./img/22.png)|
-|CrossAxisAlignment.end|끝에 정렬|![이미지](./img/28.png)|
-|CrossAxisAlignment.stretch|반대축 최대한으로 늘려서 정렬|![이미지](./img/29.png)|
+|CrossAxisAlignment.start|시작에 정렬|![이미지](./img/37.png)|
+|CrossAxisAlignment.center|중앙에 정렬|![이미지](./img/32.png)|
+|CrossAxisAlignment.end|끝에 정렬|![이미지](./img/38.png)|
+|CrossAxisAlignment.stretch|반대축 최대한으로 늘려서 정렬|![이미지](./img/39.png)|
 
 <br>
 
-### 02. Column 위젯
+### 03. Flexible 위젯
+- Row 나 Column 에서 사용하는 위젯
 
+  - Row 나 Column 에서 사용하면 Flexible 에 제공된 child 가 크기를 최소한으로 차지함
+ 
+- flex 매개변수를 이용해 각 Flexible 위젯이 얼만큼의 비율로 공간을 차지할지 지정 가능
 
+> lib/06/18.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Column(
+            children: [
+              Flexible(
+                // flex : 남은 공간을 차지할 비율 의미
+                // flex 값을 제공하지 않으면 기본값은 1
+                flex: 1,
+                // flex : 3,
+  
+                // 파란색 Container
+                child: Container(
+                  color: Colors.blueAccent,
+                ),
+              ),
+  
+              Flexible(
+                flex: 1,
+  
+                // 붉은색 Container
+                child: Container(
+                  color: Colors.pinkAccent,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+```
+
+> 실행 결과
+
+|파란색 flex:1, 붉은색 flex:1|파란색 flex:3, 붉은색 flex:1|
+|-|-|
+|![이미지](./img/40.png)|![이미지](./img/41.png)|
+
+<br>
+
+### 04. Expanded 위젯
+- Flexible 위젯을 상속하는 위젯
+
+  - fit 매개변수 입력값
+
+    - FlexFit.loose
+   
+      - 자식 위젯이 필요한 만큼의 공간만 차지
+   
+    - FlexFit.tight
+   
+      - 자식 위젯이 차지하는 공간과 관계없이 남은 공간을 모두 차지
+
+- FLexible 위젯의 fit 매개변수에 FlexFit.tight 를 기본으로 제공해주는 위젯
+
+  - Column 과 Row 에서 Expanded 사용시 위젯이 남아 있는 공간을 최대한으로 차지함
+
+> lib/06/19.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Column(
+            children: [
+              // 파란색 Container
+              Expanded(
+                child: Container(
+                  color: Colors.blueAccent,
+                ),
+              ),
+  
+              // 붉은색 Container
+              Expanded(
+                child: Container(
+                  color: Colors.pinkAccent,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+```
+- Expanded 위젯이 두 갱기 때문에 각 위젯이 남는 공간을 똑같이 나눠저 차지함
+
+  - 비율은 Flexible 과 마찬가지로 flex 매개변수의 값에 따라 변경됨
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/40.png)|
+
+<br>
+
+### 05. Stack 위젯
+- 위젯을 겹치는 기능 제공
+
+- 플러터의 그래픽 엔진인 스키아 엔진은 2D 엔진
+
+  - 겹친 두께를 표현하지 못함
+ 
+    - Stack 사용시 위젯 위에 위젯을 올린 듯한 효과 가능
+
+> lib/06/20.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Stack(
+            children: [
+              // 붉은색 Container
+              Container(
+                height: 300.0,
+                width: 300.0,
+                color: Colors.pinkAccent,
+              ),
+  
+              // 노란색 Container
+              Container(
+                height: 250.0,
+                width: 250.0,
+                color: Colors.limeAccent,
+              ),
+  
+              // 파란색 Container
+              Container(
+                height: 200.0,
+                width: 200.0,
+                color: Colors.lightBlueAccent
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+```
+- Stack 은 children 에 위치한 순서대로 위젯을 겹치게 함
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/42.png)|
+
+<br>
+
+---
+
+<br>
+
+🚨 핵심 요약
+---
+- **Text** 위젯은 글자를 화면에 그릴 때 사용
+
+- 제스처 관련 위젯
+
+  - **Button** 위젯 : **TextButton, OutlinedButton, ElevatedButton**
+ 
+  - **IconButton** 위젯 : 아이콘을 버튼으로 만듦
+ 
+  - **GestureDetector** 위젯 : 하위 위젯이 제스처에 반응하도록 해줌
+ 
+  - **FloatingActionButton** 위젯 : 화면의 오른쪽 아래, 사용자가 가장 많이 사용하는 위치에 버튼을 띄우는 데 사용
+
+- 디자인 관련 위젯
+
+  - **Container** 위젯 : 배경, 패딩, 테두리 등 디자인 요소를 추가하는 데 사용
+ 
+  - **SizedBox** 위젯 : 너비와 높이를 지정할 수 있는 위젯
+ 
+    - 흔히 위젯 사이의 간격을 구현할 때 많이 사용
+   
+  - **Padding** 위젯 : 하위 위젯에 패딩을 ㅓㅈㄱ용할 때 사용
+ 
+  - **SafeArea** 위젯 : 시스템 UI 에 가려지지 않게 위젯을 화면에 그릴 때 사용
+ 
+- 배치 관련 위젯
+
+  - **Row** 위젯 : 가로로 위젯을 배치할 때 사용
+ 
+  - **Column** 위젯 : 세로로 위젯을 배치할 때 사용
+ 
+  - **Flexible** 위젯 : Row, Column 에서 하위 위젯이 비율만큼 공간을 차지할 수 있게 해줌
+ 
+  - **Expanded** 위젯 : Row, Column 에서 하위 위젯이 최대한의 공간을 차지할 수 있게 해줌
+ 
+  - **Stack** 위젯 : 하위 위젯들을 순서대로 겹쳐줌
+
+<br>
