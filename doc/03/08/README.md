@@ -327,14 +327,212 @@
 <br>
 
 ### 03. 프로젝트 초기화
+- 원하는 코드나 특정 파일을 쉽게 찾을 수 있게 하기 위해 폴더와 파일 정리 필요
 
+  - 화면과 관련된 모든 위젯을 [screen] 폴더에 모아두기
 
+- [lib] 폴더 → 마우스 우클릭 → [screen] 폴더 생성
 
+  - [screen] 폴더 → 마우스 우클릭 → 앱의 기본 홈 화면으로 사용할(사용자 지정 위젯) 홈 스크린(HomeScreen) 위젯을 생성할 home_screen.dart 파일 생성
+ 
+- home_screen.dart 파일에 HomeScreen 이라는 StatelessWideget 생성
 
+  - 해당 위젯은 블로그 웹 앱을 실행했을 때 가장 먼저 실행되는 홈 화면
 
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    
+    // const 생성자
+    // => 생성자 앞에 const 키워드 추가하면 const 인스턴스 생성 가능
+    // => 한 번 생성된 const 인스턴스 위젯은 재활용되어서 하드웨어 리소스를 적게 사용
+    const HomeScreen({Key? key}) : super(key : key);
+    
+    @override
+    Widget build(BuildContext context){
+      return Scaffold(
+        body: Text('Home Screen')
+      );
+    }
+  }
+```
 
+- main.dart 파일에 자동 생성된 기존 코드를 지우고 HomeScreen() 호출
 
+  - MaterialApp 위젯 : 플러터 앱의 최상위 위젯
+ 
+    - 앱이 처음 실행됐을 때 보여줄 화면을 home 매개변수에 입력 가능
 
+> lib/main.dart
+```dart
+  import 'package:blog_wep_app/screen/home_screen.dart';
+  import 'package:flutter/material.dart';
+  
+  void main(){
+    runApp(
+      MaterialApp(
+        home: HomeScreen(),   // HomeScreen() 불러와 앱의 첫 화면으로 설정
+      ),
+    );
+  }
+```
 
+|-|
+|-|
+|![이미지](./img/03.png)|
+
+<br>
+
+#### 💡 import 로 임포트할 때 경로
+- 프로젝트가 커지면 main.dart 외 다른 파일 사용
+
+  - 어느 한 파일에서 다른 파일의 위젯이나 변수 등을 불러와서 사용 ⇒ import 키워드
+ 
+  - Private 으로 선언된 속성들은 불러오기 제외
+
+> 형식
+```dart
+  // import 키워드 뒤에 'package:[프로젝트이름]/[lib 폴더로부터의 위치]/파일명.dart'
+  //                   'package:[플러그인 이름]/[플러그인 이름].dart'
+
+  import 'package:blog_web_app/screen/hom_screen.dart'
+```
+
+<br>
+
+---
+
+<br>
+
+8.3 레이아웃 구상
+---
+- 앱바 : 제목과 홈 버튼을 렌더링하는 역할
+
+- 웹뷰 : 지정한 URL 의 내용(웹페이지)을 보여줌
+
+<br>
+
+---
+
+<br>
+
+8.4 구현
+---
+- 구현할 프로그램의 작동 흐름
+
+  - 앱바 구현 → 웹뷰 → 웹뷰 컨트롤러 → 홈 버튼 구현
+ 
+|-|
+|-|
+|![이미지](./img/02.png)|
+
+<br>
+
+### 01. 앱바 구현
+- HomeScreen 위젯은 블로그 웹 앱이 실행되면서 가장 먼저 보이는 위젯
+
+  - 앱바 추가, 제목 추가, 배경색 설정
+ 
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:webview_flutter/webview_flutter.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    WebViewController webViewController = WebViewController();
+  
+    HomeScreen({Key? key}) : super(key : key);
+  
+    @override
+    Widget build(BuildContext context){
+      return Scaffold(
+        // 앱바 위젯 추가
+        appBar: AppBar(
+  
+          // 배경색 지정
+          backgroundColor: Color(0xFFFFB8A2),
+  
+          // 앱 타이틀 설정
+          title: Text('뚱이 연대기'),
+  
+          // 가운데 정렬
+          centerTitle: true,    // false 입력시 왼쪽 정렬
+        ),
+        body: Text('Home Screen'),
+      );
+    }
+  }
+```
+- AppBar 위젯은 일반적으로 Scaffold 위젯의 appBar 매개변수로 넣어줌
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/04.png)|
+
+<br>
+
+### 02. 웹뷰 구현
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  // 웹뷰 플러그인 불러오기
+  import 'package:webview_flutter/webview_flutter.dart';
+  
+  class HomeScreen extends StatelessWidget {
+  
+    HomeScreen({Key? key}) : super(key : key);
+  
+    @override
+    Widget build(BuildContext context){
+      return Scaffold(
+        appBar: AppBar(
+  
+          backgroundColor: Color(0xFFFFB8A2),
+  
+          title: Text('코딩 연습장'),
+  
+          centerTitle: true,
+        ),
+        body: WebViewWidget(  // 웹뷰 위젯 추가
+          controller: webViewController,  // 에러 발생
+        ),
+      );
+    }
+  }
+```
+- import 키워드를 사용해 웹뷰 플러그인 불러오기
+
+- body 에 WebViewWidget 입력
+
+  - 웹뷰 위젯 : 화면에 웹뷰를 렌더링해주는 역할
+ 
+- WebViewWidget 을 제어할 수 있는 controller 파라미터 입력
+
+- controller: webViewController 에서 생긴 에러는 webViewController 가 아직 선언되지 않아 발생
+
+<br>
+
+### 03. 웹뷰 컨트롤러 설정
+- 웹뷰 위젯을 제어하는 역할
+
+- 웹뷰 컨트롤러의 함수를 실행해서 웹뷰 위젯의 다양한 설정 제어 및 웹사이트 이동 가능
+
+> lib/screen/home_screen.dart
+```dart
+
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/05.png)|
+
+<br>
 
 
