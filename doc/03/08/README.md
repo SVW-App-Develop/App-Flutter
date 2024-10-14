@@ -524,9 +524,53 @@
 
 > lib/screen/home_screen.dart
 ```dart
-
+  import 'package:flutter/material.dart';
+  import 'package:webview_flutter/webview_flutter.dart';
+  
+  // URI/URL 생성하는데 도움을 주는 클래스
+  final uri = Uri.parse('https://dailylifethatsnormal.tistory.com/');
+  
+  class HomeScreen extends StatelessWidget {
+    // WebViewController 선언
+    WebViewController webViewController = WebViewController()
+  
+        // Javascript 제한 없이 실행될 수 있도록 함
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+  
+        // WebViewController 의 loadRequest() 함수 실행
+        ..loadRequest(uri); // 컨트롤러 변수 생성
+  
+    HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor : Color(0xFFFFB8A2),
+          title: Text('코딩 연습장'),
+          centerTitle: true,
+        ),
+        body: WebViewWidget(
+          controller: webViewController,
+        ),
+      );
+    }
+  }
 ```
+- WebViewController 타입인 webViewController 변수 선언
 
+  - WebViewWidget 에 미리 webViewController 변수를 입력해두어 자동으로 컨트롤리 입력됨
+
+- loadRequest() : 웹뷰 위젯의 가장 중요한 함수
+
+  - Uri 객체를 매개변수로 입력받음
+ 
+    - 입력받은 값을 통해 지정한 사이트로 이동
+   
+  - Uri 객체는 Uri.parse() static 함수 존재
+ 
+    - 이 함수에 이동하고 싶은 사이트의 URL 입력하면 해당 URL 이 Uri 객체로 자동 변경
+ 
 > 실행 결과
 
 |-|
@@ -535,4 +579,239 @@
 
 <br>
 
+### 04. main.dart 파일 수정
+- runApp() : 플러터 프로젝트 실행
 
+  - 내부적으로 WidgetsFlutterBinding, ensureInitialized() 함수 실행
+ 
+    - ensureInitialized() 함수는 플러터 프레임워크가 앱을 실행할 준비가 됐는지 확인하는 역할
+   
+    - 일반적으로 개발자가 직접 이 함수를 실행할 필요는 없음
+   
+    - 단, StatelessWidget 에서 WebViewController 프로퍼티로 직접 인스턴스화하려면 직접 실행해줘야 함
+   
+    - 직접 실행하지 않고 인스턴스화하려면 StatefulWidget 의 initState() 함수에서 진행
+
+> lib/main.dart
+```dart
+  import 'package:blog_wep_app/screen/home_screen.dart';
+  import 'package:flutter/material.dart';
+  
+  void main(){
+    // 플러터 프레임워크가 앱을 실행할 준비가 될 때까지 기다림
+    WidgetsFlutterBinding.ensureInitialized();
+    
+    runApp(
+      MaterialApp(
+        home: HomeScreen(),   // HomeScreen() 불러와 앱의 첫 화면으로 설정
+      ),
+    );
+  }
+```
+
+<Br>
+
+### 05. 홈 버튼 구현
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:webview_flutter/webview_flutter.dart';
+  
+  // URI/URL 생성하는데 도움을 주는 클래스
+  final uri = Uri.parse('https://dailylifethatsnormal.tistory.com/');
+  
+  class HomeScreen extends StatelessWidget {
+    // WebViewController 선언
+    WebViewController webViewController = WebViewController()
+  
+        // Javascript 제한 없이 실행될 수 있도록 함
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+  
+        // WebViewController 의 loadRequest() 함수 실행
+        ..loadRequest(uri); // 컨트롤러 변수 생성
+  
+    HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor : Color(0xFFFFB8A2),
+          title: Text('코딩 연습장'),
+          centerTitle: true,
+  
+          // AppBar 에 액션 버튼을 추가할 수 있는 매개변수
+          actions: [
+            IconButton(
+              // 아이콘을 눌렀을 때 실행할 콜백 함수
+              onPressed: (){
+                // 웹뷰 위젯에서 사이트 전환
+                webViewController.loadRequest(uri);
+              },
+              // 홈 버튼 아이콘 설정
+              icon: Icon(
+                Icons.home,
+              ),
+            ),
+          ],
+        ),
+        // AppBa
+        body: WebViewWidget(
+          controller: webViewController,
+        ),
+      );
+    }
+  }
+```
+- actions 매개변수에 위젯 입력시 AppBar 우측 끝에 순서대로 위젯 배치됨
+
+  - 세팅 버튼이나 필터링 옵션 버튼을 흔히 탑재하는 위치
+ 
+- loadRequest() 함수는 WebViewController 가 입력(바인딩)된 WebViewWidget 에서 새로운 웹페이지를 실행할 때 사용
+
+  - 이동하려는 웹페이지 주소를 Uri 타입으로 변환해서 입력하면 해당하는 웹페이지로 이동
+
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/06.png)|
+
+<br>
+
+
+
+### 06. 앞으로 가기, 뒤로 가기 기능 추가
+- WebViewController 
+
+  - goBack() 함수 : 뒤로 가기 구현 가능
+ 
+  - goForward() 함수 : 앞으로 가기 구현 가능
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:webview_flutter/webview_flutter.dart';
+  
+  // URI/URL 생성하는데 도움을 주는 클래스
+  final uri = Uri.parse('https://dailylifethatsnormal.tistory.com/');
+  
+  class HomeScreen extends StatelessWidget {
+    // WebViewController 선언
+    WebViewController webViewController = WebViewController()
+  
+        // Javascript 제한 없이 실행될 수 있도록 함
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+  
+        // WebViewController 의 loadRequest() 함수 실행
+        ..loadRequest(uri); // 컨트롤러 변수 생성
+  
+    HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor : Color(0xFFFFB8A2),
+          title: Text('코딩 연습장'),
+          centerTitle: true,
+  
+          // 왼쪽에 아이콘 버튼을 추가하기 위한 leading 속성
+          // 여러 아이콘을 배치하기 위해 Row 사용
+          leading: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: (){
+                  webViewController.goBack();
+                },
+                icon: Icon(
+                  Icons.arrow_back_rounded,
+                ),
+              ),
+              IconButton(
+                  onPressed: (){
+                    webViewController.goForward();
+                  },
+                  icon: Icon(
+                    Icons.arrow_forward_rounded,
+                  )
+              ),
+            ],
+          ),
+  
+          // leadingWidth로 왼쪽의 아이콘들이 잘 배치될 수 있도록 공간 확보
+          leadingWidth: 100,  // 필요한 만큼의 공간을 할당 (100 픽셀)
+  
+          // AppBar 에 액션 버튼을 추가할 수 있는 매개변수
+          actions: [
+            IconButton(
+              // 아이콘을 눌렀을 때 실행할 콜백 함수
+              onPressed: (){
+                // 웹뷰 위젯에서 사이트 전환
+                webViewController.loadRequest(uri);
+              },
+              // 홈 버튼 아이콘 설정
+              icon: Icon(
+                Icons.home,
+              ),
+            ),
+          ],
+        ),
+        // AppBa
+        body: WebViewWidget(
+          controller: webViewController,
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/07.png)|
+
+<br>
+
+---
+
+<br>
+
+🚨 핵심 요약
+---
+> 웹뷰 사용시 어떤 웹사이트든 쉽게 화면에 실행 가능<br>
+> 웹뷰 컨트롤러(WebViewController) 사용해 웹뷰 페이지를 변경할 수 있음
+
+<br>
+
+- 웹뷰 위젯 : 웹 브라우저를 실행할 수 있는 위젯
+
+  - 웹뷰 위젯 이용시 URL 추가해줌으로써 원하는 웹사이트를 플러터 앱에서 실행 가능
+ 
+- 다트 코드 외 사용하는 **환경 파일**
+
+|파일명|설명|
+|-|-|
+|pubspec.yaml|프로젝트 설정을 변경할 때 사용|
+|android/app/main/AndroidManifest.xml|안드로이드 시스템이 앱의 코드를 실행하기 전에 필수로 확보해야 하는 앱에 대한 정보를 담고 있음<br>앱 권한 등 안드로이드 네이티브 관련 설정을 할 수 있음|
+|android/build.gradle|안드로이드에서 사용하는 그레들 설정 파일<br>최상단 build.gradle 파일은 프로젝트 단 설정|
+|android/app/build.gradle|안드로이드에서 사용하는 그레들 설정 파일<br>앱 모듈 관련 설정 가능|
+|ios/Runner/Info.plist|iOS 앱의 실행 패키지에 관한 필수 설정 정보가 담겨있음<br>XML 구조로 구성, 흔히 앱에서 사용할 권한 추가시 사용|
+
+- http 프로토콜을 사용하려면 **AndroidManifest.xml(안드로이드)와 Info.plist(iOS) 파일 설정해야 함
+
+- **앱바** : 앱의 최상단을 차지하는 위젯
+
+  - 제목과 뒤로 가기 버튼 등 추가 가능
+ 
+  - 앱바 사용시 앱의 최상단을 쉽게 디자인 가능
+ 
+- 컨트롤러 : 프로그램적으로 위젯을 제어하는 기능 제공
+
+  - **웹뷰 컨트롤러** 이용시 웹뷰 제어 가능
+ 
+- **아이콘 버튼** 사용해 유저의 클릭을 입력받고 원하는 콜백 함수 실행 가능
+
+<br>
