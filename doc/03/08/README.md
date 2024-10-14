@@ -9,6 +9,8 @@
  
     - 앱 맨 위에 페이지 이름이나 앱 이름을 적어둔 형태의 UI 를 그려주는 위젯
 
+- [실습 프로젝트 바로가기](https://github.com/SVW-App-Develop/Blog_Web_App.git)
+
 <br>
 
 |개요|설명|
