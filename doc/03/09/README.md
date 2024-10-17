@@ -449,11 +449,347 @@
 <br>
 
 ### 02. 상태바 색상 변경
+- 상태바 : 앲 ㅣㄹ행 중 핸드폰 배터리, 시간, 와이파이 연결 상태 등을 보여주는 영역
+
+- HomeScreen 위젯의 build() 메서드에 상태바 아이콘들의 색상을 변경하는 코드 추가
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:flutter/services.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context){
+      // 상태바 색상 변경
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+      return Scaffold(
+        body: PageView(
+          children: [1, 2, 3, 4, 5]
+            .map(
+              (number) => Image.asset('asset/img/image_$number.png',
+                                      fit: BoxFit.cover,)   // BoxFit.cover 설정
+            ).toList(),
+        ),
+      );
+    }
+  }
+```
+- SystemChrome 클래스 : 시스템 UI 그래픽 설정을 변경하는 기능 제공
+
+  - SystemChrome.setSystemUIOverlayStyle() : 상태바의 색상 변경 가능
+ 
+    - 매개변수 값 : SystemUiOverlayStyle.dart(검정색), SystemUiOverlayStyle.light(흰색)
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/13.png)|
+
+<br>
+
+#### 💡 SystemChrome 함수
+|함수|설명|
+|-|-|
+|setEnabledSystemUIMode()|앱의 풀스크린 모드 지정<br>ex) 핸드폰 상단의 시간이나 배터리 잔량이 보이지 않게 가릴 수 있음|
+|setPreferredOrientations()|앱을 실행하는 방향 지정<br>가로, 가로 좌우 반전, 세로, 세로 좌우 반전 옵션 등|
+|setSystemUIChangeCallback()|시스템 UI 가 변경되면 콜백 함수 실행|
+|setSystemUIOverlayStyle()|시스템 UI 색상 변경|
+
+<br>
+
+### 03. 타이머 추가
+- Timer 클래스로 액자가 자동으로 롤링되는 기능 추가
+
+  - 일정 기간마다 자동으로 페이지 변경
+
+- Timer 추가하려면 HomeScreen 을 StatelessWidget 이 아닌 StatefulWidget 으로 변경해야 함
+
+  - StatelessWidget 그대로 사용시 Timer 등록 가능 위치가 build() 함수 뿐
+ 
+    - build() 에 Timer 등록시 위젯이 새로 생성될 때마다(build 함수가 불릴 때마다) 매번 새로운 Timer 생성
+   
+      - 메모리 누수(memory leak) 발생
+     
+  - StatefulWidget 생명주기에서 initState() 사용시 State 생성될 때 딱 한 번만 Timer 생성 가능
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:flutter/services.dart';
+  import 'dart:async';    // async 패키지 불러오기
+  
+  // StatefulWidget 정의
+  class HomeScreen extends StatefulWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    State<HomeScreen> createState() => _HomeScreenState();
+  }
+  
+  // _HomeScreenState 정의
+  class _HomeScreenState extends State<HomeScreen>{
+    // initState() 함수 등록
+    @override
+    void initState(){
+      super.initState();    // 부모 initState() 실행
+  
+      Timer.periodic(       // Timer.periodic() 등록
+        Duration(seconds: 3),
+          (timer) {
+            print('실행!');
+          }
+      );
+    }
+  
+    @override
+    Widget build(BuildContext context){
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+  
+      return Scaffold(
+        body: PageView(
+          children: [1, 2, 3, 4, 5]
+            .map(
+              (number) => Image.asset('asset/img/image_$number.png',
+                                      fit: BoxFit.cover,)   // BoxFit.cover 설정
+            ).toList(),
+        ),
+      );
+    }
+  }
+```
+- StatefulWidget 은 StatefulWidget 클래스를 상속해서 정의 가능
+
+  - 생명주기에 따라 createState() 함수 정의해야 하며 State 반환
+ 
+- _HomeScreenState 클래스는 먼저 생성한 StatefulWidget 클래스를 매개변수로 받는 State 클래스 상속
+
+  - build() 함수는 State 에서 정의
+
+- initState() 함수에 Timer 등록
+
+  - 플러터에 기본으로 제공되는 async 패키지를 불러와야 Timer 사용 가능
+ 
+  - initState() 함수를 오버라이드하면 StatefulWidget 생명주기에서의 initState() 함수 사용 가능
+ 
+  - 모든 initState() 함수는 부모의 initState() 함수를 실행해줘야 함
+ 
+  - 3초마다 실행되는 Timer 등록
+ 
+- initState()에 작성한 코든는 핫 리로드 반영 X
+
+  - State 가 생성될 때 딱 한 번만 실행되기 때문
+ 
+    - 이미 StatefulWidget 으로 코드를 전환하는 과정에서 State 생성
+   
+  - initState()에 추가한 사항을 반영하려면 앱 재실행
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/14.png)|
+
+- 3초마다 '실행!'이라는 글자가 콘솔에 출력
+
+<br>
+ 
+- PageView 는 PageContoller 를 사용해 PageView 조작 가능
+
+  - PageController 를 State 에 선언하고 PageView 에 매개변수로 입력
+
+- 사용할 pageController 변수 정의
+
+- PageView 의 controller 매개변수에 PageController 타입의 값을 넣어주면 해당 컨트롤러로 PageView 조작 가능
+
+- Timer.periodic() 의 콜백 함수를 변경해서 주기적으로 PageView 의 페이지 변경
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:flutter/services.dart';
+  import 'dart:async';
+  
+  class HomeScreen extends StatefulWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    State<HomeScreen> createState() => _HomeScreenState();
+  }
+  
+  class _HomeScreenState extends State<HomeScreen>{
+    // PageController 생성
+    final PageController pageController = PageController();
+  
+    @override
+    void initState(){
+      super.initState();
+  
+      Timer.periodic(
+        Duration(seconds: 3),
+          (timer) {
+            // print('실행!');
+  
+            // 현재 페이지 가져오기
+            int? nextPage = pageController.page?.toInt();
+  
+            if(nextPage == null){   // 페이지 값이 없을 때 예외 처리
+              return;
+            }
+  
+            if(nextPage == 4){      // 첫 페이지와 마지막 페이지 분기 처리
+              nextPage = 0;
+            } else {
+              nextPage++;
+            }
+            pageController.animateToPage(   // 페이지 변경
+              nextPage,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.ease,
+            );
+          }
+      );
+    }
+  
+    @override
+    Widget build(BuildContext context){
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+  
+      return Scaffold(
+        body: PageView(
+          controller: pageController, // PageController 등록
+          children: [1, 2, 3, 4, 5]
+            .map(
+              (number) => Image.asset('asset/img/image_$number.png',
+                                      fit: BoxFit.cover,)
+            ).toList(),
+        ),
+      );
+    }
+  }
+```
+- pageController.page 게터를 사용해 PageView 의 현재 페이지를 가져올 수 있음
+
+  - 페이지가 변경 중인 경우 소수점으로 표현돼서 double 로 값이 반환됨
+ 
+  - animateToPage() 함수를 실행할 때 정수값을 넣어줘야 하니 미리 toInt() 사용해 변환
+ 
+- 만약 페이지가 null 이라면 무엇도 하지 않음
+
+- 페이지의 값이 4면 첫 번째 페이지부터 다시 시장
+
+  - 아니면 페이지에 1을 더해서 다음 페이지로 이동
+ 
+- PageController 의 animateToPage() 함수를 사용해서 PageView 의 현재 페이지 변경 가능
+
+  - 첫 번째 매개변수 : 이동할 페이지가 정수로 입력되어 duration 매개변수는 이동할 때 소요될 시간 지정 가능
+ 
+  - curve 매개변수 : 페이지가 변경되는 애니메이션의 작동 방식 지정 가능
+ 
+    - 플러터에서는 수십 개의 curve 기본 설정 제공, 공식 홈페이지에서 확인 가능
+   
+- initState() 함수 변경했으니 앱을 재실행해서 새로 Timer.periodic() 등록
+
+  - 3초마다 페이지 자동 롤링
+ 
+  - 마지막 페이지에 다다르면 처음으로 되돌아감
+
+> 실행 결과
+
+|3초마다|이미지 변경|
+|-|-|
+|![이미지](./img/15.png)|![이미지](./img/16.png)|
+
+<br>
+
+### 04. 시스템에 저장된 이미지를 가져와서 롤링하도록 변경
+> lib/screen/home_screen.dart
+```dart
+
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/01.png)|
+
+<br>
+
+### 05. 네트워크 이미지 출력
+> lib/screen/home_screen.dart
+```dart
+
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/01.png)|
+
+<br>
 
 
+### 06. png 말고 다른 파일 형식도 읽게 변경
+> lib/screen/home_screen.dart
+```dart
 
+```
 
+> 실행 결과
 
+|-|
+|-|
+|![이미지](./img/01.png)|
+
+<br>
+
+### 07. 구글 드라이브나, 구글 포토에 있는 사진 가져오기
+> lib/screen/home_screen.dart
+```dart
+
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/01.png)|
+
+<br>
+
+---
+
+<br>
+
+🚨 핵심 요약
+- **StatelessWidget** : 상태 관리가 필요 없을 때 사용
+
+  - 하나의 클래스로 이루어짐
+ 
+  - build() 함수는 생명주기 동안 단 한 번만 실행됨
+ 
+- **StatefulWidget** : 상태 관리가 필요할 때 사용
+
+  - **StatefulWidget** 클래스와 **State** 클래스로 이루어짐
+ 
+  - 생명주기 동안 build() 함수가 여러 번 실행될 수 있음
+ 
+- **PageView 위젯** 이용시 스와이프로 페이지를 변경하는 UI 쉽게 구현 가능
+
+- **Timer.periodic()** 이용해 특정 함수를 주기적으로 실행 가능
+
+- **PageController** 사용해 PageView 조작 가능
+
+- **StatefulWidget** 의 initState() 에 코드 작성시 State 가 생성될 때 딱 한 번만 실행
+
+- **SystemChrome.setSystemUIOverlayStyle** 사용해 상태바의 색상을 흰색이나 검정색으로 변경 가능
+
+<br>
 
 
 
