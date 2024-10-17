@@ -703,62 +703,6 @@
 |-|-|
 |![이미지](./img/15.png)|![이미지](./img/16.png)|
 
-<br>
-
-### 04. 시스템에 저장된 이미지를 가져와서 롤링하도록 변경
-> lib/screen/home_screen.dart
-```dart
-
-```
-
-> 실행 결과
-
-|-|
-|-|
-|![이미지](./img/17.png)|
-
-<br>
-
-### 05. 네트워크 이미지 출력
-> lib/screen/home_screen.dart
-```dart
-
-```
-
-> 실행 결과
-
-|-|
-|-|
-|![이미지](./img/18.png)|
-
-<br>
-
-
-### 06. png 말고 다른 파일 형식도 읽게 변경
-> lib/screen/home_screen.dart
-```dart
-
-```
-
-> 실행 결과
-
-|-|
-|-|
-|![이미지](./img/19.png)|
-
-<br>
-
-### 07. 구글 드라이브나, 구글 포토에 있는 사진 가져오기
-> lib/screen/home_screen.dart
-```dart
-
-```
-
-> 실행 결과
-
-|-|
-|-|
-|![이미지](./img/20.png)|
 
 <br>
 
