@@ -356,5 +356,110 @@
 
 9.4 구현
 ---
+### 01. 페이지뷰 구현
+- PageView : 여러 개의 위젯을 단독 페이지로 생성
+
+  - 가로 또는 세로 스와이프로 페이지를 넘길 수 있게 하는 위젯
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context){
+      return Scaffold(
+        body: PageView(   // PageView 추가
+          children: [1, 2, 3, 4, 5]   // 샘플 리스트 생성
+            .map(         // 위젯으로 매핑
+              (number) => Image.asset('asset/img/image_$number.png')
+            ).toList(),
+        ),
+      );
+    }
+  }
+```
+- PageView 위젯은 material 패키지에서 기본으로 제공
+
+  - children 매개변수에 페이지로 생성하고 싶은 위젯들 넣어주기
+ 
+- [1, 2, 3, 4, 5] 리스트 생성
+
+- map() 함수 사용해 image_1.png ~ image_5.png 까지 순서대로 PageView 에 추가
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/04.png)|
+
+<br>
+
+- 이미지와 핸드폰 크기가 달라 여백 생길 경우
+
+  - 여러 비율의 화면에 대응할 수 있게 이미지 핏을 조절해 전체 화면 설정
+ 
+    - BoxFit.cover 설정
+   
+      - Image 위젯에서의 매개변수 fit 은 이미지를 부모 위젯에 어떻게 채워넣을지 정의
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context){
+      return Scaffold(
+        body: PageView(
+          children: [1, 2, 3, 4, 5]
+            .map( 
+              (number) => Image.asset('asset/img/image_$number.png',
+                                      fit: BoxFit.cover,)   // BoxFit.cover 설정
+            ).toList(),
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/05.png)|
+
+<br>
+
+#### 💡 BoxFit 속성
+|속성|설명|이미지|
+|-|-|:-:|
+|BoxFit.contain|이미지가 잘리지 않는 선에서 최대한 크게 늘림<br>이미지가 위치한 부모 위젯이 이미지 크기와 완전 같지 않다면 세로 또는 가로로 여백 발생|![이미지](./img/06.png)|
+|BoxFit.cover|부모 위젯 전체를 덮는 선에서 최소한 크기로 조절<br>이미지가 부모 위젯 전체를 덮기 때문에 여백은 생기지 않지만 가로 또는 세로로 이미지가 잘릴 수 있음|![이미지](./img/07.png)|
+|BoxFit.fill|이미지의 비율을 무시하고 부모 위젯의 이미지 비율대로 이미지 크기 조절<br>이미지의 비율과 부모 위젯의 비율이 다르다면 이미지가 변형돼 보일 수 있음|![이미지](./img/08.png)|
+|BoxFit.fitHeight|이미지 비율을 유지한 채로 부모 위젯의 높이에 이미지의 높이 맞춤<br>이미지가 가로로 잘리거나 여백 생길 수 있음|![이미지](./img/09.png)|
+|BoxFit.fitWidth|이미지의 비율을 유지한 채로 부모 위젯의 넓이에 이미지의 넓이를 맞춤<br>이미지가 세로로 잘리거나 여백 생길 수 있음|![이미지](./img/10.png)|
+|BoxFit.none|원본 이미지 크기와 비율을 그대로 사용|![이미지](./img/11.png)|
+|BoxFit.scaleDown|BoxFit.none 의 설정에 이미지를 중앙 정렬하고 부모 위젯이 이미지보다 작으면 이미지 크기를 줄여서 부모 위젯에 맞춤|![이미지](./img/12.png)|
+
+<br>
+
+### 02. 상태바 색상 변경
+
+
+
+
+
+
+
+
+
+
+
+
 
 
