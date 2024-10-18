@@ -133,7 +133,7 @@
     fonts:
       - family: parisienne    # family 키에 폰트 이름 지정 가능
         fonts:
-          - asset: asset/font/Parisienne-Reguilar.ttf   # 등록할 폰트 파일 위치
+          - asset: asset/font/Parisienne-Regular.ttf   # 등록할 폰트 파일 위치
             
       - family: sunflower
         fonts:
