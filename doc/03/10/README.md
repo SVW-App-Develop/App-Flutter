@@ -31,15 +31,82 @@
 
 <br>
 
+---
 
+<br>
 
+10.1 사전 지식
+---
+### 01. setState() 함수
+- State 를 상속하는 모든 클래스는 setState() 함수 사용 가능
 
+- setState() 함수 실행 과정
 
+  - StatefulWidget 렌더링 끝나고 클린(clean) 상태
+ 
+    - 그 어떤 상태 변경 툴을 사용하든 클린 상태에서 상태를 변경해야 함
+   
+  - setState() 실행해 원하는 속성들 변경
+ 
+  - 속성이 변경되고 위젯의 상태가 더티(dirty)로 설정
+ 
+  - build() 함수 재실행
+ 
+  - State 가 클린 상태로 되돌아옴
 
+- setState() 실행 방법
 
+  - 첫 번째 매개변수 : 상태(변수) 값을 변경하는 로직(콜백 함수) 작성
+ 
+    - 콜백 함수에 변경하고 싶은 속성들 입력
+   
+      - 콜백 함수 비동기 작성 불가
+     
+```dart
+  setState((){    // 실행
+    number++;
+  });
+```
 
+<br>
 
+### 02. showCupertinoDialog() 함수
+- 다이얼로그를 실행하는 함수
 
+  - iOS 스타일로 다이얼로그 실행
+ 
+  - 실행 시 모든 애니메이션과 작동이 iOS 스타일로 적용
+ 
+- 배리어(barrier) : 플러터에서 다이얼로그 위젯 외에 흐림 처리가 된 부분
+
+  - barrierDismissible: true
+ 
+    - 배리어를 눌렀을 때 다이얼로그가 닫힘
+   
+  - barrierDismissible: false
+ 
+    - 배리어를 눌렀을 때 다이얼로그가 닫히지 않음
+
+```dart
+  import 'package:flutter/cupertino.dart';    // Cupertino 패키지 임포트 필수
+  
+  showCupertinoDialog(    // Cupertino 다이얼로그 실행
+    context: context,     // BuildContext 입력 (모든 showDialog() 형태 함수들은 BuildContext 입력 필수)
+    barrierDismissible: true,   // 외부 탭해서 다이얼로그 닫을 수 있게 하기
+    builder: (BuildContext context) {   // 다이얼로그에 들어갈 위젯
+      return Text('Dialog');
+    },
+  );
+```
+
+<br>
+
+---
+
+<br>
+
+10.2 사전 준비
+---
 
 
 
