@@ -107,6 +107,566 @@
 
 10.2 사전 준비
 ---
+### 01. 이미지, 폰트 추가
+- [asset] 폴더 아래 [font], [img] 폴더 생성
+
+  - 적용할 이미지와 폰트를 각 폴더에 복사
+
+<br>
+
+### 02. pubspec.yaml 설정
+- 에셋 파일 : flutter 키의 assets 키에 입력
+
+- 폰트 파일 : flutter 키의 fonts 키에 입력
+
+> pubspec.yaml
+```dart
+  flutter:
+  
+    # The following line ensures that the Material Icons font is
+    # included with your application, so that you can use the icons in
+    # the material Icons class.
+    uses-material-design: true
+    assets:
+      - asset/img/    # 이미지를 프로젝트에 포함시키기
+        
+    fonts:
+      - family: parisienne    # family 키에 폰트 이름 지정 가능
+        fonts:
+          - asset: asset/font/Parisienne-Reguilar.ttf   # 등록할 폰트 파일 위치
+            
+      - family: sunflower
+        fonts:
+          - asset: asset/font/Sunflower-Bold.ttf
+          - asset: asset/font/Sunflower-Light.ttf
+            weight: 500   
+          - asset: asset/font/Sunflower-Medium.ttf
+            weight: 700
+            # weight : 폰트 두께. 같은 폰트라도 다른 두께를 표현하는 파일은 weight 값을 따로 표현해야 함
+            #          100 ~ 900 사이 100 단위로 사용 가능, 숫자가 높을수록 두꺼운 값
+            #          FontWeight 클래스 값과 같음(weight: 500 = FontWeight.w500)
+```
+
+|-|
+|-|
+|![이미지](./img/01.png)|
+
+<br>
+
+### 03. 프로젝트 초기화
+- [lib] 폴더에 [screen] 폴더 생성 후 home_screen.dart 생성
+
+  - 앱의 기본 홈 화면으로 사용할 HomeScreen 위젯(StatelessWidget) 생성
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+    
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        body: Text('Home Screen'),
+      );
+    }
+  }
+```
+
+<br>
+
+- lib/main.dart 파일에도 마찬가지로 HomeScreen 을 홈 위젯으로 등록
+
+> lib/main.dart
+```
+  import 'package:flutter/material.dart';
+  import 'package:u_and_i/screen/home_screen.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        home: HomeScreen(),
+      ),
+    );
+  }
+```
+
+<br>
+
+---
+
+<br>
+
+### 10.3 레이아웃 구상
+- Scaffold 위젯의 body 매개변수에 _DDay 위젯과 _CoupleIamge 위젯 두 가지를 위아래로 나눠 구현
+
+- 홈스크린 말고도 CupertinoDialog 추가 구현
+
+  - 중앙 하트 아이콘 클릭시 CupertinoDialog 실행되는 구조
+
+
+<br>
+
+---
+
+<br>
+
+### 10.4 구현
+- UI 구현, 상태 관리 구현, 날짜 선택 기능 구현 순서로 진행
+
+  - UI 먼저 작업해서 앱 전체의 틀을 잡고 상태 관리를 설정해서 날짜 데이터를 관리할 기반 잡기
+ 
+  - 날짜 선택 기능을 추가해서 선택한 날짜에 따라 D-Day 계산 기능 구현
+
+<br>
+
+### 01. 홈 스크린 UI 구현
+#### (1) 위젯을 두 위젯으로 나눠서 화면 구성
+
+- HomeScreen 위쪽 반 : _DDay 위젯
+
+- HomeScreen 아래쪽 반 : _CoupleImage 위젯
+
+  - 이름 첫 글자가 언더스코어면 다른 파일에서 접근 불가
+ 
+    - 파일 불러오기 했을 때 불필요한 값들이 한 번에 불러와지는 것 방지
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  // HomeScreen 위젯
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        body: Text('Home Screen'),
+      );
+    }
+  }
+  
+  // HomeScreen 위쪽을 구현할 _DDay 위젯 생성
+  class _DDay extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Text('DDay Widget');
+    }
+  }
+  
+  // HomeScreen 아래쪽을 구현할 _CoupleImage 위젯 생성
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Text('Couple Image Widget');
+    }
+  }
+```
+
+<br>
+
+#### (2) 두 위젯을 위아래로 서로 반씩 차지하게 배치
+
+- HomeScreen 위젯에 Column 위젯을 사용해 두 위젯이 위아래에 놓이게 배치
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        body: SafeArea(     // 시스템 UI 피해서 UI 그리기
+          top: true,
+          bottom: false,
+          child: Column(
+            // 위아래 끝에 위젯 배치
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  
+            // 반대축 최대 크기로 늘릭
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DDay(),
+              _CoupleImage(),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+  
+  class _DDay extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Text('DDay Widget');
+    }
+  }
+  
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Text('Couple Image Widget');
+    }
+  }
+```
+- 아이폰의 노치에 대비해 위에는 SafeArea 적용, 자연스러운 이미지 구현을 위해 아래는 미적용
+
+- MainAxisAlignment.spaceBetween 사용해 위아래 각각 끝에 두 위젯 위치
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/02.png)|
+
+<br>
+
+#### (3) 배경색 및 이미지 적용
+- MediaQuery.of(context) 사용하면 화면 크기와 관련된 각종 기능 사용 가능
+
+  - size 게터를 불러오면 화면 전체의 너비(width)와 높이(height) 쉽게 가져올 수 있음
+ 
+    - 화면의 전체 높이를 2로 나누면 화면 높이의 반만큼 차지하게 설정 가능
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.pink[100],  // 핑크 배경색 적용
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DDay(),
+              _CoupleImage(),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+  
+  class _DDay extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Text('DDay Widget');
+    }
+  }
+  
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Center(    // 이미지 중앙 정렬
+        child: Image.asset('asset/img/middle_image.png',
+          // 화면의 반만큼 높이 구현
+          height: MediaQuery.of(context).size.height /2,
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/03.png)|
+
+<br>
+
+<details>
+  <summary>💡 .of 생성자</summary>
+
+<br>
+
+- **.of(context)** 로 정의된 모든 생성자
+
+  - 일반적으로 BuildContext 를 매개변수로 받음
+  
+  - 위젯 트리(widget tree)에서 가장 가까이에 있는 객체의 값 찾아냄
+
+- MediaQuery.of(context) : 현재 위젯 트리에서 가장 가까이에 있는 MedianQuery 값 찾아냄
+
+|-|
+|-|
+|![이미지](./img/04.png)|
+|- 앱이 실행되면 MaterialApp 이 빌드됨과 동시에 MediaQuery 생성됨<br><br>- 위젯 트리 아래에서 MediaQuery.of(context) 실행시 위젯 트리를 올라가며 가장 가까운 곳에 위치한 MediaQuery 값 가져옴<br><br>- 비슷한 예로 Theme.of(context) / Navigator.of(context) 등|
+
+</details>
+
+<br>
+
+#### (4) _DDay 위젯 구현
+- _DDay 위젯은 여러 Text 위젯과 하트 아이콘(IconButton)으로 구성
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.pink[100],  // 핑크 배경색 적용
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DDay(),
+              _CoupleImage(),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+  
+  class _DDay extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Column(
+        children: [
+          const SizedBox(height: 16.0),
+          Text(   // 최상단 U&I 글자
+            'U&I',
+          ),
+          const SizedBox(height: 16.0),
+          Text(   // 두 번째 글자
+            '우리 처음 만난 날',
+          ),
+          Text(   // 임시로 지정한 만날 날짜
+            '2024.03.24',
+          ),
+          const SizedBox(height: 16.0),
+          IconButton(   // 하트 아이콘 버튼
+            iconSize: 60.0,
+            onPressed: () {},
+            icon: Icon(
+              Icons.favorite,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Text(   // 만난 후 DDay
+            'D+208'
+          ),
+        ],
+      );
+    }
+  }
+  
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Center(    // 이미지 중앙 정렬
+        child: Image.asset('asset/img/middle_image.png',
+          // 화면의 반만큼 높이 구현
+          height: MediaQuery.of(context).size.height /2,
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/05.png)|
+
+<br>
+
+#### (5) Text 위젯 스타일링
+- Text 위젯 스타일링시 style 매개변수 사용
+
+- 각 Text 위젯의 스타일이 아닌 Text 위젯의 기본 스타일 변경시 테마(theme) 사용
+
+  - 13가지 Text 스타일을 따로 저장하여 프로젝트로 불러와서 사용 가능
+
+- 각 문장들을 스타일별로 나누기
+
+  - 스타일명은 임의적으로 지정 가능
+
+> Flutter 2.5 이후 버전에서 TextTheme의 스타일 이름이 변경
+
+|이전 스타일 이름|변경된 스타일 이름|
+|:-:|:-:|
+|headline1|displayLarge|
+|headline2|displayMedium|
+|headline3|displaySmall|
+|headline4|headlineLarge|
+|headline5|headlineMedium|
+|headline6|headlineSmall|
+|subtitle1|titleLarge|
+|subtitle2|titleMedium|
+|bodyText1|bodyLarge|
+|bodyText2|bodyMedium|
+|caption|bodySmall|
+|button|labelLarge|
+|overline|labelSmall|
+
+|-|
+|-|
+|![이미지](./img/06.png)|
+
+<br>
+- main.dart 파일에 텍스트와 IconButton 테마 정의
+
+> lib/main.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:u_and_i/screen/home_screen.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        theme: ThemeData(   // 테마를 지정할 수 있는 클래스
+          fontFamily: 'sunflower',    // 기본 글씨체
+          textTheme: TextTheme(       // 글자 테마를 적용할 수 있는 클래스
+            displayLarge: TextStyle(     // headline1 스타일 정의
+              color: Colors.white,    // 글 색상
+              fontSize: 80.0,         // 크기
+              fontWeight: FontWeight.w700,  // 글 두께
+              fontFamily: 'parisienne',     // 글씨체
+            ),
+            displayMedium: TextStyle(
+              color: Colors.white,
+              fontSize: 50.0,
+              fontWeight: FontWeight.w700,
+            ),
+            bodyLarge: TextStyle(
+              color: Colors.white,
+              fontSize: 30.0,
+            ),
+            bodyMedium: TextStyle(
+              color: Colors.white,
+              fontSize: 20.0,
+            ),
+          ),
+        ),
+        home: HomeScreen(),
+      ),
+    );
+  }
+```
+
+<br>
+
+- Text 위젯에 스타일 적용
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.pink[100],
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DDay(),
+              _CoupleImage(),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+  
+  class _DDay extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      // 테마 불러오기
+      final textTheme = Theme.of(context).textTheme;
+  
+      return Column(
+        children: [
+          const SizedBox(height: 16.0),
+          Text(
+            'U&I',
+            style: textTheme.displayLarge,   // headline1 스타일 적용
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            '우리 처음 만난 날',
+            style: textTheme.bodyLarge,   // bodyText1 스타일 적용
+          ),
+          Text(
+            '2024.03.24',
+            style: textTheme.bodyMedium,   // bodyText2 스타일 적용
+          ),
+          const SizedBox(height: 16.0),
+          IconButton(
+            iconSize: 60.0,
+            onPressed: () {},
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.red,    // 색상 빨강으로 변경
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            'D+208',
+            style: textTheme.displayMedium,   // headline2 스타일 적용
+          ),
+        ],
+      );
+    }
+  }
+  
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Center(
+        child: Image.asset('asset/img/middle_image.png',
+          height: MediaQuery.of(context).size.height /2,
+        ),
+      );
+    }
+  }
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/07.png)|
+
+<br>
+
+
+
+
+
 
 
 
