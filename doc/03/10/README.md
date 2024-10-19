@@ -1232,15 +1232,478 @@
 
 <br>
 
+### 03. CupertinoDatePicker 로 날짜 선택 구현
+#### (1) CupertinoDatePicker 화면 생성 구현
+- showCupertinoDialog() 함수 & CupertinoDatePicker 위젯 사용
 
+  - 아이콘 클릭시 날짜 선택 가능
 
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  // 1. 쿠퍼티노 (iOS) 위젯 사용하기 위해 필요
+  import 'package:flutter/cupertino.dart';
+  
+  class HomeScreen extends StatefulWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    State<HomeScreen> createState() => _HomeScreenState();
+  }
+  
+  class _HomeScreenState extends State<HomeScreen> {
+    DateTime firstDay = DateTime.now();
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.pink[100],
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DDay(
+                onHeartPressed: onHeartPressed,
+                firstDay: firstDay,
+              ),
+              _CoupleImage(),
+            ],
+          ),
+        ),
+      );
+    }
+  
+    void onHeartPressed() {
+      showCupertinoDialog(    // 2. 쿠퍼티노 다이얼로그 실행
+        context: context,     // 3. 보여줄 다이얼로그 빌드
+        builder: (BuildContext context){
+          // 4. 날짜 선택하는 다이얼로그
+          return CupertinoDatePicker(
+            // 5. 시간 제외하고 날짜만 선택
+            mode: CupertinoDatePickerMode.date,
+            onDateTimeChanged: (DateTime date) {},
+          );
+        },
+      );
+    }
+  }
+  
+  class _DDay extends StatelessWidget {
+    final GestureTapCallback onHeartPressed;
+    final DateTime firstDay;
+  
+    _DDay({
+      required this.onHeartPressed,
+      required this.firstDay,
+    });
+  
+    @override
+    Widget build(BuildContext context) {
+      final textTheme = Theme.of(context).textTheme;
+      final now = DateTime.now();
+  
+      return Column(
+        children: [
+          const SizedBox(height: 16.0),
+          Text(
+            'U&I',
+            style: textTheme.displayLarge,
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            '우리 처음 만난 날',
+            style: textTheme.bodyLarge,
+          ),
+          Text(
+            '${firstDay.year}.${firstDay.month}.${firstDay.day}',
+            style: textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16.0),
+          IconButton(
+            iconSize: 60.0,
+            onPressed: onHeartPressed,
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            'D+${DateTime(now.year, now.month, now.day).difference(firstDay).inDays + 1}',
+            style: textTheme.displayMedium,
+          ),
+        ],
+      );
+    }
+  }
+  
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Expanded(
+        child: Center(
+          child: Image.asset('asset/img/middle_image.png',
+  
+            height: MediaQuery.of(context).size.height /2,
+          ),
+        ),
+      );
+    }
+  }
+```
+- Cupertino 패키지 불러오기
 
+- showCupertinoDialog 실행해 하트 아이콘을 누르면 다이얼로그 열어줌
 
+- builder 매개변수에 입력되는 함수에 다이얼로그에 보여주고 싶은 위젯 반환
 
+  - 해당 위젯을 다이얼로그에서 보여줄 수 있음
+ 
+- CupertinoDatePicker 는 Cupertino 패키지에서 기본으로 제공하는 위젯
 
+  - 스크롤을 통해 날짜 정할 수 있음
+ 
+  - 정해진 값을 onDateTimeChanged 콜백 함수의 매개변수로 전달
+ 
+- mode 매개변수는 날짜를 고르는 모드 지정 가능
 
+  - CupertinoDatePickerMode.date : 날짜
+ 
+  - CupertinoDatePickerMode.time : 시간
+ 
+  - CupertinoDatePickerMode.dateAndTime : 날짜와 시간
 
+> 실행 결과
 
+|-|
+|-|
+|![이미지](./img/13.png)|
+
+<br>
+
+#### (2) 디자인 변경
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:flutter/cupertino.dart';
+  
+  class HomeScreen extends StatefulWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    State<HomeScreen> createState() => _HomeScreenState();
+  }
+  
+  class _HomeScreenState extends State<HomeScreen> {
+    DateTime firstDay = DateTime.now();
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.pink[100],
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DDay(
+                onHeartPressed: onHeartPressed,
+                firstDay: firstDay,
+              ),
+              _CoupleImage(),
+            ],
+          ),
+        ),
+      );
+    }
+  
+    void onHeartPressed() {
+      showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context){
+          return Align(   // 1. 정렬을 지정하는 위젯
+            alignment: Alignment.bottomCenter,  // 2. 아래 중간으로 정렬
+            child: Container(
+              color: Colors.white,  // 배경색 흰색 지정
+              height: 300,          // 높이 300 지정
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.date,
+                onDateTimeChanged: (DateTime date) {},
+              ),
+            ),
+          );
+        },
+        barrierDismissible: true,   // 3. 외부 탭할 경우 다이얼로그 닫기
+      );
+    }
+  }
+  
+  class _DDay extends StatelessWidget {
+    final GestureTapCallback onHeartPressed;
+    final DateTime firstDay;
+  
+    _DDay({
+      required this.onHeartPressed,
+      required this.firstDay,
+    });
+  
+    @override
+    Widget build(BuildContext context) {
+      final textTheme = Theme.of(context).textTheme;
+      final now = DateTime.now();
+  
+      return Column(
+        children: [
+          const SizedBox(height: 16.0),
+          Text(
+            'U&I',
+            style: textTheme.displayLarge,
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            '우리 처음 만난 날',
+            style: textTheme.bodyLarge,
+          ),
+          Text(
+            '${firstDay.year}.${firstDay.month}.${firstDay.day}',
+            style: textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16.0),
+          IconButton(
+            iconSize: 60.0,
+            onPressed: onHeartPressed,
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            'D+${DateTime(now.year, now.month, now.day).difference(firstDay).inDays + 1}',
+            style: textTheme.displayMedium,
+          ),
+        ],
+      );
+    }
+  }
+  
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Expanded(
+        child: Center(
+          child: Image.asset('asset/img/middle_image.png',
+  
+            height: MediaQuery.of(context).size.height /2,
+          ),
+        ),
+      );
+    }
+  }
+```
+- Align 위젯
+
+  - 자식 위젯(child widget)을 어떻게 위치시킬지 정할 수 있음
+ 
+  - alignment 매개변수에는 Alignment 값 입력
+ 
+- showCupertinoDialog 의 barrierDismissible 매개변수 : 배경 눌렀을 때 행동 지정
+
+  - false : 배경을 눌러도 다이얼로그가 닫히지 않음
+ 
+  - true : 배경을 누르면 다이얼로그가 닫힘
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/14.png)|
+
+<br>
+
+#### 💡 Alignment 정렬값
+|속성|예제|&nbsp;&nbsp;|속성|예제|
+|-|-|-|-|-|
+|Alignment.topRight<br>위 오른쪽|![이미지](./img/15.png)|&nbsp;&nbsp;|Alignment.centerLeft<br>중앙 왼쪽|![이미지](./img/16.png)|
+|Alignment.topCenter<br>위 중앙|![이미지](./img/17.png)|&nbsp;&nbsp;|Alignment.bottomRight<br>아래 오른쪽|![이미지](./img/18.png)|
+|Alignment.topLeft<br>위 왼쪽|![이미지](./img/19.png)|&nbsp;&nbsp;|Alignment.bottomCenter<br>아래 중앙|![이미지](./img/20.png)|
+|Alignment.centerRight<br>중앙 오른쪽|![이미지](./img/21.png)|&nbsp;&nbsp;|Alignment.bottomLeft<br>아래 왼쪽|![이미지](./img/22.png)|
+|Alignment.center<br>중앙|![이미지](./img/23.png)|&nbsp;&nbsp;|&nbsp;&nbsp;|&nbsp;&nbsp;|
+
+<br>
+
+#### 04. CupertinoDatePicker 변경 값 상태 관리에 적용
+- CupertinoDatePicker 날짜 값이 변경될 때마다 firstDay 값 변경
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:flutter/cupertino.dart';
+  
+  class HomeScreen extends StatefulWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    State<HomeScreen> createState() => _HomeScreenState();
+  }
+  
+  class _HomeScreenState extends State<HomeScreen> {
+    DateTime firstDay = DateTime.now();
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.pink[100],
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DDay(
+                onHeartPressed: onHeartPressed,
+                firstDay: firstDay,
+              ),
+              _CoupleImage(),
+            ],
+          ),
+        ),
+      );
+    }
+  
+    void onHeartPressed() {
+      showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context){
+          return Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              color: Colors.white,
+              height: 300,
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.date,
+                // 날짜가 변경되면 실행되는 함수
+                onDateTimeChanged: (DateTime date) {
+                  setState(() {
+                    firstDay = date;
+                  });
+                },
+              ),
+            ),
+          );
+        },
+        barrierDismissible: true,
+      );
+    }
+  }
+  
+  class _DDay extends StatelessWidget {
+    final GestureTapCallback onHeartPressed;
+    final DateTime firstDay;
+  
+    _DDay({
+      required this.onHeartPressed,
+      required this.firstDay,
+    });
+  
+    @override
+    Widget build(BuildContext context) {
+      final textTheme = Theme.of(context).textTheme;
+      final now = DateTime.now();
+  
+      return Column(
+        children: [
+          const SizedBox(height: 16.0),
+          Text(
+            'U&I',
+            style: textTheme.displayLarge,
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            '우리 처음 만난 날',
+            style: textTheme.bodyLarge,
+          ),
+          Text(
+            '${firstDay.year}.${firstDay.month}.${firstDay.day}',
+            style: textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16.0),
+          IconButton(
+            iconSize: 60.0,
+            onPressed: onHeartPressed,
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            'D+${DateTime(now.year, now.month, now.day).difference(firstDay).inDays + 1}',
+            style: textTheme.displayMedium,
+          ),
+        ],
+      );
+    }
+  }
+  
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Expanded(
+        child: Center(
+          child: Image.asset('asset/img/middle_image.png',
+  
+            height: MediaQuery.of(context).size.height /2,
+          ),
+        ),
+      );
+    }
+  }
+```
+- onDateTimeChanged 콜백 함수는 CupertinoDatePicker 위젯에서 날짜가 변경될 때마다 실행
+
+  - 콜백 함수가 실행될 때마다 매개변수로 제공되는 date 값을 firstDay 변수에 저장
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/24.png)|
+
+<br>
+
+---
+
+<br>
+
+🚨 핵심 요약
+---
+- **DateTime 클래스**로 날짜시간 저장 가능
+
+- DateTime 의 **difference() 함수**를 이용해서 두 날짜 간의 차이 구할 수 있음
+
+- **Duration 클래스**로 기간 저장 가능
+
+- StatefulWidget 에서 **setState() 함수**를 실행해서 build() 함수 재실행시킬 수 있음
+
+- **MediaQuery** 사용해 스크린 크기 정보 받아볼 수 있음
+
+- **Theme** 이용해 위젯들의 기폰 테마 지정 가능
+
+- **showCupertinoDialog** 이용해 iOS 스타일의 다이얼로그 띄우기 가능
+
+- **CupertinoDatePicker** 사용해 iOS 스타일의 위젯으로 날짜 입력받기 가능
+
+<br>
 
 
 
