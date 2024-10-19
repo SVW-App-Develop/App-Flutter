@@ -1539,7 +1539,7 @@
 
 <br>
 
-#### 04. CupertinoDatePicker 변경 값 상태 관리에 적용
+### 04. CupertinoDatePicker 변경 값 상태 관리에 적용
 - CupertinoDatePicker 날짜 값이 변경될 때마다 firstDay 값 변경
 
 > lib/screen/home_screen.dart
