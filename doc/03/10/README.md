@@ -507,6 +507,32 @@
 
   - 스타일명은 임의적으로 지정 가능
 
+- MaterialApp 의 theme 매개변수
+
+  - ThemeData 클래스(플러터가 기본으로 제공하는 대부분의 위젯 기본 스타일 지정 가능) 입력 가능
+
+<details>
+  <summary>💡 ThemeData 매개변수</summary>
+
+<br>
+
+|매개변수|설명|
+|-|-|
+|fontFamily|기본 글씨체 지정|
+|textTheme|Text 위젯 테마 지정|
+|tabBarTheme|TabBar 위젯 테마 지정|
+|cardTheme|Card 위젯 테마 지정|
+|appBarTheme|AppBar위젯 테마 지정|
+|floatingActionButtonTheme|FloatingActionButton 위젯 테마 지정|
+|elevatedButtonTheme|ElevbatedButton 위젯 테마 지정|
+|checkboxTheme|Checkbox 위젯 테마 지정|
+
+- **위젯이름Theme** 규칙을 이용해 특정 위젯의 테마 작업 가능
+
+</details>
+
+<br>
+
 > Flutter 2.5 이후 버전에서 TextTheme의 스타일 이름이 변경
 
 |이전 스타일 이름|변경된 스타일 이름|
@@ -663,9 +689,35 @@
 
 <br>
 
+#### 💡 다양한 화면의 비율과 해상도에 따른 오버플로 해결
+- 핸드폰은 화면 비율과 해상도가 모두 다름
 
+   - 하나의 화면을 기준으로 UI 작업시 다른 크기의 핸드폰에서 같은 UI 배치가 나오지 않는 경우 有
 
+- 오버플로(overflow)
 
+  - ex) 상단의 글자들이 화면의 반 이상을 차지하면 아래쪽 이미지는 남은 공간보다 더 많은 높이를 차지하게 됨
+ 
+  - 해결 방안
+ 
+    - 글자나 이미지의 크기를 임의로 조절
+   
+    - 이미지가 남는 공간만큼만 차지하도록 코드 작성
+   
+      - Expanded 위젯 사용
+
+> lib/screen/home_screen.dart
+```dart
+
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/08.png)|
+
+<br>
 
 
 
