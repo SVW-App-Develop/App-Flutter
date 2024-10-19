@@ -721,6 +721,526 @@
 
 <br>
 
+### 02. 상태 관리 연습
+- StatefulWidget 에서 setState() 함수 사용해 상태 관리
+
+<br>
+
+#### (1) HomeScreen 을 StatefulWidget 으로 변경 및 변수값 선언
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatefulWidget {   // StatelessWidget -> StatefulWidget
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    State<HomeScreen> createState() => _HomeScreenState();  // 추가
+  }
+  
+  class _HomeScreenState extends State<HomeScreen> {    // 추가
+    // 상태 관리할 값 : '처음 만난 날' <= 이 날짜를 변수값으로 저장 후 변경하면서 사용
+    // 오늘을 기준으로 변수값 선언
+    DateTime firstDay = DateTime.now();
+    
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.pink[100],
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DDay(),
+              _CoupleImage(),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+  
+  class _DDay extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      final textTheme = Theme.of(context).textTheme;
+  
+      return Column(
+        children: [
+          const SizedBox(height: 16.0),
+          Text(
+            'U&I',
+            style: textTheme.displayLarge,
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            '우리 처음 만난 날',
+            style: textTheme.bodyLarge,
+          ),
+          Text(
+            '2024.03.24',
+            style: textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16.0),
+          IconButton(
+            iconSize: 60.0,
+            onPressed: () {},
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            'D+208',
+            style: textTheme.displayMedium,
+          ),
+        ],
+      );
+    }
+  }
+  
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Expanded(    // Expanded 추가
+        child: Center(
+          child: Image.asset('asset/img/middle_image.png',
+  
+            // Expanded 가 우선순위를 갖게 되어 무시됨
+            height: MediaQuery.of(context).size.height /2,
+          ),
+        ),
+      );
+    }
+  }
+```
+
+<br>
+
+#### (2) 날짜 변경될 때마다 firstDay 변수 변경
+- 하트 버튼 누르면 날짜 고를 수 있는 UI 노출
+
+- 현재 하트 버튼의 onPressed 매개변수가 _DDay 위젯에 위치
+
+  - _HomeScreenState 에서 버튼이 눌렸을 때 콜백 받을 수 없음
+ 
+- _DDay 위젯에 하트 아이콘 눌렀을 때 실행되는 콜백 함수를 매개변수로 노출해 _HomeScreenState 에서 상태 관리하도록 변경
+
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatefulWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    State<HomeScreen> createState() => _HomeScreenState();
+  }
+  
+  class _HomeScreenState extends State<HomeScreen> {
+    DateTime firstDay = DateTime.now();
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.pink[100],
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DDay(
+                // 5. 하트 눌렀을 때 실행할 함수 전달
+                onHeartPressed: onHeartPressed,
+              ),
+              _CoupleImage(),
+            ],
+          ),
+        ),
+      );
+    }
+    void onHeartPressed() {   // 4. 하트 눌렀을 때 실행할 함수
+      print('클릭');
+    }
+  }
+  
+  class _DDay extends StatelessWidget {
+    // 1. 하트 눌렀을 때 실행할 함수
+    final GestureTapCallback onHeartPressed;
+  
+    _DDay({
+      required this.onHeartPressed,   // 2. 상위에서 함수 입력받기
+    });
+  
+    @override
+    Widget build(BuildContext context) {
+      final textTheme = Theme.of(context).textTheme;
+  
+      return Column(
+        children: [
+          const SizedBox(height: 16.0),
+          Text(
+            'U&I',
+            style: textTheme.displayLarge,
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            '우리 처음 만난 날',
+            style: textTheme.bodyLarge,
+          ),
+          Text(
+            '2024.03.24',
+            style: textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16.0),
+          IconButton(
+            iconSize: 60.0,
+            onPressed: onHeartPressed,    // 3. 아이콘 눌렀을 때 실행할 함수
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            'D+208',
+            style: textTheme.displayMedium,
+          ),
+        ],
+      );
+    }
+  }
+  
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Expanded(    // Expanded 추가
+        child: Center(
+          child: Image.asset('asset/img/middle_image.png',
+  
+            height: MediaQuery.of(context).size.height /2,
+          ),
+        ),
+      );
+    }
+  }
+```
+- IconButton 의 onPressed 매개변수에 입력할 GestureTapCallback 타입의 변수 정의
+
+  - Material 패키지에서 기본으로 제공하는 Typedef
+ 
+  - 버튼의 onPressed, onTap 콜백 함수들이 GestureTapCallback 타입으로 정의되어 있음
+ 
+  - 아무것도 반환하지 않고 아무것도 입력받지 않는 기본 형태의 함수로 정의되어 있음
+ 
+- onHeartPressed 값을 생성자 매개변수를 통해 외부에서 정의받음
+
+- 기존에 정의했던 비어있는 함수 대신에 onHeartPressed 값 넣어주기
+
+- 하트 아이콘 눌렀을 때 실행할 함수 정의
+
+- _DDay 위젯 생성자에 추가된 매개변수 onHeartPressed 에 _HomeScreenState 에 정의한 onHeartPressed 함수 입력
+
+> 실행 결과
+
+|-|-|
+|-|-|
+|![이미지](./img/09.png)|![이미지](./img/10.png)|
+
+<br>
+
+#### (3) firstDay 변수와 연동
+- _DDay 생성자에 매개변수로 firstDay 값 입력
+
+  - firstDay 변수를 기반으로 날짜와 D-Day 가 렌더링되게 만들기
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatefulWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    State<HomeScreen> createState() => _HomeScreenState();
+  }
+  
+  class _HomeScreenState extends State<HomeScreen> {
+    DateTime firstDay = DateTime.now();
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.pink[100],
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DDay(
+                onHeartPressed: onHeartPressed,
+                firstDay: firstDay,     // 6. _HomeScreenState 의 firstDay 변수값을 매개변수로 입력
+              ),
+              _CoupleImage(),
+            ],
+          ),
+        ),
+      );
+    }
+    void onHeartPressed() {
+      print('클릭');
+    }
+  }
+  
+  class _DDay extends StatelessWidget {
+    final GestureTapCallback onHeartPressed;
+    final DateTime firstDay;    // 1. 사귀기 시작한 날
+  
+    _DDay({
+      required this.onHeartPressed,
+      required this.firstDay,   // 2. 날짜 변수로 입력받기
+    });
+  
+    @override
+    Widget build(BuildContext context) {
+      final textTheme = Theme.of(context).textTheme;
+      final now = DateTime.now();   // 3. 현재 날짜시간
+  
+      return Column(
+        children: [
+          const SizedBox(height: 16.0),
+          Text(
+            'U&I',
+            style: textTheme.displayLarge,
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            '우리 처음 만난 날',
+            style: textTheme.bodyLarge,
+          ),
+          Text(
+            // '2024.03.24',
+            // 4. DateTime 을 년.월.일 형태로 변경
+            '${firstDay.year}.${firstDay.month}.${firstDay.day}',
+            style: textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16.0),
+          IconButton(
+            iconSize: 60.0,
+            onPressed: onHeartPressed,
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            // 'D+208',
+            // 5. DDay .계산
+            'D+${DateTime(now.year, now.month, now.day).difference(firstDay).inDays + 1}',
+            style: textTheme.displayMedium,
+          ),
+        ],
+      );
+    }
+  }
+  
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Expanded(
+        child: Center(
+          child: Image.asset('asset/img/middle_image.png',
+  
+            height: MediaQuery.of(context).size.height /2,
+          ),
+        ),
+      );
+    }
+  }
+```
+- 위젯에서 사용할 DateTime 값을 변수로 선언
+
+- firstDay 변수값을 생성자의 매개변수로 외부에서 입력받도록 정의
+
+- 현재 날짜 시간 값을 now 변수에 저장
+
+- DateTime 타입 게터
+
+  - year(년), month(월), day(일), hour(시간), minute(분), second(초), millisecond(밀리초), microsecond(마이크로초), weekday(요일)
+
+- DateTime 생성자에는 매개변수를 사용해서 원하는 날짜시간을 DateTime 값으로 만들수 있음
+
+  - difference() 함수 사용해 두 개의 DateTime 값 비교 가능
+ 
+    - Duration 값 반환
+   
+    - Duration 값에는 기간을 날짜로 반환하는 inDays 게터 존재
+   
+    - 오늘 날짜와 firstDay 변수의 기간 차이를 일수로 계산
+   
+      - 사귀는 첫 날은 1일로 정의하기 때문에 +1 넣어줌
+     
+- _HomeScreenState 의 firstDay 변수값을 매개변수로 입력
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/11.png)|
+
+<br>
+
+#### (4) firstDay 가 하루씩 늘어나는 기능 추가
+- setState() 함수 사용
+
+- 상태 관리 테스트로 하트 아이콘 누르면 firstDay 가 하루씩 늘어나는 기능 추가
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatefulWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    State<HomeScreen> createState() => _HomeScreenState();
+  }
+  
+  class _HomeScreenState extends State<HomeScreen> {
+    DateTime firstDay = DateTime.now();
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.pink[100],
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DDay(
+                onHeartPressed: onHeartPressed,
+                firstDay: firstDay,
+              ),
+              _CoupleImage(),
+            ],
+          ),
+        ),
+      );
+    }
+  
+    void onHeartPressed() {
+      // 1. 상태 변경 시 setState() 함수 실행
+      setState((){
+        // 2. firstDay 변수에서 하루 빼기
+        firstDay = firstDay.subtract(Duration(days: 1));
+      });
+    }
+  
+  }
+  
+  class _DDay extends StatelessWidget {
+    final GestureTapCallback onHeartPressed;
+    final DateTime firstDay;
+  
+    _DDay({
+      required this.onHeartPressed,
+      required this.firstDay,
+    });
+  
+    @override
+    Widget build(BuildContext context) {
+      final textTheme = Theme.of(context).textTheme;
+      final now = DateTime.now();
+  
+      return Column(
+        children: [
+          const SizedBox(height: 16.0),
+          Text(
+            'U&I',
+            style: textTheme.displayLarge,
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            '우리 처음 만난 날',
+            style: textTheme.bodyLarge,
+          ),
+          Text(
+            '${firstDay.year}.${firstDay.month}.${firstDay.day}',
+            style: textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16.0),
+          IconButton(
+            iconSize: 60.0,
+            onPressed: onHeartPressed,
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            'D+${DateTime(now.year, now.month, now.day).difference(firstDay).inDays + 1}',
+            style: textTheme.displayMedium,
+          ),
+        ],
+      );
+    }
+  }
+  
+  class _CoupleImage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Expanded(
+        child: Center(
+          child: Image.asset('asset/img/middle_image.png',
+  
+            height: MediaQuery.of(context).size.height /2,
+          ),
+        ),
+      );
+    }
+  }
+```
+- setState() 함수 사용 방법
+
+  - 매개변수에 함수 입력 후 함수에 변경하고 싶은 벼수값 지정
+ 
+  - 원하는 만큼 기간을 뺄 수 있는 subtract() 함수 사용해 버튼 누를 때마다 firstDay 값 줄어드는 기능 추가
+ 
+- DateTime : 날짜, 시간을 저장할 수 있는 변수 타입 / Duration : 기간을 정할 수 있는 변수 타입
+
+> 실행 결과
+
+|-|-|
+|-|-|
+|![이미지](./img/11.png)|![이미지](./img/12.png)|
+
+<br>
+
+
+
+
+
+
+
+
+
+
 
 
 
