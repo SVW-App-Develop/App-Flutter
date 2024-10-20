@@ -602,6 +602,102 @@ final secondaryColor = Colors.grey[600];      // 보조 색상
   ...생략...
 ```
 
+> 실행 결과
+
+|기본화면|스와이프|네비게이션 클릭|
+|-|-|
+|![이미지](./img/03.png)|![이미지](./img/04.png)|![이미지](./img/03.png)|
+
+- TabBarView 스와이프시 화면 전환 O
+
+- BottomNavigationBar 탭 클릭시 화면 전환 X
+
+  - BottomNavigation 누를 때마다 TabBarView 와 연동해야 하기 때문
+ 
+<br>
+
+#### (7) TabBarView 와 BottomNavigation 연동
+> lib/screen/root_screen.dart
+```dart
+  ...생략...
+  class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
+    TabController? controller;
+    
+    @override
+    void initState() {
+      super.initState();
+      
+      controller = TabController(length: 2, vsync: this);
+      
+      // 1. 컨트롤러 속성이 변경될 때마다 실행할 함수 등록
+      controller!.addListener(tabListener);
+    }
+    
+    tabListener() {   // 2. 리스너로 사용할 함수
+      setState(() {});
+    }
+    
+    @override
+    dispose(){
+      controller!.removeListener(tabListener());  // 3. 리스너에 등록한 함수 등록 취소
+      super.dispose();
+    }
+    ...생략...
+    BottomNavigationBar renderBottomNavigation() {
+      return BottomNavigationBar(
+        // 4. 현재 화면에 렌더링되는 탭의 인덱스
+        currentIndex: controller!.index,
+          onTap: (int index) {    // 5. 탭이 선택될 때마다 실행되는 함수
+            setState((){
+              controller!.animateTo(index);
+            });
+          },
+          items: [
+            ...생략...
+      );
+    }
+  }
+```
+- TabBarView 에서 바라보고 있는 화면의 인덱스가 변경될 때마다 BottomNavigationBar 다시 그려 어떤 탭이 보여지는지 표시
+
+  - addListener() 함수 : controller 속성 변할 때마다 특정 함수 실행할 수 있도록 콜백 함수 등록 가능
+ 
+    - 콜백 함수에 setState() 실행
+   
+    - controller 속성 변경될 때마다 build() 재실행
+   
+    - RootScreen 위젯 생성될 때 단 한 번만 리스너 등록되면 되니 initState() 에서 실행
+   
+- TabController 속성이 변경될 때마다 실행할 함수
+
+- addListener 사용해 listener 등록시 위젯 삭제될 때 항상 등록된 listener 도 같이 삭제해줘야 함
+
+  - 위젯 삭제시 실행되는 dispose() 함수 오버라이드해서 controller 에 붙은 리스너 삭제
+ 
+- BottomNavigationBar 에서 현재 선택된 상태로 표시해야 하는 BottomNavigationBarItem 의 index
+
+  - TabBarView 와 같은 탭의 인덱스를 바라보게 해줘야 함
+ 
+- BottomNavigationBVarItem 눌릴 때마다 실행되는 함수
+
+  - 매개변수로 눌린 탭의 인덱스 전달
+ 
+    - 탭 눌렀을 때 TabBarView 와 화면 동기화
+   
+    - animateTo() 함수 사용해 자연스러운 애니메이션으로 지정 탭으로 TabBarView 전환되게 함
+
+> 실행 결과
+
+|주사위|설정|
+|-|-|
+|![이미지](./img/03.png)|![이미지](./img/05.png)|
+
+
+<br>
+
+### 02. HomeScreen 위젯 구현
+
+
 <br>
 
 ---
