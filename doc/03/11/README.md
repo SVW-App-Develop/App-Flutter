@@ -547,7 +547,7 @@ final secondaryColor = Colors.grey[600];      // 보조 색상
 > 실행 결과
 
 |기본화면|스와이프|네비게이션 클릭|
-|-|-|
+|-|-|-|
 |![이미지](./img/03.png)|![이미지](./img/04.png)|![이미지](./img/03.png)|
 
 - TabBarView 스와이프시 화면 전환 O
@@ -638,6 +638,261 @@ final secondaryColor = Colors.grey[600];      // 보조 색상
 <br>
 
 ### 02. HomeScreen 위젯 구현
+#### (1) Column 위젯 하나를 사용해 Image 위젯과 Text 위젯 배치
+- 어떤 숫자를 보여줄지는 RootScreen 위젯에서 정하도록 생성자 통해 number 매개변수값 입력받기
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:random_dice/const/colors.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    final int number;
+    
+    const HomeScreen({required this.number, Key? key,}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // 1. 주사위 이미지
+          Center(
+            child: Image.asset('asset/img/$number.png'),
+          ),
+          SizedBox(height: 32.0),
+          Text(
+            '행운의 숫자',
+            style: TextStyle(
+              color: secondaryColor,
+              fontSize: 20.0,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(height: 12.0),
+          Text(
+            number.toString(),    // 2. 주사위 값에 해당되는 숫자
+            style: TextStyle(
+              color: primaryColor,
+              fontSize: 60.0,
+              fontWeight: FontWeight.w200,
+            ),
+          ),
+        ],
+      );
+    }
+  }
+```
+- 생성자로 입력받은 number 값에 해당되는 이미지를 화면에 그려줌
+
+- 생성자로 입력받은 number 값에 해당되는 글자를 화면에 그려줌
+
+<br>
+
+#### (2) RootScreen 에 임의로 입력해둔 첫 번째 Container 위젯 대체
+- TabBarView 의 첫 번째 화면에 'Tab 1' 대신 1 이라는 number 값 입력해보기
+
+> lib/screen/root_screen.dart
+```dart
+  import 'package:random_dice/screen/home_screen.dart'
+  ...생략...
+   List<Widget> renderChildren() {
+      return [
+        // 첫 번째 Container 삭제
+        // Container(
+        //   child: Center(
+        //     child: Text(
+        //       'Tab 1',
+        //       style: TextStyle(
+        //         color: Colors.white,
+        //       ),
+        //     ),
+        //   ),
+        // ),
+        // HomeScreen 불러와 입력
+        HomeScreen(number: 1),
+        Container(
+          child: Center(
+            child: Text(
+              'Tab 2',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ];
+    }
+  ...생략...
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/06.png)|
+
+<br>
+
+### 03. SettingScreen 위젯 구현
+#### (1) SettingsScreen 위젯 만들기
+- [lib] 폴어 내 [screen] 폴더 내 settings_screen.dart 파일 생성
+
+<br>
+
+#### (2) SettingsScreen 배치 및 셋팅
+- SettingsScreen : Text 위젯 & Slider 위젯으로 구성
+
+  - Column 위젯을 이용해 세로로 배치
+ 
+- Slider 위젯 : 눌러서 좌우로 움직딜 때 움직인 만큼의 값이 제공되는 콜백 함수 실행
+
+  - 그 값을 저장하고 다시 Slider 에 넣어주는 게 주요 포인트
+ 
+  - Slider 의 현재값과 콜백 함수는 외부로 노출, 나머지 매개변수들은 SettingScreen 에서 관리
+ 
+    - 민감도에 대한 상태는 RootScreen 위젯에서 관리
+
+> lib/screen/settings_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:random_dice/const/colors.dart';
+  
+  class SettingsScreen extends StatelessWidget {
+    final double threshold;   // Slider 현재값
+  
+    // Slider 변경될 때마다 실행되는 함수
+    final ValueChanged<double> onThresholdChange;
+    
+    const SettingsScreen({Key? key,
+      // threshold 와 onThreshold 는 SettingsScreen 에서 입력
+      required this.threshold,
+      required this.onThresholdChange,
+    }) : super(key: key);
+    
+    @override
+    Widget build(BuildContext context) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Row(
+              children: [
+                Text(
+                  '민감도',
+                  style: TextStyle(
+                    color: secondaryColor,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Slider(
+            min: 0.1,         // 1. 최소값
+            max: 10.0,        // 2. 최대값
+            divisions: 101,   // 3. 최소값과 최대값 사이 구간 개수
+            value: threshold, // 4. 슬라이더 선택값
+            onChanged: onThresholdChange,   // 5. 값 변경 시 실행되는 함수
+            label: threshold.toStringAsFixed(1),  // 6. 표시값
+          ),
+        ],
+      );
+    }
+  }
+```
+- Slider 최소값
+
+  - Slider 위젯을 왼쪽 끝으로 이동시켰을 때 값
+ 
+- Slider 최대값
+
+  - Slider 위젯을 오른쪽 끝으로 이동시켰을 때 값
+ 
+- min 값과 max 값을 나누는 구분 개수
+
+  - 0.1 ~ 10 사이 101개의 구간으로 나눠서 각 구간을 이동할 때마다 0.1씩 현재값 변경
+ 
+- Slider 위젯의 현재값
+
+  - 이 값에 따라 Slider 위젯에서 원의 위치가 정해짐
+ 
+- Slider 위젯의 콜백 함수
+
+  - 사용자의 제스처에 의해 Slider 위젯의 원이 움직이는 만큼 콜백 함수의 매개변수로 이동한 값 제공
+ 
+    - onChanged 매개변수로 입력받은 현재값을 State 에 저장
+   
+    - 다시 value 매개변수에 같은 값을 입력
+   
+- label 매개변수 이용시 Slider 위젯 스크롤할 때마다 화면에 표시할 문자 지정 가능
+
+  - Slider 값을 소수점 한 자리까지 표현하도록 코드 작성
+ 
+<br>
+
+#### (3) SettingsScreen 을 RootScreen 에 적용
+- Slider 위젯의 현재값과 onChanged 매개변수를 RootScreen 에서 입력받도록 작성
+
+> lib/screen/root_screen.dart
+```dart
+import 'package:random_dice/screen/settings_screen.dart';
+...생략...
+class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
+  TabController? controller;
+  double threshold = 2.7;       // 민감도의 기본값 설정
+  ...생략...
+  List<Widget> renderChildren() {
+    return [
+      HomeScreen(number: 1),
+      // 두 번째 Container 삭제
+      // Container(    // 설정 스크린 탭
+      //   child: Center(
+      //     child: Text(
+      //       'Tab 2',
+      //       style: TextStyle(
+      //         color: Colors.white,
+      //       ),
+      //     ),
+      //   ),
+      // ),
+      SettingsScreen(    // 두 번째 Container 대체
+        threshold: threshold,
+        onThresholdChange: onThresholdChange,
+      ),
+    ];
+  }
+
+  // 1. 슬라이더값 변경 시 실행 함수
+  void onThresholdChange(double val) {
+    setState(() {
+      threshold = val;
+    });
+  }
+  ...생략...
+```
+- Slider 위젯 현재값이 변경될 때마다 threshold 변수에 값 저장
+
+  - setState() 함수 실행해서 build() 함수 재실행
+ 
+  - Slider 위젯은 변경된 threshold 변수의 값을 기반으로 화면에 다시 그려짐
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/07.png)|
+
+- '설정' 탭의 슬라이더를 좌우로 움직일 때 Slider 위젯 값 변경
+
+- 현재값이 원 위에 표시 (label 매개변수)
+
+<br>
+
+### 04. shake 플러그인 적용
+
 
 
 <br>
