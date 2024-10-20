@@ -993,7 +993,7 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
      
       - 난수는 최소 0부터 생성
       
-        - 0~5까지 생성되게 매개변수에 5 넣어주고 결과값에 1 더하면 1~6 사이 난수 생성 가능
+        - 0 \~ 5까지 생성되게 매개변수에 5 넣어주고 결과값에 1 더하면 1 \~ 6 사이 난수 생성 가능
        
   - 생성된 난수 미리 만들어둔 number 변수에 setState() 함수로 저장하면 화면에 반영됨
 
