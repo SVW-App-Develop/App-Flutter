@@ -111,8 +111,159 @@
 
 11.2 사전 준비
 ---
+- 프로젝트에서 사용할 상수값들을 미리 정리해두면 개발이 훨씬 수월해짐
+
+  - 프로젝트에서 사용할 색상을 colors.dart 파일에 미리 추가
+ 
+<br>
+
+### 01. 상수 추가
+
+- 프로그래밍 시 반복적으로 사용하는 상수 多
+
+  - 한 번 입력 후 변경하지 않으면 괜찮지만, 이후 일괄 변경하려면 번거로움
+ 
+    - 위 상황 예방을 위해 프로젝트에 반복적으로 사용할 상수는 별도 파일에 정리
+
+<br>
+
+#### (1) [lib] 폴더에 [const] 폴더 추가
+- 상수값과 관련된 모든 파일 저장
+
+- [const] 폴더 안에 색상과 관련된 모든 상수값들을 저장할 colors.dart 파일 생성
+
+<br>
+
+#### (2) 프로젝트에서 사용할 색상 정보를 colors.dart 파일에 저장
+> lib/const/colors.dart
+```dart
+import 'package:flutter/material.dart';
+
+const backgroundColor = Color(0xFF0E0E0E);    // 배경색
+const primaryColor = Colors.white;            // 주색상
+final secondaryColor = Colors.grey[600];      // 보조 색상
+```
+
+<br>
+
+#### (3) const 사용 가능 여부
+- Colors.grey : const 선언 가능
+
+  - 600 등 키값 입력시 런타임에 색상이 계산되어 const 사용 불가능
+
+<br>
+
+### 02. 이미지 추가
+- [asset] 폴더 아래 [img] 폴더 생성
+
+  - 사용할 이미지 복사
 
 
+<br>
+
+### 03. pubspec.yaml 설정
+- 이미지를 읽을 위치를 pubspec.yaml 파일에 추가 후 [Pub get]
+```dart
+  dependencies:
+    flutter:
+      sdk: flutter
+  
+    cupertino_icons: ^1.0.8
+    shake: 2.2.0      # 흔들림을 감지하는 플러그인
+  
+  ...생략...
+  
+  flutter:
+  
+    uses-material-design: true
+    
+    assets:
+      - asset/img/        # 이미지 경로 추가
+```
+
+<br>
+
+### 04. 프로젝트 초기화
+#### (1) HomeScreen 이라는 StatelessWidget 생성
+- [lib] 폴더 내 [screen] 폴더 생성
+
+- 앱의 기본 화면으로 사용할 HomeScreen 위젯을 생성할 home_screen.dart 생성
+
+- HomeScreen 위젯 생성
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        body: Text('Home Screen'),
+      );
+    }
+  }
+```
+
+<br>
+
+#### (2) HomeScreen 홈 위젯으로 등록
+- main 파일에 HomeScreen 을 홈 위젯으로 등록
+
+> lib/main.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:random_dice/screen/home_screen.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        home: HomeScreen(),
+      ),
+    );
+  }
+```
+
+<br>
+
+### 05. Theme 설정
+- 상수를 사용해 테마 적용
+
+  - main 파일의 MaterialApp 위젯 안에 정의
+
+> lib/main.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:random_dice/screen/home_screen.dart';
+  import 'package:random_dice/const/colors.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        // Theme 설정
+        theme: ThemeData(
+          scaffoldBackgroundColor: backgroundColor,
+          sliderTheme: SliderThemeData(       // Slider 위젯 관련 테마
+            thumbColor: primaryColor,         // 노브 색삭
+            activeTrackColor: primaryColor,   // 노브가 이동한 트랙 색상
+  
+            // 노브가 아직 이동하지 않은 트랙 색상
+            inactiveTrackColor: primaryColor.withOpacity(0.3),
+          ),
+          // BottomNavigationBar 위젯 관련 테마
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            selectedItemColor: primaryColor,      // 선택 상태 색
+            unselectedItemColor: secondaryColor,  // 비선택 상태 색
+            backgroundColor: backgroundColor,     // 배경색
+          ),
+        ),
+        home: HomeScreen(),
+      ),
+    );
+  }
+```
 
 <br>
 
@@ -122,8 +273,106 @@
 
 11.3 레이아웃 구상
 ---
+- BottomNavigationBar 위젯을 사용해 화면 전환
 
+  - 첫 번째 화면(HomeScreen), 두 번째 화면(SettingsScreen)을 TabBarView 이용해 RootScreen 위젯에 위치시킴 void main() {
+    runApp(
+      MaterialApp(
+        home: HomeScreen(),
+      ),
+    );
+  }
+```
 
+<br>
+
+### 05. Theme 설정
+- 상수를 사용해 테마 적용
+
+  - main 파일의 MaterialApp 위젯 안에 정의
+
+> lib/main.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:random_dice/screen/home_screen.dart';
+  import 'package:random_dice/const/colors.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        // Theme 설정
+        theme: ThemeData(
+          scaffoldBackgroundColor: backgroundColor,
+          sliderTheme: SliderThemeData(       // Slider 위젯 관련 테마
+            thumbColor: primaryColor,         // 노브 색삭
+            activeTrackColor: primaryColor,   // 노브가 이동한 트랙 색상
+  
+            // 노브가 아직 이동하지 않은 트랙 색상
+            inactiveTrackColor: primaryColor.withOpacity(0.3),
+          ),
+          // BottomNavigationBar 위젯 관련 테마
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            selectedItemColor: primaryColor,      // 선택 상태 색
+            unselectedItemColor: secondaryColor,  // 비선택 상태 색
+            backgroundColor: backgroundColor,     // 배경색
+          ),
+        ),
+        home: HomeScreen(),
+      ),
+    );
+  }
+```
+
+<br>
+
+---
+
+<br>
+
+11.3 레이아웃 구상
+---
+- BottomNavigationBar 위젯을 사용해 화면 전환
+
+  - 첫 번째 화면(HomeScreen), 두 번째 화면(SettingsScreen)을 TabBarView 이용해 RootScreen 위젯에 위치시킴
+ 
+    - RootScreen 하나에 탭으로 홈 스크린과 설정 스크린을 감싸고 있는 형태
+
+<br>
+
+#### (1) 기본 스크린 위젯
+- 이번 프로젝트에서 사용할 모든 위젯을 담고 있는 최상위 위젯
+
+- 주사위가 보이는 홈 스크린과 감도를 설정할 수 있는 설정 스크린을 탭으로 담게 됨
+
+  - RootScreen 위젯으로 명명
+ 
+- RootScreen
+
+  - 상단 : TabBarView(선택된 화면 보여줌)
+ 
+  - 하단 : BottomNavigationBar 위젯
+ 
+  - 하단에서 각 탭을 누르거나 상단에서 좌우로 스크롤해 화면 전환 가능
+ 
+<br>
+
+#### (2) 홈 스크린 위젯
+- HomeScreen 위젯은 하나의 Column 위젯으로 간단하게 구현 가능
+
+- 가장 위에 주사위 이미지 위치(Image 위젯 사용)
+
+- '행운의 숫자' 문구 작성(Text 위젯 사용)
+
+- 각 숫자의 눈 개수 표현(Text 위젯 사용)
+
+<br>
+
+#### (3) 설정 스크린 위젯
+- SettingsScreen 위젯 가운데 민감도를 정하는 Slider 위젯 위치
+
+  - 사용자가 좌우로 이동해서 직접 흔들기 기능의 민감도 지정 가능
+ 
+- Slider 위젯의 기능을 쉽게 알 수 있도록 Text 위젯으로 레이블 작성
 
 <br>
 
@@ -133,8 +382,196 @@
 
 11.4 구현
 ---
+### 01. RootScreen 위젯 구현
+#### (1) root_screen 파일 생성
+- RootScreen 위젯 작업의 주요 요소 : BottomNavigationBar & TabBarView
 
+- [lib] 폴더 안 [screen] 폴더 안에 root_screen.dart 파일 생성
 
+<Br>
+
+#### (2) 위젯 반환 함수 작업
+- TabBarView 위젯과 BottomNavigationBar 위젯을 반환해줄 renderChildren() 함수, renderBottomNavigation() 함수 작업
+
+> lib/screen/root_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class RootScreen extends StatelessWidget {
+    const RootScreen({Key? key}) : super(key: key);
+    
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        body: TabBarView(   // 1. 탭 화면을 보여줄 위젯
+          children: renderChildren(),
+        ),
+        
+        // 2. 아래 탭 내비게이션을 구현하는 매개변수
+        bottomNavigationBar: renderBottomNavigation(),
+      );
+    }
+    
+    List<Widget> renderChildren(){
+      return [];
+    }
+    
+    BottomNavigationBar renderBottomNavigation(){
+      // 3. 탭 내비게이션을 구현하는 위젯
+      return BottomNavigationBar(items: []);
+    }
+  }
+```
+- TabBarView 위젯 이용시 각종 Tab 위젯과 쉽게 연동할 수 있는 UI 구현 가능
+
+  - PageView 와 비슷한 기본 애니메이션 제공
+ 
+  - children 매개변수에 각 탭의 화면으로 활용하고 싶은 위젯을 List 로 넣어줌
+ 
+- Scaffold 위젯은 BottomNavigationBar 위치시키는 매개변수 따로 보유
+
+  - bottomNavigation 매개변수에 BottomNavigationBar 넣어주면 쉽게 Tab 조정할 수 있는 UI 를 핸드폰 아래에 배치 가능
+
+- BottomNavigationBar 에 제공될 각 탭은(아이콘과 탭의 레이블) BottomNavigationBar 위젯의 items 매개변수에 제공
+
+<br>
+
+#### (3) 홈 화면 변경
+- main 파일에 홈 화면을 RootScreen 위젯으로 변경
+
+  - HomeScreen 은 RootScreen 의 탭 중 하나(첫 번째 탭)로 구현할 계획
+
+> lib/main.dart
+```dart
+  ...생략...
+  import 'package:random_dice/screen/root_screen.dart';  # 임포트
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        ...생략...
+        home: RootScreen(),   // HomeScreen 을 RootScreen 으로 변경
+      ),
+    );
+  }
+```
+
+<br>
+
+#### (4) TabBarView 작업
+- TabController 필수
+
+  - 초기화하려면 vsync 기능 필요
+ 
+    - State 위젯에 TickderProviderMixin 을 mixin 으로 제공해줘야 사용 가능
+   
+- TabController 는 위젯이 생성될 때 단 한 번만 초기화되어야 함
+
+  - HomeScreen 위젯을 StatefulWiget 으로 변경 후 initState() 에서 초기화
+
+> lib/screen/root_screen.dart
+```dart
+  ...생략...  
+  class RootScreen extends StatefulWidget {    // StatelessWidget -> StatefulWidget
+    const RootScreen({Key? key}) : super(key: key);
+  
+    @override
+    State<RootScreen> createState() => _RootScreenState();
+  }
+  
+  // 1. TickerProviderStateMixin 사용
+  class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
+    TabController? controller;    // 사용할 TabController 선언
+    
+    @override
+    void initState() {
+      super.initState();
+      
+      // 2. 컨트롤러 초기화
+      controller = TabController(length: 2, vsync: this);
+    }
+    
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        body: TabBarView(
+          controller: controller,   // 3. 컨트롤러 등록
+          children: renderChildren(),
+        ),
+  
+        bottomNavigationBar: renderBottomNavigation(),
+      );
+    }
+    ...생략...
+  }
+```
+- TickerProviderMixin 과 SingleTickerProviderMixin 은 애니메이션의 효율을 올려주는 역할
+
+- TabController
+
+  - length 매개변수에는 탭 개수를 int 값으로 제공
+ 
+  - vsync 에는 TickerProviderMixin 을 사용하는 State 클래스를 this 형태로 넣어주기
+ 
+- 생성된 TabController 는 TabBarView 의 controller 매개변수에 입력
+
+<br>
+
+<details>
+  <summary>💡 TickerProviderMixin 과 vsync</summary>
+
+- 애니메이션 효율 담당
+
+  - 플러터 : 기기가 지원하는대로 60FPS(초당 60프레임)부터 120FPS 지원
+  
+  - TickerProviderMixin : 한 틱(1FPS)마다 애니메이션 실행
+ 
+- 애니메이션 코드를 작성시 실제로 화면에 그릴 수 있는 주기보다 더 자주 렌더링 실행하게 되는 경우
+
+  - TickerProviderMixin 사용하면 비효율적인 상황 방지
+
+- TabController 도 vsync 에 TickerProviderMixin 제공함으로써 렌더링 효율 극대화 가능
+
+</details>
+
+<br>
+
+#### (5) BottomNavigationBar 작업
+- items 매개변수 : BottomNavigationBarItem 클래스 사용
+
+  - 각 탭의 정의 제공
+ 
+- label 매개변수 : 이름 지정 가능
+
+> lib/screen/root_screen.dart
+```dart
+  ...생략...
+  class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
+    ...생략...
+    BottomNavigationBar renderBottomNavigation(){
+      return BottomNavigationBar(
+          items: [
+            BottomNavigationBarItem(  // 1. 하단 탭바의 각 버튼 구현
+              icon: Icon(
+                Icons.edgesensor_high_outlined,
+              ),
+              label: '주사위',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.settings,
+              ),
+              label: '설정',
+            ),
+          ],
+      );
+    }
+  }
+```
+
+<br>
+
+#### (6) 
 
 <br>
 
