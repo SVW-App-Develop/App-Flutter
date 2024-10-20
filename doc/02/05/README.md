@@ -248,6 +248,20 @@
 
 <br>
 
+#### 💡 앱바 & 스낵바
+- 앱바
+  - 일반적으로 앱의 상단에 가장 많이 사용하는 형태의 위젯
+ 
+  - 현재 화면의 정보를 보여주거나 뒤로가기 버튼 구현할 때 일반적으로 많이 사용
+ 
+- 스낵바
+
+  - 정보를 사용자에게 알려줄 때 사용하는 위젯
+ 
+  - 스낵바를 보여주는 함수 실행시 핸드폰 아래에 알림창처럼 검정색 UI 노출되며 입력한 메시지 표시됨
+
+<br>
+
 ### 04. Center 위젯으로 중앙 정렬
 > main.dart
 ```dart
@@ -332,6 +346,22 @@
 - [안드로이드 와이파이 연결 공식 문서](https://developer.android.com/studio/command-line/adb)
 
 <br>
+
+#### 💡 우상단 debug 리본 제거
+- 메인으로 실행되는 곳에서 debugShowCheckedModeBanner: false 추가
+```dart
+  void main() {
+    runApp(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,      // debug 리본 제거
+        ...생략...
+        home: RootScreen(),
+      ),
+    );
+  }
+```
+
+<Br>
 
 ---
 
