@@ -581,7 +581,7 @@ final secondaryColor = Colors.grey[600];      // 보조 색상
     
     @override
     dispose(){
-      controller!.removeListener(tabListener());  // 3. 리스너에 등록한 함수 등록 취소
+      controller!.removeListener(tabListener);  // 3. 리스너에 등록한 함수 등록 취소
       super.dispose();
     }
     ...생략...
@@ -892,8 +892,118 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
 <br>
 
 ### 04. shake 플러그인 적용
+#### (1) 핸드폰 흔들 때마다 새로운 숫자 생성
+- HomeScreen 위젯의 number 매개변수에 들어갈 값을 number 변수로 상태 관리
 
+> lib/screen/root_screen.dart
+```dart
+  ...생략...
+  class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
+    TabController? controller;
+    double threshold = 2.7;
+    int number = 1;               // 주사위 숫자
+    ...생략...
+    List<Widget> renderChildren() {
+      return [
+        HomeScreen(number: number),   // number 변수로 대체
+        ...생략...
+      ];
+    }
+    ...생략...
+  }
+```
+- number 변수를 State 에 선언하고 이 변수를 HomeScreen 위젯의 number 매개변수에 입력
 
+  - number 변수의 값을 변경할 때마다 HomeScreen 위젯의 렌더링 결과 변경 가능
+ 
+<br>
+
+#### (2) Shake 플러그인 사용
+- RootScreen 구현시 TabController 의 addListener() 함수를 활용해서 탭의 인덱스값이 변경될 때마다 특정 함수 실행
+
+- Shake 플러그인 : 핸드폰 흔들기를 감지할 때마다 실행할 함수 등록
+
+> lib/screen/root_screen.dart
+```dart
+  import 'dart:math';                    // import 추가
+  import 'package:shake/shake.dart';     // import 추가
+  ...생략...
+  class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
+    TabController? controller;
+    double threshold = 2.7;
+    int number = 1;
+    ShakeDetector? shakeDetector;    // ShakeDetector 클래스의 변수 선언
+    
+    @override
+    void initState() {
+      super.initState();
+      
+      controller = TabController(length: 2, vsync: this);
+      controller!.addListener(tabListener);
+      
+      shakeDetector = ShakeDetector.autoStart(  // 1. 흔들기 감지 즉시 시작
+        shakeSlopTimeMS: 100,               // 2. 감지 주기
+        shakeThresholdGravity: threshold,   // 3. 감지 민감도
+        onPhoneShake: onPhoneShake,         // 4. 감지 후 실행할 함수
+      );
+    }
+    
+    void onPhoneShake() {     // 5. 감지 후 실행할 함수
+      final rand = new Random();
+      
+      setState(() {
+        number = rand.nextInt(5) + 1;
+      });
+    }
+    ...생략...
+    @override
+    dispose(){
+      controller!.removeListener(tabListener); 
+      shakeDetector!.stopListening();   // 6. 흔들기 감지 중지
+      super.dispose();
+    }
+    ...생략...
+  }
+```
+- ShakeDetector 의 autoStart 생성자를 이용하면 코드가 실행되는 순간부터 흔들기 감지
+
+  - waitForStart 생성자 이용시 코드만 등록해두고 추후에 흔들기 감지 시작하는 코드 따로 실행 가능
+ 
+- 얼마나 자주 흔들기를 감지할지 지정
+
+  - 밀리초 단위로 입력
+ 
+  - 한 번 흔들기 감지시 입력된 시간이 지나기까지 다시 흔들기를 감지하지 않음
+ 
+- 흔들기를 감지하는 민감도 설정
+
+  - 이미 구현한 SettingsScreen 의 Slider 위젯에서 받아옴
+ 
+- 흔들기 감지했을 때 실행되는 함수 등록
+
+- onPhoneShake 매개변수에 등록한 함수
+
+  - 핸드폰을 흔들 때마다 난수를 생성해야 함
+ 
+    - 다트 언어에서 기본으로 제공하는 dart:math 패키지의 Random 클래스 이용
+   
+    - Random 클래스는 nextInt() 함수 제공
+   
+      - 첫 번째 매개변수 : 생성될 최대 int 값
+     
+      - 난수는 최소 0부터 생성
+      
+        - 0~5까지 생성되게 매개변수에 5 넣어주고 결과값에 1 더하면 1~6 사이 난수 생성 가능
+       
+  - 생성된 난수 미리 만들어둔 number 변수에 setState() 함수로 저장하면 화면에 반영됨
+
+- TabController 에서 removeListener() 함수 실행해서 리스너 제거
+
+  - ShakeDetector 도 dispose() 실행됐을 때
+ 
+    - onPhoneShake 매개변수가 실행되지 않도록 리스너 제거해줘야 함
+   
+    - ShakeEDetector.autoStart 에서 반환받은 값에 stopListening() 함수 실행해주면 쉽게 리스너 제거 가능
 
 <br>
 
