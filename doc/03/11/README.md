@@ -1013,14 +1013,193 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
 
 🚨 핵심 요약
 ---
+- **BottomNavigationBar** 이용시 시중 앱에서 흔히 사용되는 화면 아래에 탭 버튼 위치하는 UI 구현 가능
 
+- **TabBarView** 이용시 TabController 이용해 BottomNavigation 과 동기화되는 탭 화면 구현 가능
 
+- **Slider 위젯** 이용시 min 값과 max 값 사이의 double 값을 사용자에게부터 입력받기 가능
+
+- **initState()** 에 리스너들 생성, dispose 에서 리스너들 삭제 가능
+
+- **dart:math 패키지**에서 Random 클래스 불러오면 간단히 난수 생성 가능
+
+- **sensors_plus 패키지**이용해 가속도계와 자이로스코프에 접근 가능
+
+  - 단순히 핸드폰이 흔들어졌는지 확인하는 기능 필요시 **shake 패키지** 이용이 더 유리
 
 <br>
 
+---
+
+<br>
+
+<details>
+  <summary>💡 실행 오류</summary>
+
+<br>
+
+### 오류
+> Terminal
+```dart
+  FAILURE: Build failed with an exception.
+  
+  * What went wrong:
+  A problem occurred configuring project ':sensors_plus'.
+  > Could not create an instance of type com.android.build.api.variant.impl.LibraryVariantBuilderImpl.
+     > Namespace not specified. Specify a namespace in the module's build file. See https://d.android.com/r/tools/upgrade-assistant/set-namespace for information about setting the namespace.
+  
+       If you've specified the package attribute in the source AndroidManifest.xml, you can use the AGP Upgrade Assistant to migrate to the namespace value in the build file. Refer to https://d.android.com/r/tools/upgrade-assistant/agp-upgrade-assistant for general information about using the AGP Upgrade Assistant.
+  
+  * Try:
+  > Run with --stacktrace option to get the stack trace.
+  > Run with --info or --debug option to get more log output.
+  > Run with --scan to get full insights.
+  > Get more help at https://help.gradle.org.
+  
+  BUILD FAILED in 934ms
+  Error: Gradle task assembleDebug failed with exit code 1
+```
+
+<br>
+
+### 해결
+> C:\Users\babys\AppData\Local\Pub\Cache\hosted\pub.dev\sensors_plus-1.4.1\android\build.gradle
+```dart
+  android {
+      namespace "com.example.sensors_plus" // 적절한 네임스페이스로 설정
+      // 다른 설정들...
+  }
+```
+
+<Br>
+
+---
+
+<br>
+
+### 오류
+```dart
+  Incorrect package="dev.fluttercommunity.plus.sensors" found in source AndroidManifest.xml: C:\Users\babys\AppData\Local\Pub\Cache\hosted\pub.dev\sensors_plus-1.4.1\android\src\main\AndroidManifest.xml.
+  Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported.
+  Recommendation: remove package="dev.fluttercommunity.plus.sensors" from the source AndroidManifest.xml: C:\Users\babys\AppData\Local\Pub\Cache\hosted\pub.dev\sensors_plus-1.4.1\android\src\main\AndroidManifest.xml.
+  
+  FAILURE: Build failed with an exception.
+  
+  * What went wrong:
+  Execution failed for task ':sensors_plus:processDebugManifest'.
+  > A failure occurred while executing com.android.build.gradle.tasks.ProcessLibraryManifest$ProcessLibWorkAction
+     > Incorrect package="dev.fluttercommunity.plus.sensors" found in source AndroidManifest.xml: C:\Users\babys\AppData\Local\Pub\Cache\hosted\pub.dev\sensors_plus-1.4.1\android\src\main\AndroidManifest.xml.
+       Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported.
+       Recommendation: remove package="dev.fluttercommunity.plus.sensors" from the source AndroidManifest.xml: C:\Users\babys\AppData\Local\Pub\Cache\hosted\pub.dev\sensors_plus-1.4.1\android\src\main\AndroidManifest.xml.
+  
+  * Try:
+  > Run with --stacktrace option to get the stack trace.
+  > Run with --info or --debug option to get more log output.
+  > Run with --scan to get full insights.
+  > Get more help at https://help.gradle.org.
+  
+  BUILD FAILED in 15s
+  Error: Gradle task assembleDebug failed with exit code 1
+```
+
+<br>
+
+### 해결
+> C:\Users\babys\AppData\Local\Pub\Cache\hosted\pub.dev\sensors_plus-1.4.1\android\src\main\AndroidManifest.xml
+```dart
+  <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  </manifest>
+```
+
+<br>
+
+---
+
+<br>
+
+### 오류
+```dart
+  FAILURE: Build failed with an exception.
+  
+  * What went wrong:
+  Execution failed for task ':sensors_plus:compileDebugKotlin'.
+  > 'compileDebugJavaWithJavac' task (current target is 1.8) and 'compileDebugKotlin' task (current target is 17) jvm target compatibility should be set to the same Java version.
+    Consider using JVM toolchain: https://kotl.in/gradle/jvm/toolchain
+  
+  
+  * Try:
+  > Run with --stacktrace option to get the stack trace.
+  > Run with --info or --debug option to get more log output.
+  > Run with --scan to get full insights.
+  > Get more help at https://help.gradle.org.
+  
+  BUILD FAILED in 5s
+  Error: Gradle task assembleDebug failed with exit code 1
+```
+
+<br>
+
+### 해결
+> C:\Users\babys\AppData\Local\Pub\Cache\hosted\pub.dev\sensors_plus-1.4.1\android\build.gradle
+```dart
+  group 'io.flutter.plugins.sensors'
+  version '1.0-SNAPSHOT'
+  
+  buildscript {
+      ext.kotlin_version = '1.7.10' // 변경: Kotlin 최신 버전으로 업데이트
+      repositories {
+          google()
+          mavenCentral()
+      }
+  
+      dependencies {
+          classpath 'com.android.tools.build:gradle:7.1.1'
+          classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+      }
+  }
+  
+  rootProject.allprojects {
+      repositories {
+          google()
+          mavenCentral()
+      }
+  }
+  
+  apply plugin: 'com.android.library'
+  apply plugin: 'kotlin-android'
+  
+  android {
+      namespace "com.example.random_dice"
+      compileSdkVersion 31
+  
+      defaultConfig {
+          minSdkVersion 16
+          testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+      }
+      
+      compileOptions {
+          sourceCompatibility JavaVersion.VERSION_1_8 // Java 호환성 설정
+          targetCompatibility JavaVersion.VERSION_1_8 // Java 호환성 설정
+      }
+  
+      kotlinOptions {
+          jvmTarget = "1.8" // Kotlin JVM 타겟 설정
+      }
+  
+      lintOptions {
+          disable 'InvalidPackage'
+      }
+  }
+  
+  dependencies {
+      implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  }
+```
 
 
+</details>
 
+<br>
 
 
 
