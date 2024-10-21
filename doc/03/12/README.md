@@ -326,8 +326,287 @@
 
 12.4 구현
 ---
+- ImagePicker 이용해 동영상을 선택하는 기능 구현 및 동영상 실행 기능 구현
 
+<br>
 
+### 01. 첫 화면 : renderEmpty() 함수 구현
+- 홈 스크린에서 동영상 파일 선택과 관련해서 상태 관리
+
+  - HomeScreen 클래스를 StatefulWidget 으로 구성
+ 
+- image_picker 플러그인 : 이미지나 동영상을 선택했을 때 XFile 이라는 클래스 형태로 선택된 값 반환
+
+- HomeScreen 에 선택된 동영상을 의미하는 XFile 형태의 video 변수 선언
+
+  - 그 값을 기반으로 renderEmpty() 함수를 보여줄지, renderVideo() 함수 보여줄지 지정
+
+- renderEmpty() 함수 설계
+
+  - Column 위젯에 로고 넣고 바로 아래 앱 이름 넣기
+ 
+    - _Logo 위젯으로 로고 코드 작성
+   
+    - _AppName 위젯으로 앱 이름 작업
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:image_picker/image_picker.dart';
+  
+  class HomeScreen extends StatefulWidget {
+    // StatelessWidget -> StatefulWidget
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    State<HomeScreen> createState() => _HomeScreenState();
+  }
+  
+  class _HomeScreenState extends State<HomeScreen> {
+    XFile? video;     // 1. 동영상 저장할 변수
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        // 2. 동영상이 선택됐을 때와 선택 안 됐을 때 보여줄 위젯
+        body: video == null ? renderEmpty() : renderVideo(),
+      );
+    }
+  
+    // 3. 동영상 선택 전 보여줄 위젯
+    Widget renderEmpty() {
+      return Container(
+        width: MediaQuery.of(context).size.width,   // 너비 최대로 늘려주기
+        child: Column(
+          // 위젯들 가운데 정렬
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _Logo(),      // 로고 이미지
+            SizedBox(height: 30.0),
+            _AppName(),   // 앱 이름
+          ],
+        ),
+      );
+    }
+  
+    // 4. 동영상 선택 후 보여줄 위젯
+    Widget renderVideo() {
+        return Container();
+    }
+  }
+  
+  class _Logo extends StatelessWidget {
+    const _Logo({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Image.asset(
+        'asset/img/logo.png',   // 로고 이미지
+      );
+    }
+  }
+  
+  class _AppName extends StatelessWidget {  // 앱 제목을 보여줄 위젯
+    const _AppName({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      final textStyle = TextStyle(
+        color: Colors.white,
+        fontSize: 30.0,
+        fontWeight: FontWeight.w300,
+      );
+  
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,  // 글자 가운데 정렬
+        children: [
+          Text(
+            'VIDEO',
+            style: textStyle,
+          ),
+          Text(
+            'PLAYER',
+            style: textStyle.copyWith(
+              // 5. TextStyle 에서 두꼐만 700 으로 변경
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      );
+    }
+  }
+```
+- image_picker 플러그인 사용시 XFile 클래스 형태로 동영상 받을 수 있음
+
+  - 선택된 동영상이 있으면 해당 변수에 저장
+ 
+- 선택된 동영상이 없으면 renderEmpty() 함수가 반환하는 위젯 노출
+
+  - 선택된 동영상이 있으면 renderVideo() 함수가 반환하는 위젯 노출
+ 
+- renderEmpty() : 선택된 동영상이 없을 때 보여줄 위젯을 렌더링하는 함수
+
+- renderVideo() : 선택된 동영상이 있을 때 보여줄 위젯을 렌더링하는 함수
+
+- TextStyle 의 copyWith 함수 : 현재 속성들을 그대로 유지한채로 특정 속성만 변경 가능한 함수
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/06.png)|
+
+<br>
+
+### 02. 배경색 그라데이션 구현
+- BoxDecoration 클래스
+
+  - Container 위젯의 배경색, 테두리, 모서리 둥근 정도 등 전반적 디자인 변경 가능
+
+- BoxDecoration 클래스의 gradient 매개변수
+
+  - LinearGradient : 시작 부위부터 끝 부위까지 점점 색이 변함
+ 
+  - RadialGradient : 중앙에서 색깔이 점점 퍼져가는 형태
+
+> lib/screen/home_screen.dart
+```dart
+...생략...
+class _HomeScreenState extends State<HomeScreen> {
+  ...생략...
+  // 동영상 선택 전 보여줄 위젯
+  Widget renderEmpty() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: getBoxDecoration(),   // 1. 함수로부터 값 가져오기
+      ...생략...
+    );
+  }
+
+  BoxDecoration getBoxDecoration() {
+    return BoxDecoration(
+      // 2. 그라데이션으로 색상 적용
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color(0xFF2A3A7C),
+          Color(0xFF000118),
+        ],
+      ),
+    );
+  }
+  ...셍략...
+}
+```
+- decoration 매개변수에 들어갈 BoxDecoration 값을 getBoxDecoration() 함수에서 구현
+
+- LinearGradient 클래스에 시작과 끝을 정하는 begin 과 end 매개변수 지정
+
+  - Alignment 클래스를 사용해 정렬
+ 
+- colors 매개변수에 배경을 구성할 색상들을 List 로 입력
+ 
+  - 색상은 begin 에 입력된 위치부터 end 에 입력된 위치까지 순서대로 적용됨
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/07.png)|
+
+<br>
+
+### 03. 파일 선택 기능 구현
+- 로고를 탭하면 비디오와 사진을 선택할 수 있는 기능 구현
+
+  - 사용자가 파일을 선택했을 때 변수값을 처리하는 코드 작성
+ 
+- _Logo 위젯에 GestureDetector 추가해 onTap() 함수가 실행됐을 때 동영상 선택하는 함수 실행
+
+> lib/screen/home_screen.dart
+```dart
+...생략...
+class _HomeScreenState extends State<HomeScreen> {
+  ...생략
+  Widget renderEmpty() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: getBoxDecoration(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _Logo(
+            onTap: onNewVideoPressed,   // 1. 로고 탭하면 실행하는 함수
+          ),
+          SizedBox(height: 30.0),
+          _AppName(),
+        ],
+      ),
+    );
+  }
+
+  void onNewVideoPressed() async {    // 2. 이미지 선택하는 기능을 구현한 함수
+    final video = await ImagePicker().pickVideo(
+      source: ImageSource.gallery,
+    );
+    
+    if (video != null) {
+      setState(() {
+        this.video = video;
+      });
+    }
+  }
+  ...생략...
+}
+
+class _Logo extends StatelessWidget {
+  final GestureTapCallback onTap;   // 탭 했을 때 실행할 함수
+  
+  const _Logo({required this.onTap, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,     // 3. 상위 위젯으로부터 탭 콜백받기
+      child: Image.asset(
+        'asset/img/logo.png',   // 로고 이미지
+      ),
+    );
+  }
+}
+...생략...
+```
+- _Logo 위젯 탭했을 때 실행되는 onTap 매개변수에 onNewVideoPressed() 함수 입력
+
+  - 로고 탭하면 동영상을 선택하는 화면 실행됨
+ 
+- ImagePicker().pickVideo() 함수 실행시 동영상을 선택하는 화면 실행
+
+  - source 매개변수
+ 
+    - ImageSource.gallery : 이미 저장되어 있는 동영상을 갤러리로부터 선택하는 화면 실행
+   
+    - ImageSource.camera : 카메라를 실행한 후 동영상 촬영을 마치면 해당 영상 선택
+   
+  - 선택된 동영상을 XFile 형태로 비동기로 반환받을 수 있음
+ 
+  - 사용자가 선택한 값이 존재하면 video 변수에 저장
+ 
+- Image.asset 을 GestureDetector 로 감싸서 onTap() 함수를 외부로부터 입력받기
+
+  - _HomeScreenState 의 onNewVideoPressed() 함수 입력받음
+
+> 실행 결과
+
+|로고 탭|탭 이후|
+|-|-|
+|![이미지](./img/08.png)|![이미지](./img/09.png)|
+
+<br>
+
+### 04. 플레이어 화면 구현
 
 
 <br>
