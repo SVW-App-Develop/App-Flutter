@@ -27,7 +27,7 @@
 |**기능**|- BottomNavigation 이용해 탭 형태의 UI 구현<br><br>- 가속도계를 사용해서 흔들기 기능 구현<br><br>- Slider 이용해 흔들기 민감도를 설정하는 기능 구현|
 |**조작법**|- 첫 번째 탭에서 핸드폰을 흔들면 주사위의 숫자가 랜덤하게 변경<br><br>- 두 번째 탭에서 슬라이더를 움직이면 흔들기의 민감도 지정 가능|
 |**핵심 구성요소**|- 가속도계<br><br>- BottomNavigationBar<br><br>- Slider|
-|**플러그인**|- shake: 3.13.x<br><br>- sensors_plus: 3.1.0|
+|**플러그인**|- shake: 2.2.0<br><br>- sensors_plus: 1.4.1|
 
 <br>
 
