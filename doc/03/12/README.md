@@ -607,7 +607,104 @@ class _Logo extends StatelessWidget {
 <br>
 
 ### 04. 플레이어 화면 구현
+- CustomVideoPlayer 위젯을 따로 생성해 영상 재생과 관련된 모든 코딩 작업
 
+  - 화면 정중앙에 배치
+  
+> lib/screen/home_screen.dart
+```dart
+  ...생략...
+  class _HomeScreenState extends State<HomeScreen> {
+    ...생략...
+    Widget renderVideo() {
+        return Container(
+          child: CustomVideoPlayer(), // 동영상 재생기 위젯
+        );
+    }
+  }
+  ...생략...
+```
+
+<br>
+
+### 05. 동영상 재생기 구현
+#### (1) 컴포넌트 생성
+- [lib] 아래에 [component] 폴더 생성 후 custom_video_player.dart 파일 생성
+
+- CustomVideoPlayer 위젯 : HomeScreen 위젯에서 선택된 동영상을 재생하는 모든 상태 관리
+
+  - StatefulWidget 생성
+  
+  - 위젯이 잘 렌더링되는지 확인하는용도로 CustomVideoPlayer 글자만 정가운데 위치
+
+> lib/component/custom_video_player.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:image_picker/image_picker.dart';
+  
+  // 1. 동영상 위젯 생성
+  class CustomVideoPlayer extends StatefulWidget {
+    // 선택한 동영상을 저장할 변수
+    // XFile 은 ImagePicker 로 영상 또는 이미지를 선택했을 때 반환하는 타입
+    final XFile video;
+  
+    const CustomVideoPlayer({
+      required this.video,  // 상위에서 선택한 동영상 주입해주기
+      Key? key,
+    }) : super(key: key);
+  
+    @override
+    State<CustomVideoPlayer> createState() => _CustomVideoPlayerState();
+  }
+  
+  class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+    @override
+    Widget build(BuildContext context) {
+      return Center(
+        child: Text(
+          'CustomVideoPlayer',    // 2. 샘플 텍스트
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      );
+    }
+  }
+```
+
+<br>
+
+
+#### (2) home_screen.dart 내 CustomVideoPlayer 위젯에 video 매개변수 제공
+> lib/screen/home_screen.dart
+```dart
+// 1. CustomVideoPlayer 위젯 파일 임포트
+import 'package:vid_player/component/custom_video_player.dart';
+...생략...
+
+class _HomeScreenState extends State<HomeScreen> {
+...생략...
+  Widget renderVideo() {
+      return Center(
+        child: CustomVideoPlayer(
+          video: video!,    // 2. 선택된 동영상 입력해주기
+        ),
+      );
+  }
+}
+
+...생략...
+```
+
+> 실행 결과
+
+|로고 탭하여 동영상 선택|동영상 선택 후 화면|
+|-|-|
+|![이미지](./img/08.png)|![이미지](./img/10.png)|
+
+<br>
+
+#### (3) 
 
 <br>
 
