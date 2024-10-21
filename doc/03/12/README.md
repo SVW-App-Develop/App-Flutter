@@ -704,7 +704,113 @@ class _HomeScreenState extends State<HomeScreen> {
 
 <br>
 
-#### (3) 
+#### (3) CustomVideoPlayer 위젯 기능 개선
+- video_player 패키지
+
+  - VideoPlayerController 와 VideoPlayer 위젯을 사용해 선택한 동영상을 화면에 보여주는 기능 구현
+
+> lib/component/custom_video_player.dart
+```dart
+  ...생략...
+  import 'package:video_player/video_player.dart';
+  import 'dart:io';   // 파일 관련 작업 패키지
+  
+  ...생략...
+  
+  class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+    // 1. 동영상을 조작하는 컨트롤러
+    VideoPlayerController? videoController;
+    
+    @override
+    void initState() {
+      super.initState();
+      
+      initializeController();  // 2. 컨트롤러 초기화
+    }
+    
+    initializeController() async {  // 3. 선택한 동영상으로 컨트롤러 초기화
+      final videoController = VideoPlayerController.file(
+        File(widget.video.path),
+      );
+      
+      await videoController.initialize();
+      
+      setState(() {
+        this.videoController = videoController;
+      });
+    }
+    
+    @override
+    Widget build(BuildContext context) {
+      // 4. 동영상 컨트롤러가 준비 중일 때 로딩 표시
+      if (videoController == null) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+      
+      return AspectRatio(   // 5. 동영상 비율에 따른 화면 렌더링
+        aspectRatio: videoController!.value.aspectRatio,
+        child: VideoPlayer(
+          videoController!,
+        ),
+      );
+    }
+  }
+```
+- VideoPlayer 위젯 : VideoPlayerController 로 조작 가능
+
+  - initState() 함수에서 설정할 VideoPlayerController 선언
+ 
+- initializeController : VideoPlayerController 선언하는 역할
+
+  - VideoPlayerController 는 State 생성되는 순간 한 번만 생성되어야 하니 initState() 함수에서 선언
+ 
+- 파일로부터 VideoPlayerController 생성
+
+  - VideoPlayerController.file 생성자를 이용해 컨트롤러 만들기
+ 
+    - initialize() 함수 실행해 동영상 재생 가능 상태 준비
+   
+    - 에러 없이 initialize() 함수 완료되면 VideoPlayerController 사용 가능 상태
+   
+      - setState() 함수 이용해 this.videoController 에 준비한 videoController 변수 저장
+
+- VideoPlayerController 가 성공적으로 초기화되어야만 videoPlayer 변수가 null 이 아닌 조건 생성 가능
+
+  - videoPlayer 변수가 null 이면 VideoPlayerController 사용할 수 있는 상태가 아님
+ 
+    - CircularProgressIndicator 띄워 로딩 중임을 암시
+   
+- AspectRatio : child 매개변수에 입력되는 위젯의 비율을 정할 수 있는 위젯
+
+  - 매개변수에 원하는 비율 입력 가능
+ 
+    - 너비/높이로 입력
+   
+    - ex) 16:9 비율 => 16/9 입력
+   
+  - VideoPlayerController 선언하면 입력된 동영상 비율을 value.aspectRatio 게터로 받아올 수 있음
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/11.png)|
+
+<br>
+
+#### 💡 VideoPlayerController 의 네임드 생성자(Named Constructors)
+|생성자 이름|설명|
+|-|-|
+|VideoPlayerController.asset|asset 파일의 경로로부터 동영상을 불러옴|
+|VideoPlayerController.network|네트워크 URL 로부터 동영상을 불러옴|
+|VideoPlayerController.file|파일 경로로부터 동영상 불러옴|
+
+<br>
+
+### 06. Slider 위젯 동영상과 연동
+
 
 <br>
 
