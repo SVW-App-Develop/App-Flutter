@@ -810,6 +810,240 @@ class _HomeScreenState extends State<HomeScreen> {
 <br>
 
 ### 06. Slider 위젯 동영상과 연동
+#### (1) Slider 위젯을 사용해 동영상의 현재 재생 위치와 연동
+
+  - Slider 위젯을 사용자가 스크롤하면 동영상이 해당되는 위치로 이동
+ 
+  - 동영상이 실행되는 위치에 따라 자동으로 Slider 위젯이 움직여줘야 함
+ 
+- VideoPlayer 위젯 위에 Slider 위젯이 위치하도록 Stack 위젯 사용
+
+  - return 코드만 변경하면 됨
+
+> lib/component/custom_video_player.dart
+```dart
+  class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+  ...생략...
+    @override
+    Widget build(BuildContext context) {
+      if (videoController == null) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+  
+      return AspectRatio( 
+        aspectRatio: videoController!.value.aspectRatio,
+        child: Stack(       // 1. children 위젯을 위로 쌓을 수 있는 위젯
+          children: [
+            VideoPlayer(    // VideoPlayer 위젯을 Stack 으로 이동
+              videoController!,
+            ),
+            Positioned(     // 2. child 위젯의 위치를 정할 수 있는 위젯
+              bottom: 0,
+              right: 0,
+              left: 0,
+              child: Slider(  // 3. 동영상 재생 상태를 보여주는 슬라이더
+                onChanged: (double val){},
+                value: 0,
+                min: 0,
+                max: videoController!.value.duration.inSeconds.toDouble(),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+```
+- Stack 위젯 : Column 위젯과 Row 위젯처럼 children 매개변수에 여러 개의 위젯 위치 가능
+
+  - 위젯이 List 에 입력되는 순서대로 아래부터 쌓아올려짐
+ 
+- Stack 위젯은 기본적으로 children 위젯을 정중앙에 위치시킴
+
+  - Stack 위젯 내부의 특정 위치에 위젯을 위치시키고 싶다면 Positioned 위젯 사용해 지정
+ 
+    - child 매개변수 외 top, bottom, left, right 매개변수 입력 가능
+   
+      - 각각 위아래, 왼쪽, 오른쪽에서 몇 픽셀에 child 위젯을 위치할지 지정
+     
+      - bottom 매개변수에 0 입력시 Stack 위젯의 가장 아래에 Slider 위젯 위치
+     
+      - Slider 위젯이 최소한의 크기를 차지
+     
+        - 왼쪽~오른쪽 끝까지 늘어나게 하려면 left, right 매개변수에 0 값 입력
+       
+- Slider 위젯의 min 값은 항상 0
+
+  - 동영상의 시작은 항상 0초부터 시작하기 때문
+ 
+  - 최대값은 선택된 동영상의 재생 길이르 초 단위로 변환
+ 
+    - videoController 변수의 value.duration 게터를 불러와서 Duration 클래스로 저넻 영상 길이 받아오기
+   
+    - inSeconds 게터를 이용해서 전체 길이를 초로 변환한 값 가져오기
+   
+    - int 값으로 반환되는 inSeconds 게터에 toDouble() 함수 실행해 double 형태로 형변환
+   
+      - max 매개변수는 int 가 아닌 double 값을 입력해야 함
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/12.png)|
+
+<br>
+
+#### (2) Slider 위젯의 매개변수들의 값 작업
+- value 매개변수 : 현재값을 의미
+
+  - 동영상의 현재 재생 위치를 초 단위로 변환한 값과 연동되어야 함
+ 
+- onChanged 매개변수
+
+  - VideoPlayerController 와 연동해 동영상 실행 위치 변경
+ 
+    - value.position : 동영상이 현재 재생되고 있는 위치 가져옴
+   
+    - seekTo() : 동영상의 재생 위치 변경
+
+> lib/component/custom_video_player.dart
+```dart
+class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+...생략...
+  @override
+  Widget build(BuildContext context) {
+    if (videoController == null) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    return AspectRatio(
+      aspectRatio: videoController!.value.aspectRatio,
+      child: Stack(
+        children: [
+          VideoPlayer(
+            videoController!,
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            left: 0,
+            child: Slider(
+              // 1. 슬라이더가 이동할 때마다 실행할 함수
+              onChanged: (double val){
+                videoController!.seekTo(
+                  Duration(seconds: val.toInt()),
+                );
+              },
+              
+              // 2. 동영상 재생 위치를 초 단위로 표현
+              value: videoController!.value.position.inSeconds.toDouble(),
+              // value: 0,
+              min: 0,
+              max: videoController!.value.duration.inSeconds.toDouble(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+- seekTo() 매개변수에 Duration 값 입력
+
+  - onChanged() 함수에 제공되는 val 값을 int 로 변경해서 Slider 위젯에서 입력된 재생 위치 받기 가능
+ 
+- position.inSeconds 게터 실행시 현재 동영상이 실행되고 있는 위치 받기 가능
+
+<br>
+
+### 07. 동영상 컨트롤 버튼 구현
+#### (1) 동영상 컨트롤 버튼(재생/일시정지, 뒤로 3초 이동, 앞으로 3초 이동, 새 동영상 선책)
+
+  - 중복 코드 방지로 일반화된 위젯 구현
+
+  - IconButton 의 onPressed 매개변수와 아이콘 모양을 결정짓는 IconData 값만 외부에서 입력받도록 작성
+
+> lib/component/custom_icon_button.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class CustomIconButton extends StatelessWidget {
+    final GestureTapCallback onPressed;   // 아이콘을 눌렀을 때 실행할 함수
+    final IconData iconData;              // 아이콘
+  
+    const CustomIconButton({
+      required this.onPressed,
+      required this.iconData,
+      Key? key,
+    }) : super(key: key);
+    
+    @override
+    Widget build(BuildContext context){
+      return IconButton(        // 아이콘 버튼으로 만들어주는 위젯
+        onPressed: onPressed,   // 아이콘 눌렀을 때 실행할 함수
+        iconSize: 30.0,         // 아이콘 크기
+        color: Colors.white,    // 아이콘 색상
+        icon: Icon(
+          iconData,
+        ),
+      );
+    }
+  }
+```
+
+<br>
+
+#### (2) 버튼들을 CustomIconButton 위젯으로 구현
+
+  - Stack 위젯에서 Positioned 위젯이 아니어도 Align 위젯 사용해 children 위젯 정렬 가능
+ 
+    - alignment 매개변수 입력 가능
+   
+      - LinearGradient 클래스의 begin, end 매개변수에 입력했던 값과 같은 Alignment 클래스 이용해 정렬 지정 가능
+
+> lib/component/custom_video_player.dart
+```dart
+// CustomIconButton 위젯 불러오기
+import 'package:vid_player/component/custom_icon_button.dart';
+...생략...
+class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+...생략...
+  @override
+  Widget build(BuildContext context) {
+    ...생략...
+
+    return AspectRatio( 
+      aspectRatio: videoController!.value.aspectRatio,
+      child: Stack( 
+        children: [
+          VideoPlayer(
+            videoController!,
+          ),
+          Positioned(
+            ...생략...
+            ),
+
+          ),
+        ],
+      ),
+    );
+  }
+
+```
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/01.png)|
+
+<br>
+
 
 
 <br>
