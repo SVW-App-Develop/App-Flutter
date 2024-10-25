@@ -1327,7 +1327,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         ),
       );
     }
-  ...생략...
+    ...생략...
+  }
 ```
 
 > 실행 결과
@@ -1380,7 +1381,187 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 <br>
 
 ### 08. 컨트롤러 감추기 기능 만들기
+- 화면을 한 번 탭하면 컨트롤이 숨겨지고 다시 탭하면 컨트롤 노출
 
+> lib/component/custom_video_player.dart
+```dart
+  ...생략...
+  class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+    bool showControls = false;    // 1. 동영상 조작하는 아이콘 노출 여부
+    ...생략...
+    @override
+    Widget build(BuildContext context) {
+    ...생략...
+    @override
+    Widget build(BuildContext context) {
+      if (videoController == null) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+  
+      return GestureDetector(   // 2. 화면 전체의 탭을 인식하기 위해 사용
+        onTap: () {
+          setState((){
+            showControls = !showControls;
+          });
+        },
+        child: AspectRatio(
+          aspectRatio: videoController!.value.aspectRatio,
+          child: Stack(
+            children: [
+              VideoPlayer(
+                videoController!,
+              ),
+              if(showControls)
+                Container(    // 3. 아이콘 버튼을 보일 때 화면을 어둡게 변경
+                  color: Colors.black.withOpacity(0.5),
+                ),
+              Positioned(
+              ...생략...
+              ),
+  
+              // showControls 가 true 일 때만 아이콘 보여주기
+              if(showControls)
+                Align(    // 동영상 새로 선택하기 버튼
+                ...생략...
+                ),
+              if(showControls)
+                Align(    // 동영상 컨트롤 버튼
+                ...생략...
+                ),
+            ],
+          ),
+        )
+      );
+    }
+    ...생략...
+  }
+```
+- showControls 변수를 선언해서 true 일 때는 동영상 컨트롤 버튼 보여주고 false 일때 보여주지 않음
+
+- 동영상 플레이어를 통째로 GestureDetector 에 감싸서 탭했을 때의 콜백 함수 받기
+
+- 밝은 배경의 영상을 틀었을 때 컨트롤 가시성을 위해 50% 투명도가 있는 검정 배경 추가
+
+- 다트 언어에서는 List 안에서 직접 if 문 사용 가능
+
+  - showControls 가 true 일 때만 바로 아래의 위젯을 렌더링하겠다는 의미
+
+> 실행 결과
+
+|컨트롤이 숨겨진 상태|컨트롤이 보이는 상태|
+|-|
+|![이미지](./img/16.png)|![이미지](./img/17.png)|
+
+<br>
+
+### 09. 타임스탬프 추가
+- Slider 보고 정확학 시간을 알 수 있도록 현재 실행 중인 위치와 동영상 길이를 Slider 좌우에 배치
+
+- Slider 를 Row 위젯으로 감싸고 Slider 위젯을 최대로 늘린 다음 양쪽에 Text 위젯 배치
+
+> lib/component/custom_video_player.dart
+```dart
+  class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+    @override
+    Widget build(BuildContext context) {
+    ...위젯
+      return GestureDetector(
+        onTap: () {
+          setState((){
+            showControls = !showControls;
+          });
+        },
+        child: AspectRatio(
+          aspectRatio: videoController!.value.aspectRatio,
+          child: Stack(
+            children: [
+              VideoPlayer(
+                videoController!,
+              ),
+              if(showControls)
+                Container(
+                  color: Colors.black.withOpacity(0.5),
+                ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                left: 0,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      renderTimeTextFromDuration(
+                        // 동영상 현재 위치
+                        videoController!.value.position,
+                      ),
+                      Expanded(
+                        // Slider 가 남는 공간을 모두 차지하도록 구현
+                        child: Slider(
+                          onChanged: (double val){
+                            videoController!.seekTo(
+                              Duration(seconds: val.toInt()),
+                            );
+                          },
+  
+                          value: videoController!.value.position.inSeconds.toDouble(),
+                          min: 0,
+                          max: videoController!.value.duration.inSeconds.toDouble(),
+                        ),
+                      ),
+                      renderTimeTextFromDuration(
+                        // 동영상 총 길이
+                        videoController!.value.duration,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              ...생략
+            ],
+          ),
+        )
+      );
+    }
+  
+    Widget renderTimeTextFromDuration(Duration duration) {
+      // 1. Duration 값을 보기 편한 형태로 변환
+      return Text(
+        '${duration.inMinutes.toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+      );
+    }
+    ...생략...
+  }
+```
+- Duration 클래스 : 기간을 분 단위, 초 단위로 표현해주는 iniMinutes, inSeconds 게터 제공
+
+  - 소수점 버리고 정수 내림값으로 표현
+ 
+    - 분 단위는 inMinutes 게터 그대로 사용시 Duration 의 분 단위값 알 수 있음
+   
+    - 초 단위값의 경우 분 단위값에서 남은 값만 표현
+   
+      - inSeconds 게터가 반환해주는 초 단위값을 60으로 나눈 후 나머지만 화면에 보여줌
+   
+        - ex) 61 초 → 01:01  
+       
+  - padLeft() : 실행되는 대상의 문자열의 왼쪽에 문자를 추가해주는 역할
+ 
+    - 첫 번째 매개변수에 최소 문자열의 길이 입력
+   
+    - 두 번째 매개변수에 최소 문자열의 길이를 채우지 못했을 때 왼쪽에 추가해줄 문자 입력
+   
+      - ex) '1'.padLeft(2,'0') → 01
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/18.png)|
 
 <br>
 
@@ -1390,7 +1571,17 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
 🚨 핵심 요약
 ---
+- **Stack 위젯** 이용하면 위젯 위에 위젯을 쌓을 수 있음
 
+- **Positioned 위젯**과 **Align 위젯** 사용해서 Stack 에서 위젯들 정렬 가능
+
+- **image_picker 플러그인** 사용하면 간편하게 유저로부터 파일 선택 입력받기 가능
+
+- 동영상 파일의 위치만 알면 **video_player 플러그인** 사용해서 손쉽게 동영상 재생 가능
+
+- StatefulWidget 생명주기 중 하나인 **didUpdateWidget() 함수**를 오버라이드
+
+  - StatefulWidget 매개변수가 변경되었을 때 특정 함수 실행 가능
 
 
 <br>
