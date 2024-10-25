@@ -1451,7 +1451,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 > 실행 결과
 
 |컨트롤이 숨겨진 상태|컨트롤이 보이는 상태|
-|-|
+|-|-|
 |![이미지](./img/16.png)|![이미지](./img/17.png)|
 
 <br>
