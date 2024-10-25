@@ -1008,42 +1008,378 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
 > lib/component/custom_video_player.dart
 ```dart
-// CustomIconButton 위젯 불러오기
-import 'package:vid_player/component/custom_icon_button.dart';
-...생략...
-class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
-...생략...
-  @override
-  Widget build(BuildContext context) {
-    ...생략...
-
-    return AspectRatio( 
-      aspectRatio: videoController!.value.aspectRatio,
-      child: Stack( 
-        children: [
-          VideoPlayer(
-            videoController!,
-          ),
-          Positioned(
-            ...생략...
+  // CustomIconButton 위젯 불러오기
+  import 'package:vid_player/component/custom_icon_button.dart';
+  ...생략...
+  class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+  ...생략...
+    @override
+    Widget build(BuildContext context) {
+      ...생략...
+  
+      return AspectRatio( 
+        aspectRatio: videoController!.value.aspectRatio,
+        child: Stack( 
+          children: [
+            VideoPlayer(
+              videoController!,
             ),
-
-          ),
-        ],
-      ),
-    );
+            Positioned(
+              ...생략...
+              ),
+            Align(
+              // 1. 오른쪽 위에 새 동영상 아이콘 위치
+              alignment: Alignment.topRight,
+              child: CustomIconButton(
+                onPressed: (){},
+                iconData: Icons.photo_camera_back,
+              ),
+            ),
+            Align(
+              // 2. 동영상 재생 관련 아이콘 중앙에 위치
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomIconButton(   // 되감기 버튼
+                    onPressed: (){},
+                    iconData: Icons.rotate_left,
+                  ),
+                  CustomIconButton(   // 재생 버튼
+                    onPressed: (){},
+                    iconData: videoController!.value.isPlaying ?
+                        Icons.pause : Icons.play_arrow,
+                  ),
+                  CustomIconButton(   // 앞으로 감기 버튼
+                    onPressed: (){},
+                    iconData: Icons.rotate_right,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
+```
+- 새 동영상 선택하기 아이콘은 오른쪽 위에 배치
 
+- 나머지 새 버튼은 가운데 정렬을 하고 MainAxisAlignment.spaceEvenly 사용해 아이콘 간 간격 동일하게 적용
+
+  - videoController.value.isPlaying 게터 이용해 현재 동영상이 재생 중인지 확인 가능
+ 
+    - 재생 중이면 true 값 반환
+   
+      - 동영상이 재생 중이면 가운데 버튼 일시정지 아이콘
+     
+      - 동영상이 일시정지 중이라면 재생 버튼
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/13.png)|
+
+<br>
+
+#### (3) 버튼들에 onPressed 매개변수값 설정
+- 동영상 재생과 관련된 새 버튼의 기능 구현
+
+  - 현재 동영상이 재생되는 위치를 변경하는 건 seekTo() 함수 사용해 구현 가능
+ 
+  - 가운데 재생 버튼은 일시정지 기능을 하는 pause() 함수 & play() 함수 이용해 구현 가능
+
+> lib/componenet/custom_video_player.dart
+```dart
+  ...생략...
+  class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+  ...생략...
+    @override
+    Widget build(BuildContext context) {
+    ...생략...
+      return AspectRatio( 
+        aspectRatio: videoController!.value.aspectRatio,
+        child: Stack(
+          children: [
+            VideoPlayer( 
+              videoController!,
+            ),
+            Positioned(
+              ...생략...
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: CustomIconButton(
+                onPressed: (){},
+                iconData: Icons.photo_camera_back,
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomIconButton(
+                    onPressed: onReversePressed,
+                    iconData: Icons.rotate_left,
+                  ),
+                  CustomIconButton(
+                    onPressed: onPlayPressed,
+                    iconData: videoController!.value.isPlaying ?
+                        Icons.pause : Icons.play_arrow,
+                  ),
+                  CustomIconButton(
+                    onPressed: onForwardPressed,
+                    iconData: Icons.rotate_right,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    void onReversePressed() {     // 1. 되감기 버튼 눌렀을 때 실행할 함수
+      final currentPosition = videoController!.value.position;  // 현재 실행 중인 위치
+      
+      Duration position = Duration();   // 0초로 실행 위치 초기화
+      
+      if (currentPosition.inSeconds > 3) {  // 현재 실행 위치가 3초보다 길 때만 3초 빼기
+        position = currentPosition - Duration(seconds: 3);
+      }
+      
+      videoController!.seekTo(position);
+    }
+    
+    void onForwardPressed() {     // 2. 앞으로 감기 버튼 눌렀을 때 실행할 함수
+      final maxPosition = videoController!.value.duration;  // 동영상 길이
+      final currentPosition = videoController!.value.position;
+      
+      Duration position = maxPosition;    // 동영상 길이로 실행 위치 초기화
+  
+      // 동영상 길이에서 3초를 뺀 값보다 현재 위치가 짧을 때만 3초 더하기
+      if ((maxPosition - Duration(seconds: 3)).inSeconds >
+          currentPosition.inSeconds) {
+        position = currentPosition + Duration(seconds: 3);
+      }
+  
+      videoController!.seekTo(position);
+    }
+  
+    void onPlayPressed() {    // 3. 재생 버튼을 눌렀을 때 실행할 함수
+      if (videoController!.value.isPlaying) {
+        videoController!.pause();
+      } else {
+        videoController!.play();
+      }
+    }
+  }
+```
+- 뒤로 3초 돌리기 버튼 눌렀을 때 실행되는 함수
+
+  - 현재 실행되고 있는 동영상의 위치가 3초보다 길면 현재 위치에서 3초를 뺀 위치로 이동
+ 
+  - 현재 실행되고 있는 동영상의 위치가 3초보다 짧으면 0초의 위치로 이동
+ 
+- 앞으로 3초 돌리기 버튼 눌렀을 때 실행되는 함수
+
+  - 기본값을 동영상의 최대 길이로 설정
+
+  - 현재 실행 중인 위치에서 3초를 더한 길이가 동영상 전체 길이보다 짧으면 현재 위치에서 3초를 더한 위치로 이동
+ 
+  - 현재 실행 중인 위치에서 3초를 더한 길이가 동영상 전체 길이보다 길면 동영상의 끝으로 이동
+ 
+- 재생 버튼 눌렀을 때 실행되는 함수
+
+  - 현재 동영상이 실행 중이면 일시정지 기능인 pause() 함수실행
+ 
+  - 현재 동영상이 일시정지 중이면 동영상을 실행하는 play() 함수 실행
+ 
+  - 버튼을 재생 아이콘 또는 일시정지 아이콘으로 변경해줘야 하니 setState() 함수 실행
+
+<br>
+
+#### (4) 현재 동영상 위치 Slider 위젯에 반영
+- 현재 Slider 위젯은 videoController 변수에서 가져오는 현재 동영상의 실행 위치값을 value 매개변수에 입력
+
+  - 현재 실행되고 있는 위치가 바뀔때마다 build() 함수가 계속 실행되어야 함
+ 
+    - 지금은 Slider 위젯이 한 번 빌드되면 다시 빌드되지 않는 상태
+   
+  - addListener() 함수 사용해 videoController 변수의 상태가 변경될 때마다 setState() 함수로 build() 함수 재실행
+
+> lib/component/custom_video_player.dart
+```dart
+  class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+    ...생략...
+    initializeController() async { 
+      final videoController = VideoPlayerController.file(
+        File(widget.video.path),
+      );
+  
+      await videoController.initialize();
+  
+      // 1. 컨트롤러의 속성이 변경될 때마다 실행할 함수 등록
+      videoController.addListener(videoControllerListener);
+  
+      setState(() {
+        this.videoController = videoController;
+      });
+    }
+  
+    // 동영상의 재생 상태가 변경될 때마다 setStat() 실행해 build() 재실행
+    void videoControllerListener() {
+      setState((){});
+    }
+  
+    // State 폐기될 때 같이 폐기할 함수 실행
+    @override
+    void dispose(){
+      // 2. listener 삭제
+      videoController?.removeListener(videoControllerListener);
+      super.dispose();
+    }
+    ...생략...
+  }
+```
+- addListener() 함수에 videoControllerListener() 함수 제공
+
+  - videoController 속성 변경될 때마다 실행
+ 
+  - videoControllerListener() 함수 : estState() 함수 매번 실행
+  
+    - (동영상의 현재 재생 위치 등) videoController 속성이 변경될 때마다 build() 함수 재실행
+
+- addListener() 함수 실행하면 꼭 dispose() 함수에서 removeListener() 함수 실행
+
+  - 리소스 사용 최적화
+
+> 실행 결과
+
+|-|
+|-|
+|![이미지](./img/14.png)|
+
+<br>
+
+#### (5) 영상 선택 버튼 기능 정의
+- 기능은 HomeScreen 에 이미 정의해둠
+
+  - onNewVideoPressed() 함수 전달하는 방식으로 작업
+
+> lib/screen/home_screen.dart
+```dart
+  ...생략...
+    Widget renderVideo() {
+        return Center(    // 동영상 재생기 가운데 정렬
+          child: CustomVideoPlayer(
+            video: video!,    // 선택된 동영상 입력해주기
+            onNewVideoPressed: onNewVideoPressed,
+          ),
+        );
+    }
+  ...생략
+```
+
+> lib/component/custom_video_player.dart
+```dart
+  ...생략...
+  class CustomVideoPlayer extends StatefulWidget {
+    final XFile video;
+    
+    // 새로운 동영상을 선택하면 실행되는 함수
+    final GestureTapCallback onNewVideoPressed;
+  
+    const CustomVideoPlayer({
+      required this.video,  // 상위에서 선택한 동영상 주입해주기
+      required this.onNewVideoPressed,
+      Key? key,
+    }) : super(key: key);
+    ...생략...
+  
+  class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+    ...생략...
+      return AspectRatio(
+        aspectRatio: videoController!.value.aspectRatio,
+        child: Stack(
+          children: [
+            VideoPlayer(
+              videoController!,
+            ),
+            Positioned(
+              ...생략...
+            ),
+            Align(
+              // 오른쪽 위에 새 동영상 아이콘 위치
+              alignment: Alignment.topRight,
+              child: CustomIconButton(
+                // 카메라 아이콘을 선택하면 새로운 동영상 선택 함수 실행
+                onPressed: widget.onNewVideoPressed,
+                iconData: Icons.photo_camera_back,
+              ),
+            ),
+            Align(
+              ...생략...
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  ...생략...
 ```
 
 > 실행 결과
 
 |-|
 |-|
-|![이미지](./img/01.png)|
+|![이미지](./img/15.png)|
 
 <br>
 
+#### (6) 동영상을 이미 선택한 상태에서도 새로운 동영상 선택 가능
+- 버튼 누르면 image_picker 작동하지만 화면에는 새로 선택한 영상 실행 X
+
+  - 동영상의 소스를 videoController 변수를 인스턴화할 때 선언
+ 
+    - 현재 코드에서 videoController 변수는 initState() 함수에서만 선언되기 때문
+   
+- 해결
+
+  - StatefulWidget 생명주기의 함수인 didUpdateWidget() 함수 사용
+
+  - 새로운 동영상이 선택되었을 때 videoController 새로 생성하도록 코드 추가
+
+> lib/component/custom_video_player.dart
+```dart
+  ...생략...
+  class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+    VideoPlayerController? videoController;
+    
+    @override
+    // covariant 키워드는 CustomVideoPlayer 클래스의 상속된 값도 허가해줌
+    void didUpdateWidget(covariant CustomVideoPlayer oldWidget) {
+      super. didUpdateWidget(oldWidget);
+      
+      // 새로 선택한 동영상이 같은 동영상인지 확인
+      if(oldWidget.video.path != widget.video.path) {
+        initializeController();
+      }
+    }
+    ...생략...
+```
+- statefulWidget 생명주기 : 위젯은 매개변수의 값이 변경될 때 폐기되고 새로 생성됨
+
+  - didUpdateWidget 첫 번째 매개변수에 입력되는 oldWidget : 폐기되는 위젯
+ 
+  - 폐기되는 위젯의 동영상 경로가 새로 생성되는 위젯의 동영상 경로와 다르다면 initializeController() 재실행
+ 
+    - videoController 변수 재생성
+
+<br>
+
+### 08. 컨트롤러 감추기 기능 만들기
 
 
 <br>
