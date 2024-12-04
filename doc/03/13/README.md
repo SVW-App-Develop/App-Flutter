@@ -343,15 +343,233 @@
 
 <br>
 
+### 02. 이미지와 폰트 추가
+- [asset] 폴더를 만들고 그 아래 [img] 폴더 생성
 
+- 원하는 그림 파일들을 [img] 폴더로 드래그 앤 드롭
 
+<br>
 
+### 03. pubspec.yaml 설정
+- 수정 후 [pub get] 실행
 
+> pubspec.yaml
+```dart
+  dependencies:
+    flutter:
+      sdk: flutter
+  
+  
+    # The following adds the Cupertino Icons font to your application.
+    # Use with the CupertinoIcons class for iOS style icons.
+    cupertino_icons: ^1.0.8
+    agora_rtc_engine: 6.2.4
+    permission_handler: 11.0.1
+  ...
+  flutter:
+  
+    # The following line ensures that the Material Icons font is
+    # included with your application, so that you can use the icons in
+    # the material Icons class.
+    uses-material-design: true
+    
+    assets:
+      - asset/img/
+```
 
+<br>
 
+### 04. 네이티브 설정
+- 안드로이드에서 추가할 네이티브 권한
 
+  - 네트워크 상태를 읽는 READ_PHONE_STATE, ACCESS_NETWORK_STATE 권한
+ 
+  - 인터넷을 이용해서 영상을 스트리밍해야 하므로 INTERNET 권한
+ 
+  - 녹음, 녹화 기능과 관련된 RECORD_AUDIO, MODIFY_AUDIO_SETTINGS, CAMERA 권한
+ 
+  - 블루투스를 이용한 녹음 및 녹화 기능을 사용할 수도 있으니 BLUETOOTH_CONNECT 기능 추가
+ 
+  - 모듈의 build.gradle 파일 변경
+ 
+- iOS 에서 추가할 네이티브 권한
 
+  - 카메라 권한인 NSCameraUsageDescription
+ 
+  - 마이크 권한인 NSMicrophoneUsageDescription
 
+<br>
+
+> Android 권한 추가<br>
+> android/app/src/main/AndroidManifest.xml
+```dart
+  <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools">
+      <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+      <uses-permission android:name="android.permission.INTERNET" />
+      <uses-permission android:name="android.permission.RECORD_AUDIO" />
+      <uses-permission android:name="android.permission.CAMERA" />
+      <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+      <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+      <uses-permission android:name="android.permission.BLUETOOTH" />
+      <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+      <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+      <uses-permission android:name="android.permission.WAKE_LOCK" />
+      <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" tools:ignore="ProtectedPermissions" />
+      ...생략...
+  </manifest>
+```
+
+<br>
+
+> Android CompileSdkVersion 변경<br>
+> android/app/build.gradle
+```dart
+  ...생략...
+  android {
+      namespace = "com.example.video_call"
+      compileSdk = flutter.compileSdkVersion
+      ndkVersion = flutter.ndkVersion
+      compileSdkVersion 34    // 원본 : flutter.compileSdkVersion
+      ...생략...
+```
+
+<br>
+
+> iOS 권한 추가<br>
+> ios/Runner/Info.plist
+```dart
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0/dtd">
+  <plist version="1.0">
+  <dict>
+    <!-- 생략 -->
+    <key>NSCameraUsageDescription</key>
+    <string>카메라 사용을 허가해주세요</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>마이크 사용을 허가해주세요</string>
+  </dict>
+  </plist>
+```
+
+<br>
+
+### 05. 플러터에서 권한 관리
+- 특정 기능들, 특히 보안에 민감한 기능은 사용자가 권한을 허가해줘야 앱에서 정보를 가져오거나 기능 사용 가능
+
+- 안드로이드와 iOS 는 권한을 요청하는 시스템이 비슷함
+
+  - permission_handler 패키지를 이용하면 두 플랫폼 모두에서 쉽게 권한 관리 가능
+ 
+- 사용자에게 이용 허가를 꼭 받아야 사용 가능한 카메라와 마이크 권한은 추가 확인 사항 有
+
+  - 네이티브 설정에 등록을 했더라도 플러터 프레임워크에서 권한이 허가됐는지 아닌지 확인해야 함
+ 
+- permission_handler 플러그인 사용법
+
+  - Permission 클래스에 존재하는 권한 선택 후 request() 함수 실행하면 권한 요청 가능
+ 
+  - 반환값으로는 PermissionStatus 에 해당되는 enum 값을 받아올 수 있음
+ 
+  - PermissionStatus.granted 값을 돌려받으면 권한이 있다는 것을 의미
+
+<br>
+
+```dart
+  final permission = await Permission.camera.request();  // 카메라 권한 요청
+  
+  if (permission == PermissionStatus.granted) {  // 권한 상태 확인
+    print('권한 허가 완료');
+  } else {
+    print('권한 없음');
+  }
+```
+
+<br>
+
+> PermissionStatus 클래스
+
+|값|설명|
+|-|-|
+|denied|권한이 거절된 상태<br>다시 request() 함수를 이용해 권한 요청 가능<br>권한을 한 번도 요청한 적이 없다면 기본값인 거절로 설정됨|
+|granted|권한이 허가된 상태|
+|restricted|iOS 에서만 해당되는 상태로 권한이 제한되어 있을 때 설정되는 상태<br>청소년, 자녀보호 기능 해당|
+|limited|iOS 에서만 해당되는 상태로 제한적인 권한이 있을 때 해당됨|
+|permanentlyDenied|권한이 거절된 상태<br>Denied 상태와 다른 점은 다시 request() 함수를 실행해서 앱에서 권한 요청 불가<br>설정 앱으로 이동해서 사용자가 직접 권한을 허가해줘야 함|
+
+<br>
+
+- 필요한 여러 권한을 한 번에 연속적으로 요청
+
+  - 요청하고 싶은 권한을 순서대로 List 에 넣어서 한번에 request() 함수 실행
+ 
+  - 권한 요청에 대한 결과는 Map 형태로 반환받음
+  
+    - 확인하고 싶은 권한의 값을 key 로 입력해주면 권한 요청의 결과를 가져올 수 있음
+
+<br>
+
+```dart
+  final resp = await [Permission.camera, Permission.microphone].request();
+  // 리스트의 모든 권한 요청
+  
+  final cameraPermission = resp[Permission.camera];  // 각 권한의 상태 확인
+  final micPermission = resp[Permission.microphone];
+  
+  if (cameraPermission != PermissionStatus.granted) {
+    throw '카메라 권한이 없습니다';
+  }
+  
+  if (micPermission != PermissionStatus.granted) {
+    throw '마이크 권한이 없습니다';
+  }
+```
+
+<br>
+
+### 06. 프로젝트 초기화
+#### (1) [lib] 폴더에 [screen] 폴더 생성
+- 앱의 기본 홈 화면으로 사용할 HomeScreen 위젯을 생성할 home_screen.dart 생성
+ 
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        body: Text('Hone Screen'),
+      );
+    }
+  }
+```
+
+<br>
+
+#### (2) HomeScreen 을 홈 위젯으로 등록
+
+> lig/main.dart
+```dart
+  import 'package:video_call/screen/home_screen.dart';
+  import 'package:flutter/material.dart';
+  
+  void main() {
+    runApp(
+      MaterialApp(
+        home: HomeScreen(),
+      ),
+    );
+  }
+```
+
+<br>
+
+---
+
+<br>
 
 
 
