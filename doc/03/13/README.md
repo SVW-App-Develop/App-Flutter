@@ -264,9 +264,84 @@
 
 <br>
 
+#### (1) [아고라](https://www.agora.io) 회원가입
+- 토큰을 발급받으려면 아고라에 회원가입 해야 함
 
+|과정|
+|-|
+|![이미지](./img/04.png)|
 
+<br>
 
+#### (2) Project Management
+- 로그인 및 회원가입 완료 후 대시보드 페이지로 이동
+
+- 대시보드에서 왼쪽 사이드바에 마우스를 올린 다음 [Project Managment] 클릭
+
+|과정|
+|-|
+|![이미지](./img/05.png)|
+
+<br>
+
+#### (3) 프로젝트 생성
+- [Create a Poroject] 버튼 눌러서 프로젝트 생성
+
+- 프로젝트 이름, 사용 목적, Secure Model 선택 후 [Submit] 버튼 선택
+
+  - Sevure Model 은 **APP ID + TOKEN** 모드 선택
+
+|과정|
+|-|
+|![이미지](./img/06.png)|
+
+<br>
+
+#### (4) 프로젝트 설정
+- Project Management 페이지의 테이블에 새로 만든 프로젝트가 생성됨
+
+- 생성한 프로젝트의 [config] 버튼 눌어서 설정 화면으로 이동
+
+|과정|
+|-|
+|![이미지](./img/07.png)|
+
+<br>
+
+#### (5) 토큰 생성
+- 프로젝트 설정 페이지에서 Features 카테고리로 이동
+
+- [Generate temp RTC Token] 버튼 클릭하면 토큰 생성 페이지 이동
+
+- 채널이름 설정 후 [Generate] 버튼 누르면 토큰 생성
+
+|과정|
+|-|
+|![이미지](./img/08.png)|
+|![이미지](./img/09.png)|
+
+<br>
+
+|내용|
+|-|
+|![이미지](./img/10.png)|
+|- App ID : 앱 ID, 프로젝트의 유니크한 아이디를 의미<br>- Channel Name : 채널 이름, 핸드폰끼리 통신할 때 사용할 채널의 이름(원하는대로 작명)<br>- Temp Token : 임시 토큰, 아고라 API 사용 권한이 있음을 증명하는 데 사용<br>- 토큰 유효기간 : 모든 토큰은 생성 후 24시간만 유효<br><br>- 프로젝트에 필요한 값들은 App ID, Channel Name, Temp Token 이니 안전한 곳에 잘 복사해두기|
+
+<br>
+
+#### (6) 프로젝트 적용
+- [lib/const] 폴더 생성 후 그 아래에 agora.dart 파일 생성해서 아고라와 관련된 값들 정리
+
+- Temp Token 은 발급받은 시간으로부터 24시간만 유효
+
+> lib/const/agora.dart
+```dart
+  const API_ID = '앱 ID 입력';
+  const CHANNEL_NAME = '채널 이름 입력';
+  const TEMP_TOKEN = '토큰값 입력';
+```
+
+<br>
 
 
 
