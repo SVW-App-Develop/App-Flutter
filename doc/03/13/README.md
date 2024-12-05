@@ -336,7 +336,7 @@
 
 > lib/const/agora.dart
 ```dart
-  const API_ID = '앱 ID 입력';
+  const APP_ID = '앱 ID 입력';
   const CHANNEL_NAME = '채널 이름 입력';
   const TEMP_TOKEN = '토큰값 입력';
 ```
@@ -571,12 +571,797 @@
 
 <br>
 
+13.3 레이아웃 구상
+---
+- 첫 번째 화면은 홈 스크린으로 화상 통화 채널에 참여할 수 있는 화면
 
+- 두 번째 화면은 화상 통화를 하는 화면
 
+<br>
 
+### 01. 홈 스크린 위젯
+- 가장 위에 앱 로고 위치
 
+- 중앙에 이미지 위치
 
+- 마지막에 화상 통화 채널 참여 버튼 위치
 
+<br>
+
+### 02. 캠 스크린 위젯
+- 캠 스크린에는 영상 통화를 할 수 있는 기능 넣기
+
+- 영상 통화는 1:1로 진행하게 되니 내 카메라가 찍고 있는 화면과 상대방의 카메라가 찍고 있는 화면 동시 출력
+
+  - Stack 위젯 이용
+
+<br>
+
+---
+
+<br>
+
+13.4 구현
+---
+- 홈 스크린과 캠 스크린 UI 구현 후 Agora API 이용해 화상 통화 기능 구현
+
+<br>
+
+### 01. 홈 스크린 위젯 구현
+#### (1) 레이아웃 설정
+- 로고, 이미지, 버튼을 각각 위젯으로 구현해 레이아웃 설정
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class HomeScreen extends StatelessWidget {
+    const HomeScreen({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.blue[100]!,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Expanded(child: _Logo()),   // 로고
+                Expanded(child: _Image()),  // 이미지
+                Expanded(child: _EntryButton()),  // 화상 통화 시작 버튼
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+```
+
+<br>
+
+#### (2) _Logo 위젯 작업
+- 단순히 아이콘과 글자가 Container 안에 위치한 형태
+
+- 로고에 그림자가 지게 만들기
+
+  - 그림자는 BoxDecoration 클래스의 boxShadow 매개변수에 원하는 만큼 그림자를 BoxShadow 클래스로 제공해서 구현 가능
+
+```dart
+  // HomeScreen 위젯 바로 아래
+  ...생략...
+  class _Logo extends StatelessWidget {
+    const _Logo({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Center(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(16.0),  // 모서리 둥글게 만들기
+            boxShadow: [    // 1. 그림자 추가
+              BoxShadow(
+                color: Colors.blue[300]!,
+                blurRadius: 12.0,
+                spreadRadius: 2.0,
+              ),
+            ]
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,  // 주축 최소 크기
+              children: [
+                Icon(   // 캠코더 아이콘
+                  Icons.videocam,
+                  color: Colors.white,
+                  size: 40.0,
+                ),
+                SizedBox(width: 12.0),
+                Text(   // 앱 이름
+                  'LIVE',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30.0,
+                    letterSpacing: 4.0,   // 글자 간 간격
+                  ),
+                ),
+              ],
+            )
+          ),
+        ),
+      );
+    }
+  }
+```
+- 1 : boxShadow 매개변수에는 List 로 BoxShadow 클래스를 제공할 수 있음
+
+  - 일반적으로는 하나의 그림자만 사용하겠지만, 여러 BoxShadow 클래스를 입력해 여러 그림자 적용 가능
+ 
+  - BoxShadow 클래스
+  
+    - 그림자로 적용할 색상을 color 매개변수로 제공
+   
+    - blurRadius 에 흐림 정도 입력
+   
+    - spreadRadius 에 퍼짐 정도를 double 값으로 입력 가능
+
+> 결과
+
+|-|
+|-|
+|![이미지](./img/11.png)|
+
+<br>
+
+#### (3) _Image 위젯 구현
+- 이미지를 중앙에 위치하는 형태로 코드 작성
+
+> lib/screen/home_screen.dart
+```dart
+  // _Logo 위젯 바로 아래
+  ...생략...
+  class _Image extends StatelessWidget {
+    const _Image({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Center(
+        child: Image.asset(
+          'asset/img/home_img.png',
+        ),
+      );
+    }
+  }
+```
+
+> 결과
+
+|-|
+|-|
+|![이미지](./img/12.png)|
+
+<br>
+
+#### (4) _EntryButton 작업
+- 화상 통화 채널에 접속할 수 있는 버튼 구현
+
+  - 기능은 이후에 구현하고 가로로 최대한의 길이로 늘린 ElevatedButton 생성
+
+> lib/screen/home_screen.dart
+```dart
+  // _Image 위젯 바로 아래
+  ...생략...
+  class _EntryButton extends StatelessWidget {
+    const _EntryButton({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ElevatedButton(
+            onPressed: () {},
+            child: Text('입장하기'),
+          ),
+        ],
+      );
+    }
+  }
+```
+
+> 결과
+
+|-|
+|-|
+|![이미지](./img/13.png)|
+
+<br>
+
+### 02. 캠 스크린 위젯 구현
+#### (1) CamScreen 구현
+- lib/screen/cam_screen.dart 파일을 생성하고 CamScreen StatefulWidget 생성
+
+  - Scaffold 에 AppBar 추가해서 기본 레이아웃 만들기
+ 
+> lib/screen/cam_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  
+  class CamScreen extends StatefulWidget {
+    const CamScreen({Key? key}) : super(key: key);
+  
+    @override
+    _CamScreenState createState() => _CamScreenState();
+  }
+  
+  class _CamScreenState extends State<CamScreen> {
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold (
+        appBar: AppBar(
+          title: Text('LIVE'),
+        ),
+        body: Center(
+          child: Text('Cam Screen'),
+        ),
+      );
+    }
+  }
+```
+
+<br>
+
+#### (2) HomeScreen 에서 CamScreen 으로 이동
+- ElevatedButton 위젯을 클릭하면 CamScreen 위젯으로 화면이 넘어가야 함
+
+  - 내비게이션(Navigator) 클래스를 사용해 구현 가능
+ 
+    - 최상위에 MaterialApp 위젯 추가해주면 Navigator 클래스의 인스턴스 자동 생성
+   
+      - 이 값을 이용해 화면 이동 가능
+
+> lib/screen/home_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:video_call/screen/cam_screen.dart';
+  ...생략...
+  class _EntryButton extends StatelessWidget {
+    const _EntryButton({Key? key}) : super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(   // 1. 영상 통화 스크린으로 이동
+                MaterialPageRoute(
+                  builder: (_) => CamScreen(),
+                ),
+              );
+            },
+            child: Text('입장하기'),
+          ),
+        ],
+      );
+    }
+  }
+```
+- 1 : Navigator.of(context) 실행해 위젯 트리의 가장 가까이에 있는 Navigator 가져옴
+
+  - 테마를 이용할 때 Theme.of(context) 사용했던 것 생각하기
+ 
+  - MaterialApp 으로 최상위를 감싸주면 자동으로 Navigator 생성
+ 
+    - 앱 어디서든 Navigator.of(context) 실행해 값 가져올 수 있음
+   
+  - push() 함수를 이용하면 새로운 화면으로 이동 가능
+ 
+    - 매개변수로 MaterialPageRoute 클래스의 builder() 함수에 새로운 화면으로 사용하고 싶은 위젯을 반환하는 함수 입력
+
+<br>
+
+#### (3) 화상 통화 기능 구현
+- 카메라 권한과 마이크 권한 필요
+
+  - init() 이라는 함수를 만들어 화상 통화에 필요한 권한 받아오기
+
+> lib/screen/cam_screen.dart
+```dart
+  import 'package:flutter/material.dart';
+  import 'package:permission_handler/permission_handler.dart';
+  ...생략...
+  class _CamScreenState extends State<CamScreen> {
+    Future<bool> init() async {   // 1. 권한 관련 작업 모두 실행
+      final resp = await [Permission.camera, Permission.microphone].request();
+  
+      final cameraPermission = resp[Permission.camera];
+      final micPermission = resp[Permission.microphone];
+  
+      if (cameraPermission != PermissionStatus.granted ||
+          micPermission != PermissionStatus.granted) {
+        throw '카메라 또는 마이크 권한이 없습니다';
+      }
+  
+      return true;
+    }
+  
+    @override
+    Widget build(BuildContext context) {
+    ...생략...
+    }
+  }
+```
+- 권한을 가져오는 작업은 비동기 프로그래밍이 필요
+
+  - 함수를 async 로 지정해주고 권한을 잘 가져왔을 땐 true  값을 반환
+ 
+    - 문제가 있으면 메시지와 함께 에러를 던지는 로직 작성
+
+<br>
+
+#### (4) FutureBuilder 위젯 사용
+- init() 함수를 사용하려면 특별한 위젯 필요
+
+  - build() 함수는 위젯이 생성되면 그 즉시 실행됨
+ 
+  - 카메라와 마이크의 권한이 있을 때 그리고 없을 때 보여줄 수 있는 화면이 달라야 함
+ 
+- init() 함수가 비동기로 실행되니 언제 권한 요청이 끝날지 알 수 없으므로 FutureBuilder 위젯 사용
+
+  - init() 함수에서 에러를 던지면
+  
+    - 에러 내용을 보여주고 아직 로딩중이면 CircularProgeressIndicator 보여줌
+   
+    - 모든 권한이 허가되면 '모든 권한이 있습니다' 라는 글자를 가운데에 보여주는 로직 작성
+
+> lib/screen/cam_screen.dart
+```dart
+  ...생략...
+  class _CamScreenState extends State<CamScreen> {
+    ...생략...
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold (
+        appBar: AppBar(
+          title: Text('LIVE'),
+        ),
+        body: FutureBuilder(    // 1. Future 값을 기반으로 위젯 렌더링
+          future: init(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if(snapshot.hasError){  // 2. Future 실행 후 에러가 있을 때
+              return Center(
+                child: Text(
+                  snapshot.error.toString(),
+                ),
+              );
+            }
+            
+            if(!snapshot.hasData){  // 3. Future 실행 후 아직 데이터가 없을 때 (로딩 중)
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            
+            return Center(  // 4. 나머지 상황에 권한 있음을 표시
+              child: Text('모든 권한이 있습니다'),
+            );
+          }
+        ),
+      );
+    }
+  }
+```
+- 1 : FutureBuilder 는 Future 를 반환하는 함수의 결과에 따라 위젯을 렌더링할 때 사용
+
+  - FutureBuilder 의 future 매개변수에 Future 값을 반환하는 함수 입력
+ 
+  - builder 매개변수에 Future 값에 따라 다르게 렌더링해주고 싶은 로직 작성
+ 
+  - builder() 함수는 BuildContext 와 AsyncSnapshot 제공
+ 
+    - AsyncSnapshot 은 future 매개변수에 입력한 함수의 결과값 및 에러를 제공하는 역할
+   
+      - 추가적으로 비동기 함수의 진행 상황도 알 수 있음
+     
+    - AsyncSnapshot 에서 제공하는 값이 변경될 때마다 builder() 함수 재실행
+   
+- 2 : AsyncSnapshot 의 hasError 게터는 현재 실행한 비동기 함수에서 에러가 있는지 bool 값으로 반환
+
+  - true 면 에러, false 면 에러가 없는 상태
+ 
+    - 에러가 있을 때는 snapshot.error 실행해 에러값 가져올 수 있음
+      
+- 3 : AsyncSnaptshot 의 hasData 게터는 현재 실행한 비동기 함수에서 반환받은 데이터가 있는지 확인 가능
+
+  - init() 함수는 성공적으로 실행되면 bool 값을 반환
+ 
+    - 에러가 없는데 반환받은 데이터까지 없는 상황이라면 아직 비동기 함수가 실행 중이라고 볼 수 있음
+   
+  - snapshot.data 실행하면 반환된 데이터값도 받아볼 수 있음
+ 
+- 4 : 2번과 3번이 모두 통과됐다면 성공적으로 권한을 받았다는 뜻
+
+  - snapshot.connectionState 실행하면 비동기 함수의 현재 실행 상태 가져올 수 있음
+
+> FutureBuilder 의 ConnectionState 및 캐싱
+
+|값|설명|
+|-|-|
+|ConnectionState.none|비동기 함수를 제공하지 않은 상태|
+|ConnectionState.waiting|비동기 함수가 아직 아무런 값을 반환하지 않은 상태<br>실행은 되었지만 끝나지 않은 상태로 로딩 중이라고 볼 수 있음|
+|ConnectionState.active|FutureBuilder 에서는 사용되지 않고 비슷하지만 Stream 값으로 builder 를 실행하는 StreamBuilder 에서만 제공됨<br>Stream 이 실행되고 있는 상태를 표현함|
+|ConnectionState.done|요청이 끝난 상태를 의미<br>에러가 났던 데이터값이 반환된 함수의 실행이 끝나면 반환되는 상태|
+
+<br>
+
+> snapshot.connectionState == ConnectionState.waiting 대신에 !snapshot.hasData 사용한 이유
+```
+  캐싱(caching) 때문
+    - 캐싱 : 데이터를 일시적으로 저장하고 기억하는 걸 의미
+  
+  FutureBuilder 는 다른 위젯과 마찬가지로 build() 함수에 영향을 받음
+    - build() 가 다시 실행되면 FutureBuilder 는 다시 렌더링되고 builder() 함수로 다시 실행됨
+      - 그럴 때마다 비동기 함수 매번 다시 실행됨
+  
+  매번 로딩 상태가 false 로 돌아갔다가 함수가 끝날 때 다시 true 로 변하면?
+    - build() 가 실행될 때마다 CircularProgressIndicator 가 렌더링되어 화면에 깜빡임이 생김
+      - build() 함수에 기존 반환받았떤 데이터값을 기억해두면 방지 가능
+        - 같은 build() 함수가 두 번 이상 실행될 때 snapshot.connectionState 가 ConnectionState.waiting 이더라도
+          snapshot.data 에서 기존 실행했던 함수의 반환값을 받아볼 수 있음
+        - 그래서 snapshot.connectionState 대신 snapshot.hasData 사용해 로딩 상태 인지
+```
+
+<br>
+
+#### (5) 아고라 API 활성화
+- 아고라의 RtcEngine 활성화
+
+  - 활성화하면서 각종 이벤트를 받을 수 있는 콜백 함수도 설정
+ 
+- RtcEngine 통해 사용하는 핸드폰의 카메라를 활성화
+
+- 미리 받아둔 아고라 API 상수값들을 사용해 testchannel 에 참여
+
+> lib/screen/cam_screen.dart
+```dart
+  import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+  import 'package:video_call/const/agora.dart';
+  ...생략...
+  class _CamScreenState extends State<CamScreen> {
+    RtcEngine? engine;  // 아고라 엔진을 저장할 변수
+    int? uid;           // 내 ID
+    int? otherUid;      // 상대방 ID
+  
+    Future<bool> init() async {   // 권한 관련 작업 모두 실행
+      final resp = await [Permission.camera, Permission.microphone].request();
+  
+      final cameraPermission = resp[Permission.camera];
+      final micPermission = resp[Permission.microphone];
+  
+      if (cameraPermission != PermissionStatus.granted ||
+          micPermission != PermissionStatus.granted) {
+        throw '카메라 또는 마이크 권한이 없습니다';
+      }
+  
+      if (engine == null) {
+        // 1. 엔진이 정의되지 않았으면 새로 정의하기
+        engine = createAgoraRtcEngine();
+  
+        // 아고라 엔진 초기화
+        await engine!.initialize(
+          // 초기화할 때 사용할 설정 제공
+          RtcEngineContext(
+            // 미리 저장해둔 APP ID 입력
+            appId : APP_ID,
+            // 라이브 동영상 송출에 최적화
+            channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
+          ),
+        );
+  
+        engine!.registerEventHandler(
+          // 2. 아고라 엔진에서 받을 수 있는 이벤트 값들 등록
+          RtcEngineEventHandler(
+            onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+              // 3. 채널 접속에 성공했을 때 실행
+              print('채널에 입장했습니다. uid : ${connection.localUid}');
+              setState((){
+                this.uid = connection.localUid;
+              });
+            },
+            onLeaveChannel: (RtcConnection connection, RtcStats stats) {
+              // 4. 채널을 퇴장했을 때 실행
+              print('채널 퇴장');
+              setState((){
+                uid = null;
+              });
+            },
+            onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
+              // 5. 다른 사용자가 접속했을 때 실행
+              print('상대가 채널에 입장했습니다. uid : ${remoteUid}');
+              setState((){
+                otherUid = remoteUid;
+              });
+            },
+            onUserOffline: (RtcConnection connection, int remoteUid, UserOfflineReasonType reason) {
+              // 6. 다른 사용자가 채널을 나갔을 때 실행
+              print('상대가 채널에서 나갔습니다. uid : $uid');
+              setState((){
+                otherUid = null;
+              });
+            },
+          ),
+        );
+  
+        // 엔진으로 영상을 송출하겠다고 설정
+        await engine!.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+        await engine!.enableVideo();    // 7. 동영상 기능 활성화
+        await engine!.startPreview();   // 카메라를 이용해 동영상을 화면에 실행
+        // 채널에 들어가기
+        await engine!.joinChannel(
+          // 8. 채널 입장하기
+          token: TEMP_TOKEN,
+          channelId: CHANNEL_NAME,
+    
+          // 영상과 관련된 여러 가지 설정 가능
+          // 현재 프로젝트에서는 불필요
+          options: ChannelMediaOptions(),
+          uid: 0,
+        );
+      }
+  
+      return true;
+    }
+  ...생략...
+```
+- 1 : engine 값이 null 인지 확인하고 null 이면 새로운 engine 을 생성하는 로직 실행
+
+- 2 : RtcEngine 에 이벤트 콜백 함수들을 등록하는 함수
+
+  - RtcEngineEventHandler 클래스 사용
+ 
+- 3 : 내가 채널에 입장했을 때 실행되는 함수
+
+  - 채널에 입장한 상태면 uid 변수에 나의 고유 ID 기억
+ 
+    - connection : 영상 통화 정보에 관련된 값, connection.localUid 로 내 ID 가져올 수 있음
+   
+    - elapsed : joinChannel 실행한 후 콜백이 실행되기까지 걸린 시간
+   
+- 4 : 내가 채널에서 나갔을 때 실행되는 콜백 함수
+
+  - 채널에서 나갔으니 uid 를 null 로 변환
+ 
+- 5 : 상대박이 채널에 입장했을 때 실행되는 함수
+
+  - 상대방의 고유 ID 를 otherUid 변수에 저장
+ 
+    - connection : 영상 통화 정보에 관련된 값, connection.localUid 로 내 ID 가져올 수 있음
+   
+    - remoteUid : 상대방 고유 ID
+   
+    - elapsed : 내가 채널을 들어왔을 때부터 상태가 들어올 때까지 걸린 시간
+   
+- 6 : 상대방이 채널에서 나갔을 때 실행되는 함수
+
+  - otherUid 값을 null 로 지정해줌
+ 
+    - connection : 영상 통화 정보에 관련된 값, connection.localUid 로 내 ID 를 가져올 수 있음
+   
+    - remoteUid : 상대방 고유 ID
+   
+    - reason : 방에서 나가게 된 이유 (직접 나가기 또는 네트워크 끊김 등)
+   
+- 7 : 내 카메라 활성화
+
+- 8 : 채널에 입장
+
+  - token 매개변수에는 아고라 토큰을 입력하고 channelId 매개변수에는 입장할 채널 입력
+ 
+  - options 매개변수는 영상 송출과 관련된 여러 옵션을 상세하게 지정 가능
+ 
+    - 이번 프로젝트에서는 기본 설정 사용
+   
+  - 마지막 매개변수는 내 고유 ID 를 지정하는 곳
+ 
+    - 0 입력하면 자동으로 고유 ID 배정됨
+
+<br>
+
+#### (6) RtcEngine 에서 송수신하는 정보를 화면에 그려주는 코드 작성
+- testchannel 에 참여하는 코드를 작성했지만 화면에 아직 아무것도 실행되지 않음
+
+  - renderMainView() 와 renderSubView() 함수를 작성해 각각 상대방의 화면과 내 화면 보여주기
+ 
+> lib/screen/cam_screen.dart
+```dart
+  ...생략...
+  // build() 함수 바로 아래에 작성
+    // 1. 내 핸드폰이 찍는 화면 렌더링
+    Widget renderSubView(){
+      if(uid != null) {
+        // AgoraVideoView 위젯을 사용하면 동영상을 화면에 보여주는 위젯 구현 가능
+        return AgoraVideoView(
+          // VideoViewController 를 매개변수로 입력해주면 해당 컨트롤러가 제공하는 동영상 정보를
+          // AgoraVideoView 위젯을 통해 보여줄 수 있음
+          controller: VideoViewController(
+            rtcEngine: engine!,
+            // VideoCanvas 에 0 을 입력해서 내 영상을 보여줌
+            canvas: const VideoCanvas(uid: 0),
+          ),
+        );
+      } else {
+        // 아직 내가 채널에 접속하지 않았다면 로딩 화면을 보여줌
+        return CircularProgressIndicator();
+      }
+    }
+    
+    Widget renderMainView() {   // 2. 상대 핸드폰이 찍는 화면 렌더링
+      if (otherUid != null) {
+        return AgoraVideoView(
+          // VideoViewController.remote 생성자를 이용하면
+          // 상대방의 동영상을 AgoraVideoView 그려낼 수 있음
+          controller: VideoViewController.remote(
+            rtcEngine: engine!,
+            // uid 에 상대방 ID 입력
+            canvas: VideoCanvas(uid: otherUid),
+            connection: const RtcConnection(channelId: CHANNEL_NAME),
+          ),
+        );
+      } else {
+        // 상대가 아직 채널에 들어오지 않았다면 대기 메시지를 보여줌
+        return Center(
+          child: const Text(
+            '다른 사용자가 입장할 때까지 대기해주세요',
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
+    }
+  }
+```
+- 1 : 내 핸드폰이 찍는 화면을 렌더링하는 함수
+
+  - uid 가 null 이 아닐 때는 채널에 입장한 상태
+  
+    - AgoraVideoView 의 controller 매개변수에 VideoViewController() 입력해서 내 핸드폰에서 찍는 화면 보여줌
+   
+- 2 : renderSubView() 와 반대로 상대방의 핸드폰에서 찍는 화면을 보여주는 역할
+
+  - AgoraVideoView 의 controller 매개변수에 VideoViewController.remote() 입력해줘서 상대의 화면을 보여줌
+ 
+<br>
+
+#### (7) 상대방의 화면 위에 내 화면을 쌓는 방식으로 화면 구현
+- 작성한 함수를 build() 함수에 입력해서 화면에 보여주기
+
+- 동영상 플레이어 앱에서 사용했던 Stack 위젯을 이용
+
+> lib/screen/cam_screen.dart
+```dart
+  ...생략...
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold (
+        appBar: AppBar(
+          title: Text('LIVE'),
+        ),
+        body: FutureBuilder(    // Future 값을 기반으로 위젯 렌더링
+          future: init(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if(snapshot.hasError){  // Future 실행 후 에러가 있을 때
+              return Center(
+                child: Text(
+                  snapshot.error.toString(),
+                ),
+              );
+            }
+  
+            if(!snapshot.hasData){  // Future 실행 후 아직 데이터가 없을 때 (로딩 중)
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+  
+            return Stack(
+              children: [
+                renderMainView(), // 상대방이 찍는 화면
+                Align(    // 내가 찍는 화면
+                  alignment: Alignment.topLeft, // 왼쪽 위에 위치
+                  child: Container(
+                    color: Colors.grey,
+                    height: 160,
+                    width: 120,
+                    child: renderSubView(),
+                  ),
+                ),
+              ],
+            );
+          }
+        ),
+      );
+    }
+  ...생략...
+```
+
+<br>
+
+#### (8) [나가기] 버튼 설계
+- 뒤로 가기 기능은 pop() 함수 사용하면 구현 가능
+
+> lib/screen/cam_screen.dart
+```dart
+  ...생략...
+            // 기존 'return Stack' 코드 수정
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Stack(
+                    children: [
+                      renderMainView(), // 상대방이 찍는 화면
+                      Align(    // 내가 찍는 화면
+                        alignment: Alignment.topLeft, // 왼쪽 위에 위치
+                        child: Container(
+                          color: Colors.grey,
+                          height: 160,
+                          width: 120,
+                          child: renderSubView(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: ElevatedButton(  // 뒤로 가기 기능 및 채널 퇴장 기능
+                    onPressed: () async {
+                      if(engine != null){
+                        await engine!.leaveChannel();
+                      }
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('채널 나가기'),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
+    }
+  ...생략...
+```
+
+<br>
+
+---
+
+<br>
+
+🚨 핵심 요약
+---
+- **WebRTC** : 현대에서 영상 통화에 가장 많이 사용하는 오픈 소스 프로토콜
+
+  - 실시간으로 오디오 통화, 비디오 통신, P2P 파일 공유 가능
+ 
+- **내비게이션** : 스크린을 전환할 때 사용하는 클래스
+
+- **아고라 API** 사용시 WebRTC 기술이 잘 구현된 서비스를 이용할 수 있음
+
+- **카메라 권한**rhk **마이크 권한**을 받으면 동영상 촬영 기능 구현 가능
+
+  - iOS 에서의 권한은 Info.plist 에서 설정
+ 
+  - 안드로이드에서의 권한은 android/app/src/main/AndroidManifest.xml 에서 설정
+
+<br>
 
 
 
