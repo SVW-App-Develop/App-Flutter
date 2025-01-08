@@ -13,7 +13,7 @@
  
     - 출근 체크 가능한 거리인지 확인하는 기능 탑재
 
-- [실습 프로젝트 바로가기](https://github.com/SVW-App-Develop/Video_Call.git)
+- [실습 프로젝트 바로가기](https://github.com/SVW-App-Develop/chool_check.git)
 
 <br>
 
